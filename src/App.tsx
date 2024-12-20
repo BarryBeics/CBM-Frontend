@@ -1,10 +1,12 @@
 import { FluentProvider, teamsLightTheme, teamsDarkTheme } from '@fluentui/react-components';
 import { useState, useEffect } from 'react';
 import ToggleTheme from './components/primatives/ToggleTheme/ToggleTheme';
+import PairsChart from './components/templates/PairsChart/PairsChart';
 import './App.css'; 
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const graphqlEndpoint = "http://localhost:8080/query";
 
   const toggleTheme = () => {
     setIsDarkMode(prevMode => !prevMode);
@@ -22,8 +24,9 @@ const App: React.FC = () => {
           isDarkMode={isDarkMode} 
           toggleTheme={toggleTheme} 
         />
-            <div>Hello World</div>
-            
+          <h1>Crypto Chart</h1>
+        {/* Pass graphqlEndpoint as a prop */}
+        <PairsChart graphqlEndpoint={graphqlEndpoint} />
             
         </FluentProvider>
         

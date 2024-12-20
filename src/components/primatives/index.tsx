@@ -6,3 +6,4 @@ export { default as SectionCard } from './Cards/SectionCard';
 export { default as ConfirmationDialog } from './DialogBox/ConfirmationDialog';
 export { default as Stack } from './Stack/Stack';
 export { default as ToggleTheme } from './ToggleTheme/ToggleTheme';
+export { default as Dropdown } from './Dropdown/dropdown';
