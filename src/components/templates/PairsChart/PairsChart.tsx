@@ -48,13 +48,20 @@ const ChartPage: React.FC<ChartPageProps> = ({ graphqlEndpoint }) => {
 
         const variables = { symbol: selectedSymbol, limit: timeFrameQty };
         try {
+          console.log('Fetching price data with:', variables); // Log query variables
           const response = await fetch(graphqlEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query, variables }),
-          });
-          const result = await response.json();
-          setPairsData(result.data.getHistoricPrice || []);
+        });
+        const result = await response.json();
+        console.log('API Response:', result); // Log full response
+
+        if (result.errors) {
+          console.error('GraphQL Error:', result.errors);
+        }
+
+        setPairsData(result.data?.getHistoricPrice || []);
         } catch (error) {
           console.error('Error fetching price data:', error);
         }
@@ -66,13 +73,21 @@ const ChartPage: React.FC<ChartPageProps> = ({ graphqlEndpoint }) => {
 
   // Update the chart
   useEffect(() => {
+    console.log('Pairs Data:', pairsData); // Log before processing
+
     if (pairsData.length > 0 && chartRef.current) {
       const labels = pairsData.map((entry) =>
         new Date(entry.Timestamp * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
       );
-      const prices = pairsData.map((entry) => Number.parseFloat(entry.Pair[0].Price));
+      const prices = pairsData.map((entry) => {
+      console.log('Price Entry:', entry.Pair); // Log price data
+      return Number.parseFloat(entry.Pair[0].Price);
+    });
 
-      const data = {
+    console.log('Chart Labels:', labels);
+    console.log('Chart Prices:', prices);
+
+    const data = {
         labels: labels.reverse(),
         datasets: [
           {
