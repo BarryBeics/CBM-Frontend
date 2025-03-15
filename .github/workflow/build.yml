@@ -1,45 +1,34 @@
-name: Build and Push Docker Image
+name: Build and Push Frontend Docker Image
 
 on:
   push:
     branches:
-      - main # Runs on every push to the main branch
+      - main # Change this if you're using a different branch
   pull_request:
     branches:
-      - main # Runs on every PR to main
+      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest # GitHub-hosted runner (free tier supports this)
-    permissions:
-      contents: read
-      packages: write # Needed if pushing to GitHub Container Registry (GHCR)
+  build-and-push:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.23 # Change to your Go version
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }} # Set in GitHub Secrets
+          username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image (amd64)
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: bazzamerx/cbmfrontend:latest
-          platforms: linux/amd64
-
-      - name: Verify build success
-        run: docker run --rm bazzamerx/cbmfrontend:latest uname -m
+          platforms: linux/amd64 # Build for amd64
+          tags: bazzamerx/cbm-frontend:latest
