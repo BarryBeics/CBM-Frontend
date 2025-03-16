@@ -6,7 +6,7 @@ import './App.css';
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const graphqlEndpoint = "http://resolvers:8080/query";
+  const graphqlEndpoint = "http://134.209.183.65:8080/graphql";
 
   const toggleTheme = () => {
     setIsDarkMode(prevMode => !prevMode);
