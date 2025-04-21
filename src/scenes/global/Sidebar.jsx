@@ -40,6 +40,7 @@ const navItems = [
   { text: "Template - FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
   { section: "Charts" },
   { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
+  { text: "SMA Chart", icon: <TimelineOutlinedIcon />, path: "/smaChart" },
   { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
   { text: "Template - Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
   { text: "Template - Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },
