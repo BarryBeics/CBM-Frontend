@@ -10,7 +10,6 @@ import {
   Typography,
   useTheme,
   Avatar,
-  Divider,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { tokens } from "../../theme";
@@ -32,17 +31,18 @@ import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
 const navItems = [
   { text: "Dashboard", icon: <HomeOutlinedIcon />, path: "/" },
   { section: "Data" },
-  { text: "Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
-  { text: "Contacts Information", icon: <ContactsOutlinedIcon />, path: "/contacts" },
+  { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
+  { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },
   { text: "Manage Bots", icon: <CodeOffOutlined />, path: "/bots" },
-  { text: "Invoices Balances", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
+  { text: "Template - Invoices", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
   { section: "Pages" },
-  { text: "Profile Form", icon: <PersonOutlinedIcon />, path: "/form" },
-  { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
+  { text: "Template - Profile Form", icon: <PersonOutlinedIcon />, path: "/form" },
+  { text: "Template - FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
   { section: "Charts" },
-  { text: "Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
-  { text: "Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
-  { text: "Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },
+  { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
+  { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
+  { text: "Template - Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
+  { text: "Template - Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },
 ];
 
 const SidebarNav = () => {

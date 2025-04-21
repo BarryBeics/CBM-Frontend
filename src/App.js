@@ -14,6 +14,7 @@ import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
 
 import Bots from "./views/bots";
+import PairsChart from "./views/pairsChart";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/bots" element={<Bots />} />
+              <Route path="/pairsChart" element={<PairsChart />} />
 
 
               <Route path="/" element={<Dashboard />} />
