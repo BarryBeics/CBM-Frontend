@@ -15,6 +15,7 @@ import FAQ from "./scenes/faq";
 
 import Bots from "./views/bots";
 import PairsChart from "./views/pairsChart";
+import SMAChart from "./views/smaChart";
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
             <Routes>
               <Route path="/bots" element={<Bots />} />
               <Route path="/pairsChart" element={<PairsChart />} />
-
+              <Route path="/smaChart" element={<SMAChart />} />
 
               <Route path="/" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
