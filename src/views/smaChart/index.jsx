@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import { Box, Typography, MenuItem, Select, FormControl } from "@mui/material";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material/styles";
 import SymbolDropdown from "../../components/SymbolDropdown";
@@ -201,12 +201,16 @@ const SMAChart = () => {
             legends={[
               {
                 anchor: "bottom-right",
-                direction: "column",
-                translateX: 100,
-                itemWidth: 80,
-                itemHeight: 20,
-                symbolSize: 12,
-                symbolShape: "circle",
+              direction: "column",
+              justify: false,
+              translateX: 100,
+              translateY: 0,
+              itemsSpacing: 0,
+              itemWidth: 80,
+              itemHeight: 20,
+              symbolSize: 12,
+              symbolShape: "circle",
+              symbolBorderColor: "rgba(0, 0, 0, .5)",
                 effects: [
                   {
                     on: "hover",
