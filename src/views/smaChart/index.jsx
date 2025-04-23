@@ -15,10 +15,10 @@ const SMAChart = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [selectedSymbol, setSelectedSymbol] = useState("BTCUSDT");
   const [symbolOptions, setSymbolOptions] = useState([]);
   const [strategyOptions, setStrategyOptions] = useState([]);
-  const [selectedSymbol, setSelectedSymbol] = useState("");
-  const [selectedStrategy, setSelectedStrategy] = useState("");
+  const [selectedStrategy, setSelectedStrategy] = useState("Baz");
   const [priceData, setPriceData] = useState([]);
   const [smaData, setSmaData] = useState({ short: [], long: [] });
 
@@ -132,7 +132,7 @@ const SMAChart = () => {
   };
 
   return (
-    <Box>
+    <Box m="20px">
       <Header
         title="SMA PRICE CHART"
         subtitle="Here you will see the price data we hold for a given pair"
