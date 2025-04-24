@@ -41,6 +41,7 @@ const navItems = [
   { section: "Charts" },
   { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
   { text: "SMA Chart", icon: <TimelineOutlinedIcon />, path: "/smaChart" },
+  { text: "Avg Gain Chart", icon: <TimelineOutlinedIcon />, path: "/avgGainChart" },
   { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
   { text: "Template - Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
   { text: "Template - Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },

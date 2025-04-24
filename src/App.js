@@ -16,6 +16,7 @@ import FAQ from "./scenes/faq";
 import Bots from "./views/bots";
 import PairsChart from "./views/pairsChart";
 import SMAChart from "./views/smaChart";
+import AvgGainChart from "./views/avgGainChart";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
               <Route path="/bots" element={<Bots />} />
               <Route path="/pairsChart" element={<PairsChart />} />
               <Route path="/smaChart" element={<SMAChart />} />
+              <Route path="/avgGainChart" element={<AvgGainChart />} />
 
               <Route path="/" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
