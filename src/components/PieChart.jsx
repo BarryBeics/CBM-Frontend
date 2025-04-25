@@ -1,6 +1,11 @@
-import { ResponsivePie } from "@nivo/pie";
-import { tokens } from "../theme";
+// Third-party libraries
 import { useTheme } from "@mui/material";
+import { ResponsivePie } from "@nivo/pie";
+
+// Theme
+import { tokens } from "../theme";
+
+// Static data
 import { mockPieData as data } from "../data/mockData";
 
 const PieChart = () => {

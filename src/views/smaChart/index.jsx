@@ -1,12 +1,21 @@
+// React
 import React, { useState, useEffect } from "react";
+
+// Third-party libraries
 import { Box, Typography, MenuItem, Select, FormControl } from "@mui/material";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material/styles";
-import SymbolDropdown from "../../components/SymbolDropdown";
+
+// Theme and Utils
 import { tokens } from "../../theme";
-import { graphqlEndpoint } from "../../config";
 import { calculateSMA } from "../../utils/smaUtils";
+
+// Graph
+import { graphqlEndpoint } from "../../config";
 import { GraphQLClient } from "graphql-request";
+
+// Componenets
+import SymbolDropdown from "../../components/SymbolDropdown";
 import Header from "../../components/Header";
 
 const client = new GraphQLClient(graphqlEndpoint);

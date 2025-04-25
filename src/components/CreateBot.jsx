@@ -1,23 +1,26 @@
+// React
 import React, { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
-import { tokens } from "../theme";
+
+// Third-party libraries
+import { Grid, Box, Button, Slider, Typography, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import {
-  Box,
-  Button,
-  Slider,
-  Typography,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+
+// Graph
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../config";
 
+// Theme
+import { tokens } from "../theme";
+
+// Components
 import Header from "./Header";
-import { createStrategy } from "../graph/createStrategy"; 
-import namesJson from "../data/names.json"; 
+
+// Graph
+import { createStrategy } from "../graph/strategies/createStrategy";
+
+// Static data
+import namesJson from "../data/names.json";
+ 
 
 const client = new GraphQLClient(graphqlEndpoint);
 

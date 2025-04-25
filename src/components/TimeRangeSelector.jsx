@@ -1,5 +1,7 @@
-// components/TimeRangeSelector.jsx
+// React
 import React from "react";
+
+// Third-party libraries
 import { Box, Button } from "@mui/material";
 
 const timeOptions = [

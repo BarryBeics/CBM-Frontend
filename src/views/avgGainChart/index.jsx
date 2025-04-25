@@ -1,11 +1,20 @@
+// React
 import { useEffect, useState, useMemo } from "react";
-import { getActivityReports } from "../../graph/getActivityReports";
-import { ResponsiveScatterPlot } from "@nivo/scatterplot";
-import { useTheme } from "@mui/material/styles";
-import { tokens } from "../../theme";
-import Header from "../../components/Header";
+
+// Third-party libraries
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 import { mean } from "lodash";
+
+// Graph
+import { getActivityReports } from "../../graph/reports/getActivityReports";
+
+// Theme
+import { tokens } from "../../theme";
+
+// Componenets
+import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
 
 export default function TopGainersScatterWithTrend() {

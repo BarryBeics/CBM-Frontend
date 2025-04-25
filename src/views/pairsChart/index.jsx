@@ -1,12 +1,21 @@
+// React
 import { useEffect, useState } from "react";
+
+// Third-party libraries
+import { Box, Typography } from "@mui/material";
 import { ResponsiveLine } from "@nivo/line";
-import { GraphQLClient, gql } from "graphql-request";
-import SymbolDropdown from "../../components/SymbolDropdown";
-import { graphqlEndpoint } from "../../config";
-import Header from "../../components/Header";
-import { Box, Typography, Button } from "@mui/material";
-import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+
+// Graph
+import { GraphQLClient, gql } from "graphql-request";
+import { graphqlEndpoint } from "../../config";
+
+// Theme
+import { tokens } from "../../theme";
+
+// Components
+import SymbolDropdown from "../../components/SymbolDropdown";
+import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
 
 const client = new GraphQLClient(graphqlEndpoint);

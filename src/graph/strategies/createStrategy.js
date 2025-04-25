@@ -1,5 +1,6 @@
+// Graph
 import { gql, GraphQLClient } from "graphql-request";
-import { graphqlEndpoint } from "../config";
+import { graphqlEndpoint } from "../../config";
 
 const client = new GraphQLClient(graphqlEndpoint);
 

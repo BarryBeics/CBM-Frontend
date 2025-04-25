@@ -1,5 +1,7 @@
-
+// Third-party libraries
 import { Box, useTheme } from "@mui/material";
+
+// Theme
 import { tokens } from "../theme";
 
 const ProgressCircle = ({ progress = "0.75", size = "40" }) => {

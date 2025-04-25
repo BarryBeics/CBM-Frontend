@@ -1,9 +1,13 @@
-
+// Third-party libraries
 import { useTheme } from "@mui/material";
 import { ResponsiveChoropleth } from "@nivo/geo";
-import { geoFeatures } from "../data/mockGeoFeatures";
+
+// Theme
 import { tokens } from "../theme";
+
+// Static data
 import { mockGeographyData as data } from "../data/mockData";
+import { geoFeatures } from "../data/mockGeoFeatures";
 
 const GeographyChart = ({ isDashboard = false }) => {
   const theme = useTheme();
