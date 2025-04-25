@@ -1,7 +1,11 @@
-
-import { ResponsiveLine } from "@nivo/line";
+// Third-party libraries
 import { useTheme } from "@mui/material";
+import { ResponsiveLine } from "@nivo/line";
+
+// Theme
 import { tokens } from "../theme";
+
+// Static data
 import { mockLineData as data } from "../data/mockData";
 
 const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {

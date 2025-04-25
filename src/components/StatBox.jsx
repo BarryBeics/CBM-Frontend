@@ -1,5 +1,10 @@
+// Third-party libraries
 import { Box, Typography, useTheme } from "@mui/material";
+
+// Theme
 import { tokens } from "../theme";
+
+// Components
 import ProgressCircle from "./ProgressCircle";
 
 const StatBox = ({ title, subtitle, icon, progress, increase }) => {

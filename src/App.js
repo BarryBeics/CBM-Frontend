@@ -1,6 +1,17 @@
-import { ColorModeContext, useMode } from "./theme";
+// Third-party libraries
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
+
+// Theme
+import { ColorModeContext, useMode } from "./theme";
+
+// Views
+import Bots from "./views/bots";
+import PairsChart from "./views/pairsChart";
+import SMAChart from "./views/smaChart";
+import AvgGainChart from "./views/avgGainChart";
+
+// To be deleted
 import Topbar from "./scenes/global/Topbar";
 import SideBarNav from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -12,11 +23,6 @@ import Form from "./scenes/form";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
-
-import Bots from "./views/bots";
-import PairsChart from "./views/pairsChart";
-import SMAChart from "./views/smaChart";
-import AvgGainChart from "./views/avgGainChart";
 
 
 function App() {

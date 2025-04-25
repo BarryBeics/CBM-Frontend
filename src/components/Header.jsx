@@ -1,4 +1,7 @@
+// Third-party libraries
 import { Typography, Box, useTheme } from "@mui/material";
+
+// Theme
 import { tokens } from "../theme";
 
 const Header = ({ title, subtitle }) => {

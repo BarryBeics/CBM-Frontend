@@ -1,4 +1,7 @@
+// Third-party libraries
 import { Box, Typography, useTheme } from "@mui/material";
+
+// Theme
 import { tokens } from "../theme";
 
 const BotForm = ({ title, subtitle, icon, progress, increase, children }) => {

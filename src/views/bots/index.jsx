@@ -1,12 +1,19 @@
-// src/scenes/bots/Bots.jsx
+// React
 import { useEffect, useState } from "react";
+
+// Third-party libraries
 import { Box, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+
+// Graph
+import { getAllStrategies } from "../../graph/strategies/getAllStrategies";
+
+// Theme
 import { tokens } from "../../theme";
+
+// Components
 import Header from "../../components/Header";
 import CreateBot from "../../components/CreateBot";
-import { getAllStrategies } from "../../graph/getAllStrategies";
-
 
 const Bots = () => {
   const theme = useTheme();

@@ -1,6 +1,11 @@
+// Third-party libraries
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
+
+// Theme
 import { tokens } from "../theme";
+
+// Static data
 import { mockBarData as data } from "../data/mockData";
 
 const BarChart = ({ isDashboard = false }) => {

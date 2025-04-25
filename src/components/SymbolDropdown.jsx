@@ -1,14 +1,12 @@
+// React
 import React, { useEffect, useState } from "react";
-import { tokens } from "../theme";
+
+// Third-party libraries
 import { useTheme } from "@mui/material/styles";
-import {
-  Autocomplete,
-  TextField,
-  CircularProgress,
-  Box,
-  FormControl,
-  Typography,
-} from "@mui/material";
+import { Autocomplete, TextField, CircularProgress, Box, FormControl, Typography } from "@mui/material";
+
+// Theme
+import { tokens } from "../theme";
 
 const SymbolDropdown = ({ selectedSymbol, setSelectedSymbol}) => {
   const [options, setOptions] = useState([]);
