@@ -29,7 +29,8 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
 
 const navItems = [
-  { text: "Dashboard", icon: <HomeOutlinedIcon />, path: "/" },
+  { text: "Home", icon: <HomeOutlinedIcon />, path: "/" },
+  { text: "Dashboard", icon: <HomeOutlinedIcon />, path: "/dashboard" },
   { section: "Data" },
   { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
   { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },
