@@ -73,9 +73,11 @@ const SMAChart = () => {
           BotInstanceName
         }
       }`);
-      setStrategyOptions(res.getAllStrategies.map(s => s.BotInstanceName));
+      setStrategyOptions(res.getAllStrategies.map((s) => s.BotInstanceName));
 
-      const local = await fetch("/your/testSymbols.json").then(res => res.json());
+      const local = await fetch("/your/testSymbols.json").then((res) =>
+        res.json()
+      );
       setSymbolOptions(local.symbols || []);
     }
 
@@ -94,7 +96,9 @@ const SMAChart = () => {
         }
       }`);
 
-      const strategy = smaMeta.getAllStrategies.find(s => s.BotInstanceName === selectedStrategy);
+      const strategy = smaMeta.getAllStrategies.find(
+        (s) => s.BotInstanceName === selectedStrategy
+      );
       if (!strategy) return;
 
       const limit = strategy.LongSMADuration + 140;
@@ -126,12 +130,18 @@ const SMAChart = () => {
   }, [selectedSymbol, selectedStrategy]);
 
   const formatChartData = () => {
-    const format = arr => arr.map(d => ({ x: new Date(d.Timestamp * 1000).toLocaleTimeString(), y: d.SMA }));
+    const format = arr =>
+      [...arr]
+        .sort((a, b) => a.Timestamp - b.Timestamp)
+        .map(d => ({ x: new Date(d.Timestamp * 1000).toLocaleTimeString(), y: d.SMA }));
+    
 
-    const base = priceData.map((d, i) => ({
-      x: new Date(d.Timestamp * 1000).toLocaleTimeString(),
-      y: Number.parseFloat(d.Pair[0].Price),
-    }));
+    const base = [...priceData]
+      .sort((a, b) => a.Timestamp - b.Timestamp)
+      .map((d) => ({
+        x: new Date(d.Timestamp * 1000).toLocaleTimeString(),
+        y: Number.parseFloat(d.Pair[0].Price),
+      }));
 
     return [
       { id: "Price", color: "#81D4FA", data: base },
@@ -147,7 +157,6 @@ const SMAChart = () => {
         subtitle="Here you will see the price data we hold for a given pair"
       />
 
-
       <Box display="flex" gap={2} mb={4}>
         {/* Dropdown */}
         <SymbolDropdown
@@ -157,26 +166,31 @@ const SMAChart = () => {
         />
 
         {/* Dropdown */}
-         <Box
-              backgroundColor={colors.primary[400]}
-              borderRadius="8px"
-              boxShadow={1}
-              p={2}
-               minHeight="100px"
+        <Box
+          backgroundColor={colors.primary[400]}
+          borderRadius="8px"
+          boxShadow={1}
+          p={2}
+          minHeight="100px"
+        >
+          <FormControl sx={{ width: "250px" }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ mb: 1, color: colors.grey[100] }}
             >
-        <FormControl sx={{ width: "250px" }}>
-          <Typography
-                    variant="subtitle1"
-                    sx={{ mb: 1, color: colors.grey[100] }}
-                  >
-                    Strategy
-                  </Typography>
-          <Select value={selectedStrategy} onChange={e => setSelectedStrategy(e.target.value)}>
-            {strategyOptions.map(strat => (
-              <MenuItem key={strat} value={strat}>{strat}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+              Strategy
+            </Typography>
+            <Select
+              value={selectedStrategy}
+              onChange={(e) => setSelectedStrategy(e.target.value)}
+            >
+              {strategyOptions.map((strat) => (
+                <MenuItem key={strat} value={strat}>
+                  {strat}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
       </Box>
 
@@ -210,16 +224,16 @@ const SMAChart = () => {
             legends={[
               {
                 anchor: "bottom-right",
-              direction: "column",
-              justify: false,
-              translateX: 100,
-              translateY: 0,
-              itemsSpacing: 0,
-              itemWidth: 80,
-              itemHeight: 20,
-              symbolSize: 12,
-              symbolShape: "circle",
-              symbolBorderColor: "rgba(0, 0, 0, .5)",
+                direction: "column",
+                justify: false,
+                translateX: 100,
+                translateY: 0,
+                itemsSpacing: 0,
+                itemWidth: 80,
+                itemHeight: 20,
+                symbolSize: 12,
+                symbolShape: "circle",
+                symbolBorderColor: "rgba(0, 0, 0, .5)",
                 effects: [
                   {
                     on: "hover",
@@ -235,7 +249,9 @@ const SMAChart = () => {
           />
         </Box>
       ) : (
-        <Typography variant="body1">Please select a symbol and strategy to view the chart.</Typography>
+        <Typography variant="body1">
+          Please select a symbol and strategy to view the chart.
+        </Typography>
       )}
     </Box>
   );

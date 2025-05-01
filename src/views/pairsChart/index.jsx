@@ -21,7 +21,7 @@ import TimeRangeSelector from "../../components/TimeRangeSelector";
 const client = new GraphQLClient(graphqlEndpoint);
 
 const PriceChart = () => {
-  const [selectedSymbol, setSelectedSymbol] = useState("BTCUSDT");
+  const [selectedSymbol, setSelectedSymbol] = useState("ETHBTC");
   const [timeFrameQty, setTimeFrameQty] = useState(12);
   const [priceData, setPriceData] = useState([]);
   const theme = useTheme(); // Use the useTheme hook
@@ -58,15 +58,18 @@ const PriceChart = () => {
         const formatted = [
           {
             id: selectedSymbol,
-            data: rawData.map((entry) => ({
+            data: rawData
+            .slice()
+            .reverse()
+            .map((entry) => ({
               x: new Date(entry.Timestamp * 1000).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
               }),
-              y: entry.Pair[0]?.Price ?? 0,
+              y: entry.Pair.find(p => p.Symbol === selectedSymbol)?.Price ?? 0,
             })),
           },
-        ];
+        ];        
 
         setPriceData(formatted);
       } catch (error) {

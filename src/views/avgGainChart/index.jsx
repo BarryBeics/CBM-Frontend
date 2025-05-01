@@ -13,6 +13,9 @@ import { getActivityReports } from "../../graph/reports/getActivityReports";
 // Theme
 import { tokens } from "../../theme";
 
+// Utils
+import { timeNow } from "../../utils/timeNow";
+
 // Componenets
 import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
@@ -80,14 +83,23 @@ export default function TopGainersScatterWithTrend() {
       return { scatterData: [], trendLines: [] };
     }
 
-    const now = Date.now();
-    const cutoff = now - timeFrameQty * 60 * 1000; // timeFrameQty is in minutes
-    const filteredData = activityData.filter((entry) => {
-      const ts = new Date(entry.Timestamp).getTime();
-      return ts >= cutoff;
-    });
+    const now = timeNow() * 1000; // convert to ms
+    const cutoff = now - timeFrameQty * 5 * 60 * 1000;
+
+    const check = activityData.length;
+    console.log("checks", check);
+    console.log("Sample Timestamp", activityData[0]?.Timestamp);
+
+
+    const filteredData = activityData
+      .filter((entry) => {
+        const ts = new Date(entry.Timestamp * 1000).getTime();
+        return ts >= cutoff;
+      })
+      .sort((a, b) => new Date(a.Timestamp) - new Date(b.Timestamp));
 
     const numPoints = filteredData.length;
+    console.log("num points", numPoints);
 
     const jitter = (x) => x + (Math.random() - 0.5) * 2;
 
@@ -100,7 +112,7 @@ export default function TopGainersScatterWithTrend() {
     const scatter = seriesKeys.map(({ key, label, color }) => ({
       id: label,
       color: color ?? "hsl(0, 0%, 50%)",
-      data: activityData
+      data: filteredData
         .filter(
           (entry) =>
             typeof entry[key] === "number" && typeof entry.Qty === "number"
@@ -113,14 +125,15 @@ export default function TopGainersScatterWithTrend() {
 
     // Compute simple horizontal trend lines (mean values for each series)
     const trends = seriesKeys.map(({ key, label, color }) => {
-      const validValues = activityData
+      const validValues = filteredData
         .map((entry) => entry[key])
         .filter((val) => typeof val === "number");
 
-      const yAvg = mean(validValues);
-      const qtys = activityData
+      const qtys = filteredData
         .map((e) => e.Qty)
         .filter((q) => typeof q === "number");
+
+      const yAvg = mean(validValues);
 
       return {
         id: `${label} Avg`,
