@@ -5,23 +5,24 @@ import React from "react";
 import { Box, Button } from "@mui/material";
 
 const timeOptions = [
-  { label: "30 min", minutes: 6 },
-  { label: "1 hour", minutes: 12 },
-  { label: "2 hours", minutes: 24 },
-  { label: "4 hours", minutes: 48 },
-  { label: "12 hours", minutes: 144 },
+  { label: "30 min", intervals: 6 },
+  { label: "1 hour", intervals: 12 },
+  { label: "2 hours", intervals: 24 },
+  { label: "4 hours", intervals: 48 },
+  { label: "12 hours", intervals: 144 },
 ];
+
 
 const TimeRangeSelector = ({ value, onChange, colorMode }) => {
   return (
     <Box display="flex" flexWrap="wrap" gap={1}>
-      {timeOptions.map(({ label, minutes }) => (
+      {timeOptions.map(({ label, intervals }) => (
         <Button
-          key={minutes}
-          onClick={() => onChange(minutes)}
+          key={intervals}
+          onClick={() => onChange(intervals)}
           sx={{
             backgroundColor:
-              value === minutes
+              value === intervals
                 ? colorMode.greenAccent[600]
                 : colorMode.blueAccent[700],
             color: colorMode.grey[100],
