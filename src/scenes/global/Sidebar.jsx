@@ -31,6 +31,7 @@ import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
 const navItems = [
   { text: "Home", icon: <HomeOutlinedIcon />, path: "/" },
   { text: "Dashboard", icon: <HomeOutlinedIcon />, path: "/dashboard" },
+  { text: "Register Form", icon: <PersonOutlinedIcon />, path: "/register" },
   { section: "Data" },
   { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
   { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },

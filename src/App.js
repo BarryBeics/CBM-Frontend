@@ -11,6 +11,7 @@ import Bots from "./views/bots";
 import PairsChart from "./views/pairsChart";
 import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
+import Register from "./views/register";
 
 // To be deleted
 import Topbar from "./scenes/global/Topbar";
@@ -45,6 +46,7 @@ function App() {
 
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/register" element={<Register />} />
 
               <Route path="/team" element={<Team />} />
               <Route path="/invoices" element={<Invoices />} />
