@@ -16,85 +16,97 @@ const LandingPage = () => {
     <Box m="20px">
       <Header
         title="SCALPEL HOUND"
-        subtitle="Taking cuts from the market with surgeon-like precision."
+        subtitle="Most platforms sell you the dream. I’m building the machine."
       />
 
       <Section>
-        <Typography variant="h5" mb={2}>
-          Private crypto intelligence platform.
+        <Typography variant="h5" gutterBottom>
+          This isn’t a course, a dashboard, or a coach.
         </Typography>
         <Typography variant="body1" mb={3}>
-          Lifetime membership access now open to Founders’ Club applicants.
+          It’s a single developer — betting everything — to build a trading system that works.
+          Seats are limited. Entry is final.
         </Typography>
         <Button variant="contained" color="success" size="large">
-          Register for Ballot
+          Join the Ballot
         </Button>
       </Section>
 
       <Section>
         <Typography variant="h4" gutterBottom>
-          About Scalpel Hound
+          The Problem
+        </Typography>
+        <Typography variant="body1">
+          The market is full of noise. Everyone’s selling trading tools, coaching, or courses.
+          Most traders lose money.
+          If these coaches were really printing cash, they wouldn’t be selling you their time.
+        </Typography>
+      </Section>
+
+      <Section>
+        <Typography variant="h4" gutterBottom>
+          The Offer
+        </Typography>
+        <Typography variant="body1">
+          This is different.
+          <br /><br />
+          I’m not selling education. You won’t be placing trades. You don’t need to learn charts or strategies.
+          You provide access via a secure API key. I do the rest — research, testing, strategy development, and live trading.
+          <br /><br />
+          You’re not a trader. You’re early access to an experiment with teeth.
+        </Typography>
+      </Section>
+
+      <Section>
+        <Typography variant="h4" gutterBottom>
+          The Commitment
+        </Typography>
+        <Typography variant="body1">
+          I’ve already put in thousands of hours.
+          This system is built with an idiomatic Go backend, strict testing, visual analytics, and a strategy that adapts with data.
+          <br /><br />
+          I’m not part-time. I’m not guessing. This is my full-time focus, and it either works or I go broke.
+        </Typography>
+      </Section>
+
+      <Section>
+        <Typography variant="h4" gutterBottom>
+          The Seat
+        </Typography>
+        <Typography variant="body1">
+          Only 40 seats exist. Once filled, it closes.
+          <br /><br />
+          You’re not buying shares. You’re not guaranteed returns.
+          You’re buying access — to a platform that, if it works, you won’t be able to buy into again.
+        </Typography>
+      </Section>
+
+      <Section>
+        <Typography variant="h4" gutterBottom>
+          Why It’s Fair
+        </Typography>
+        <Typography variant="body1">
+          If I fail, you lose access.
+          If I succeed, your seat is your reward.
+          <br /><br />
+          I don’t touch your money — you control your Binance account. I just trade via secure API.
+          You can withdraw whenever you like. I’m incentivised only to win.
+        </Typography>
+      </Section>
+
+      <Section>
+        <Typography variant="h4" gutterBottom>
+          The Table is Being Set
         </Typography>
         <Typography variant="body1" mb={3}>
-          Built by a trader — not a salesman. Born from years of coding, trading, and fighting the markets firsthand. Scalpel Hound is precision-first: scanning the crypto markets for opportunities no human — or typical bot — could catch.
+          Will you have a seat?
         </Typography>
-        <Button variant="outlined" color="success">
-          Register for Ballot
+        <Button variant="contained" color="success" size="large">
+          Apply for the Ballot
         </Button>
-      </Section>
-
-      <Section>
-        <Typography variant="h4" gutterBottom>
-          Why Join Early?
-        </Typography>
-        <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
-          <li>Private access only — no public sales, no mass subscriptions.</li>
-          <li>Lifetime membership — no monthly fees.</li>
-          <li>Serious trading infrastructure — no courses, no hype.</li>
-        </ul>
-        <Typography variant="body2" mb={2}>
-          Once the ballot closes, membership will be locked.
-        </Typography>
-        <Button variant="contained" color="success">
-          Register for Ballot
-        </Button>
-      </Section>
-
-      <Section>
-        <Typography variant="h4" gutterBottom>
-          See for Yourself
-        </Typography>
-        <Typography variant="body1" mb={3}>
-          View real, live charts and system analytics. Get a feel for the precision Scalpel Hound brings — and imagine what the full system unlocks.
-        </Typography>
-        <Box display="flex" gap={2} flexWrap="wrap">
-          <Button variant="contained" color="primary">
-            Explore Platform
-          </Button>
-          <Button variant="outlined" color="success">
-            Register for Ballot
-          </Button>
-        </Box>
         <Typography variant="caption" display="block" mt={2}>
-          Premium features are gated — early members will unlock full access.
+          Limited places. No ads. No public push. Just those who see the value.
         </Typography>
-      </Section>
-
-      <Section>
-        <Typography variant="h4" gutterBottom>
-          How It Works
-        </Typography>
-        <ol style={{ paddingLeft: 20 }}>
-          <li>Register your interest by joining the ballot.</li>
-          <li>Selected members will be invited to secure lifetime access.</li>
-          <li>Once the Founders’ Club is full, no new memberships will be offered.</li>
-        </ol>
-        <Typography variant="body2" my={2}>
-          No upsells. No ongoing fees. No nonsense.
-        </Typography>
-        <Button variant="contained" color="success">
-          Register for Ballot
-        </Button>
       </Section>
 
       <Box mt={8} textAlign="center">
