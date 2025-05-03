@@ -12,6 +12,8 @@ import PairsChart from "./views/pairsChart";
 import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
 import Register from "./views/register";
+import CreateUser from "./views/createUser";
+import ManageUsers from "./views/manageUsers";
 
 // To be deleted
 import Topbar from "./scenes/global/Topbar";
@@ -24,7 +26,7 @@ import Bar from "./scenes/bar";
 import Form from "./scenes/form";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
-import FAQ from "./scenes/faq";
+import FAQ from "./views/faq";
 
 
 function App() {
@@ -47,6 +49,8 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/createUser" element={<CreateUser />} />
+              <Route path="/manageUsers" element={<ManageUsers />} />
 
               <Route path="/team" element={<Team />} />
               <Route path="/invoices" element={<Invoices />} />

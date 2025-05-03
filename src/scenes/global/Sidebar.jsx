@@ -29,24 +29,25 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
 
 const navItems = [
-  { text: "Home", icon: <HomeOutlinedIcon />, path: "/" },
+  { text: "Landing Page", icon: <HomeOutlinedIcon />, path: "/" },
   { text: "Dashboard", icon: <HomeOutlinedIcon />, path: "/dashboard" },
-  { text: "Register Form", icon: <PersonOutlinedIcon />, path: "/register" },
+  { text: "Register Interest", icon: <PersonOutlinedIcon />, path: "/register" },
   { section: "Data" },
-  { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
-  { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },
+ // { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
+//  { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },
   { text: "Manage Bots", icon: <CodeOffOutlined />, path: "/bots" },
-  { text: "Template - Invoices", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
+ // { text: "Template - Invoices", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
   { section: "Pages" },
-  { text: "Template - Profile Form", icon: <PersonOutlinedIcon />, path: "/form" },
-  { text: "Template - FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
+  { text: "Create User", icon: <PersonOutlinedIcon />, path: "/createUser" },
+  { text: "Manage Users", icon: <PersonOutlinedIcon />, path: "/manageUsers" },
+  { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
   { section: "Charts" },
   { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
   { text: "SMA Chart", icon: <TimelineOutlinedIcon />, path: "/smaChart" },
   { text: "Avg Gain Chart", icon: <TimelineOutlinedIcon />, path: "/avgGainChart" },
-  { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
-  { text: "Template - Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
-  { text: "Template - Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },
+ // { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
+ // { text: "Template - Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
+ // { text: "Template - Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },
 ];
 
 const SidebarNav = () => {
