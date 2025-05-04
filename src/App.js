@@ -54,17 +54,9 @@ function App() {
                 }
               />
               <Route
-                path="/bots"
-                element={
-                  <ProtectedRoute>
-                    <Bots />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
                 path="/pairsChart"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute role={["prospect", "admin", "member"]}>
                     <PairsChart />
                   </ProtectedRoute>
                 }
@@ -72,7 +64,7 @@ function App() {
               <Route
                 path="/smaChart"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute role={["admin", "member"]}>
                     <SMAChart />
                   </ProtectedRoute>
                 }
@@ -80,7 +72,7 @@ function App() {
               <Route
                 path="/avgGainChart"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute role={["admin", "member"]}>
                     <AvgGainChart />
                   </ProtectedRoute>
                 }
@@ -90,7 +82,7 @@ function App() {
               <Route
                 path="/manageUsers"
                 element={
-                  <ProtectedRoute role={["admin", "member"]}>
+                  <ProtectedRoute role={["admin"]}>
                     <ManageUsers />
                   </ProtectedRoute>
                 }
@@ -98,8 +90,16 @@ function App() {
               <Route
                 path="/createUser"
                 element={
-                  <ProtectedRoute role={["admin", "member"]}>
+                  <ProtectedRoute role={["admin"]}>
                     <CreateUser />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bots"
+                element={
+                  <ProtectedRoute role={["admin"]}>
+                    <Bots />
                   </ProtectedRoute>
                 }
               />

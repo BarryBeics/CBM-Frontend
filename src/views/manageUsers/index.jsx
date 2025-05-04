@@ -125,7 +125,7 @@ const ManageUsers = () => {
         >
           {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
           {access === "member" && <SecurityOutlinedIcon />}
-          {access === "public" && <LockOpenOutlinedIcon />}
+          {access === "propect" && <LockOpenOutlinedIcon />}
           <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
             {access}
           </Typography>

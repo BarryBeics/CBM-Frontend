@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ✅ Import useEffect
 import { Box, TextField, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { GraphQLClient, gql } from "graphql-request";
@@ -25,24 +25,35 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Check if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("Already logged in, redirecting...");
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   const handleLogin = async () => {
     const client = new GraphQLClient(graphqlEndpoint);
+    console.log("Attempting login with", { email, password });
+
     try {
-      const data = await client.request(LOGIN_MUTATION, { input: { email, password } });
+      const data = await client.request(LOGIN_MUTATION, {
+        input: { email, password },
+      });
       const { token, user } = data.login;
 
-      // Store token and user data in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+      console.log("Login successful:", data);
 
-      // Redirect to dashboard or another protected page
-      navigate("/dashboard"); // Adjust this route as per your application flow
+      navigate("/dashboard");
     } catch (err) {
       console.log("Login error:", err);
       setError("Login failed. Please check your credentials.");
     }
   };
-  
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" mt={10}>

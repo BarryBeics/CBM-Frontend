@@ -1,19 +1,32 @@
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import AccessDeniedModal from "./AccessDeniedModel";
 
 const ProtectedRoute = ({ children, role }) => {
-  const { isLoggedIn, user } = useAuth();
+  const [showModal, setShowModal] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(true);
 
-  if (!isLoggedIn) return <Navigate to="/login" />;
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  if (role) {
-    const hasAccess = Array.isArray(role)
-      ? role.includes(user.role)
-      : user.role === role;
+  useEffect(() => {
+    if (!token) {
+      setIsAuthorized(false);
+    } else if (role && (!user || !role.includes(user.role))) {
+      setIsAuthorized(false);
+      setShowModal(true);
+    }
+  }, [token, role, user]);
 
-    if (!hasAccess) return <Navigate to="/unauthorized" />;
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAuthorized && showModal) {
+    return <AccessDeniedModal open={showModal} onClose={() => setShowModal(false)} />;
   }
 
   return children;
 };
+
 export default ProtectedRoute;

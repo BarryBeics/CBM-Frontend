@@ -151,12 +151,25 @@ const CreateUserForm = () => {
                   onBlur={handleBlur}
                   error={!!touched.role && !!errors.role}
                 >
-                  <MenuItem value="public">Public</MenuItem>
-                  <MenuItem value="interested">Interested</MenuItem>
+                  <MenuItem value="prospect">Prospect</MenuItem>
                   <MenuItem value="member">Member</MenuItem>
                   <MenuItem value="admin">Admin</MenuItem>
                 </Select>
               </FormControl>
+
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: "span 4" }}
+              />
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px">
@@ -184,7 +197,8 @@ const checkoutSchema = yup.object().shape({
     .required("required"),
   address1: yup.string().required("required"),
   address2: yup.string().required("required"),
-  role: yup.string().oneOf(["public", "interested", "member", "admin"]).required("required"),
+  role: yup.string().oneOf(["prospect", "member", "admin"]).required("required"),
+  password: yup.string().required("required"),
 });
 
 const initialValues = {
@@ -194,7 +208,8 @@ const initialValues = {
   contact: "",
   address1: "",
   address2: "",
-  role: "public",
+  role: "prospect",
+  password: "",
 };
 
 export default CreateUserForm;
