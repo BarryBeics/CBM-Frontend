@@ -8,6 +8,7 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import LogoutButton from "../../components/LogoutButton";
 
 const Topbar = () => {
     const theme = useTheme();
@@ -28,6 +29,7 @@ const Topbar = () => {
             </IconButton>
         </Box>
 
+
         {/* ICONS */}
         <Box display="flex">
             <IconButton onClick={colorMode.toggleColorMode}>
@@ -46,6 +48,8 @@ const Topbar = () => {
             <IconButton>
                 <PersonOutlinedIcon />
             </IconButton>
+            <LogoutButton />
+
         </Box>
         </Box>);
 }
