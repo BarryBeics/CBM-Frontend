@@ -1,11 +1,15 @@
 // Third-party libraries
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Theme
 import { ColorModeContext, useMode } from "./theme";
 
+// Components
+import ProtectedRoute from "./components/ProtectedRoute";
+
 // Views
+import ManageUsers from "./views/manageUsers";
 import LandingPage from "./views/landingPage";
 import Bots from "./views/bots";
 import PairsChart from "./views/pairsChart";
@@ -13,25 +17,18 @@ import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
 import Register from "./views/register";
 import CreateUser from "./views/createUser";
-import ManageUsers from "./views/manageUsers";
+import Login from "./views/auth/Login";
 
 // To be deleted
 import Topbar from "./scenes/global/Topbar";
 import SideBarNav from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
-import Bar from "./scenes/bar";
-import Form from "./scenes/form";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import FAQ from "./views/faq";
 
+import FAQ from "./views/faq";
 
 function App() {
   const [theme, colourMode] = useMode();
-  
+
   return (
     <ColorModeContext.Provider value={colourMode}>
       <ThemeProvider theme={theme}>
@@ -41,31 +38,80 @@ function App() {
           <main className="content">
             <Topbar />
             <Routes>
-              <Route path="/bots" element={<Bots />} />
-              <Route path="/pairsChart" element={<PairsChart />} />
-              <Route path="/smaChart" element={<SMAChart />} />
-              <Route path="/avgGainChart" element={<AvgGainChart />} />
-
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              {/* Public */}
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/createUser" element={<CreateUser />} />
-              <Route path="/manageUsers" element={<ManageUsers />} />
-
-              <Route path="/team" element={<Team />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/bar" element={<Bar />} />
-              <Route path="/form" element={<Form />} />
-              <Route path="/line" element={<Line />} />
-              <Route path="/pie" element={<Pie />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="/faq" element={<FAQ />} />
+
+              {/* Authenticated Only */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bots"
+                element={
+                  <ProtectedRoute>
+                    <Bots />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/pairsChart"
+                element={
+                  <ProtectedRoute>
+                    <PairsChart />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/smaChart"
+                element={
+                  <ProtectedRoute>
+                    <SMAChart />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/avgGainChart"
+                element={
+                  <ProtectedRoute>
+                    <AvgGainChart />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Admin Only */}
+              <Route
+                path="/manageUsers"
+                element={
+                  <ProtectedRoute role={["admin", "member"]}>
+                    <ManageUsers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/createUser"
+                element={
+                  <ProtectedRoute role={["admin", "member"]}>
+                    <CreateUser />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Default fallback */}
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-            </main>  
+          </main>
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
-    );
+  );
 }
 
 export default App;
