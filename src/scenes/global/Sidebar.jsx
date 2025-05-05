@@ -21,10 +21,14 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
+
 
 import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
 
@@ -38,8 +42,11 @@ const navItems = [
   { text: "Manage Bots", icon: <CodeOffOutlined />, path: "/bots" },
  // { text: "Template - Invoices", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
   { section: "Pages" },
-  { text: "Create User", icon: <PersonOutlinedIcon />, path: "/createUser" },
-  { text: "Manage Users", icon: <PersonOutlinedIcon />, path: "/manageUsers" },
+  { text: "Create User", icon: <PersonAddOutlinedIcon />, path: "/createUser" },
+  { text: "Manage Users", icon: <PeopleAltOutlinedIcon />, path: "/manageUsers" },
+  { text: "Create Task", icon: <ListAltOutlinedIcon />, path: "/createTask" },
+  { text: "Manage Tasks", icon: <PeopleAltOutlinedIcon />, path: "/manageTasks" },
+  { text: "Kanban Board", icon: <PeopleAltOutlinedIcon />, path: "/kanban" },
   { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
   { section: "Charts" },
   { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
