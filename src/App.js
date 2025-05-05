@@ -7,9 +7,11 @@ import { ColorModeContext, useMode } from "./theme";
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
+import EditTaskForm from "./views/manageTasks/EditTaskForm";
 
 // Views
 import ManageUsers from "./views/manageUsers";
+import ManageTasks from "./views/manageTasks";
 import LandingPage from "./views/landingPage";
 import Bots from "./views/bots";
 import PairsChart from "./views/pairsChart";
@@ -17,6 +19,7 @@ import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
 import Register from "./views/register";
 import CreateUser from "./views/createUser";
+import CreateTask from "./views/createTask";
 import Login from "./views/auth/Login";
 
 // To be deleted
@@ -25,6 +28,7 @@ import SideBarNav from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 
 import FAQ from "./views/faq";
+import KanbanBoard from "./views/kanban";
 
 function App() {
   const [theme, colourMode] = useMode();
@@ -88,18 +92,50 @@ function App() {
 
               {/* Admin Only */}
               <Route
+                path="/createUser"
+                element={
+                  <ProtectedRoute role={["admin"]}>
+                    <CreateUser />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/manageUsers"
                 element={
-                  <ProtectedRoute role={["admin", "member"]}>
+                  <ProtectedRoute role={["admin"]}>
                     <ManageUsers />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/createUser"
+                path="/createTask"
                 element={
-                  <ProtectedRoute role={["admin", "member"]}>
-                    <CreateUser />
+                  <ProtectedRoute role={["admin"]}>
+                    <CreateTask />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/manageTasks"
+                element={
+                  <ProtectedRoute role={["admin"]}>
+                    <ManageTasks />
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/tasks/edit/:id" 
+                element={
+                  <ProtectedRoute role={["admin"]}>
+                    <EditTaskForm />
+                  </ProtectedRoute>
+              }
+            />
+            <Route
+                path="/kanban"
+                element={
+                  <ProtectedRoute role={["admin"]}>
+                    <KanbanBoard />
                   </ProtectedRoute>
                 }
               />
