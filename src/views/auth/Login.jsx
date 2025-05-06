@@ -26,9 +26,11 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    console.log("Attempting login with:", email, password);
     const client = new GraphQLClient(graphqlEndpoint);
     try {
       const data = await client.request(LOGIN_MUTATION, { input: { email, password } });
+      console.log("Login success:", data);
       const { token, user } = data.login;
 
       // Store token and user data in localStorage

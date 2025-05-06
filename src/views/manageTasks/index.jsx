@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  Box,
-  Typography,
-  useTheme,
-  Button,
-} from "@mui/material";
+import { Box, Typography, useTheme, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { GraphQLClient } from "graphql-request";
@@ -19,22 +14,21 @@ const client = new GraphQLClient(graphqlEndpoint);
 // GraphQL queries and mutations
 const GET_ALL_TASKS_QUERY = `
   query {
-    tasks {
-      id
-      title
-      description
-      status
-      priority
-      assignedTo
-      dueDate
-      category
-      sopLink
-      createdAt
-      updatedAt
-    }
+    allTasks {
+    id
+    title
+    description
+    status
+    priority
+    assignedTo
+    dueDate
+    category
+    projectId
+    createdAt
+    updatedAt
   }
+}
 `;
-
 
 const DELETE_TASK_MUTATION = `
   mutation DeleteTask($id: ID!) {
@@ -54,7 +48,7 @@ const ManageTasks = () => {
   const fetchTasks = useCallback(async () => {
     try {
       const data = await client.request(GET_ALL_TASKS_QUERY);
-      const formattedTasks = data.tasks.map((task) => ({
+      const formattedTasks = data.allTasks.map((task) => ({
         ...task,
         id: task.id,
       }));
@@ -107,14 +101,20 @@ const ManageTasks = () => {
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
-        <Box 
-        display="flex" 
-        gap="10px"
-        m="10px auto">
-          <Button variant="contained" size="small" onClick={() => handleEdit(row.id)}>
+        <Box display="flex" gap="10px" m="10px auto">
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => handleEdit(row.id)}
+          >
             Edit
           </Button>
-          <Button variant="contained" size="small" color="error" onClick={() => handleOpenDeleteModal(row)}>
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
+            onClick={() => handleOpenDeleteModal(row)}
+          >
             Delete
           </Button>
         </Box>

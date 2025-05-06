@@ -8,6 +8,7 @@ import { ColorModeContext, useMode } from "./theme";
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditTaskForm from "./views/manageTasks/EditTaskForm";
+import MainLayout from "./components/MainLayout";
 
 // Views
 import ManageUsers from "./views/manageUsers";
@@ -23,8 +24,6 @@ import CreateTask from "./views/createTask";
 import Login from "./views/auth/Login";
 
 // To be deleted
-import Topbar from "./scenes/global/Topbar";
-import SideBarNav from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 
 import FAQ from "./views/faq";
@@ -37,114 +36,109 @@ function App() {
     <ColorModeContext.Provider value={colourMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
-          <SideBarNav />
-          <main className="content">
-            <Topbar />
-            <Routes>
-              {/* Public */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/faq" element={<FAQ />} />
 
-              {/* Authenticated Only */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/bots"
-                element={
-                  <ProtectedRoute>
-                    <Bots />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/pairsChart"
-                element={
-                  <ProtectedRoute>
-                    <PairsChart />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/smaChart"
-                element={
-                  <ProtectedRoute>
-                    <SMAChart />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/avgGainChart"
-                element={
-                  <ProtectedRoute>
-                    <AvgGainChart />
-                  </ProtectedRoute>
-                }
-              />
+        <Routes>
+          {/* Public */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/faq" element={<FAQ />} />
 
-              {/* Admin Only */}
-              <Route
-                path="/createUser"
-                element={
-                  <ProtectedRoute role={["admin"]}>
-                    <CreateUser />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/manageUsers"
-                element={
-                  <ProtectedRoute role={["admin"]}>
-                    <ManageUsers />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/createTask"
-                element={
-                  <ProtectedRoute role={["admin"]}>
-                    <CreateTask />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/manageTasks"
-                element={
-                  <ProtectedRoute role={["admin"]}>
-                    <ManageTasks />
-                  </ProtectedRoute>
-                }
-              />
-              <Route 
-                path="/tasks/edit/:id" 
-                element={
-                  <ProtectedRoute role={["admin"]}>
-                    <EditTaskForm />
-                  </ProtectedRoute>
+          {/* Authenticated layout routes */}
+          <Route element={<MainLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
               }
             />
             <Route
-                path="/kanban"
-                element={
-                  <ProtectedRoute role={["admin"]}>
-                    <KanbanBoard />
-                  </ProtectedRoute>
-                }
-              />
+              path="/bots"
+              element={
+                <ProtectedRoute>
+                  <Bots />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pairsChart"
+              element={
+                <ProtectedRoute>
+                  <PairsChart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/smaChart"
+              element={
+                <ProtectedRoute>
+                  <SMAChart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/avgGainChart"
+              element={
+                <ProtectedRoute>
+                  <AvgGainChart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/createUser"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <CreateUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageUsers"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/createTask"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <CreateTask />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageTasks"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageTasks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditTaskForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/kanban"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <KanbanBoard />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
 
-              {/* Default fallback */}
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </main>
-        </div>
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

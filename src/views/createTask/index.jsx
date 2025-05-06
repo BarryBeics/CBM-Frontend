@@ -1,4 +1,12 @@
-import { Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -18,10 +26,12 @@ const CREATE_TASK_MUTATION = `
       description
       status
       priority
+      type
+      labels
       assignedTo
       dueDate
       category
-      sopLink
+      projectId
       createdAt
       updatedAt
     }
@@ -119,7 +129,11 @@ const CreateTaskForm = () => {
                 sx={{ gridColumn: "span 2" }}
               />
 
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }}>
+              <FormControl
+                fullWidth
+                variant="filled"
+                sx={{ gridColumn: "span 2" }}
+              >
                 <InputLabel>Status</InputLabel>
                 <Select
                   name="status"
@@ -133,7 +147,11 @@ const CreateTaskForm = () => {
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }}>
+              <FormControl
+                fullWidth
+                variant="filled"
+                sx={{ gridColumn: "span 2" }}
+              >
                 <InputLabel>Priority</InputLabel>
                 <Select
                   name="priority"
@@ -151,6 +169,39 @@ const CreateTaskForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
+                label="Type"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.type}
+                name="type"
+                sx={{ gridColumn: "span 2" }}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Labels (comma separated)"
+                onBlur={handleBlur}
+                onChange={(e) =>
+                  handleChange({
+                    target: {
+                      name: "labels",
+                      value: e.target.value
+                        .split(",")
+                        .map((label) => label.trim()),
+                    },
+                  })
+                }
+                value={values.labels?.join(", ")}
+                name="labels"
+                sx={{ gridColumn: "span 2" }}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
                 label="Category"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -162,12 +213,12 @@ const CreateTaskForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="SOP Link"
+                label="Project ID"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.sopLink}
-                name="sopLink"
-                sx={{ gridColumn: "span 2" }}
+                value={values.projectId}
+                name="projectId"
+                sx={{ gridColumn: "span 4" }}
               />
             </Box>
 
