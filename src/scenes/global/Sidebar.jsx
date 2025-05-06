@@ -57,6 +57,17 @@ const navItems = [
     icon: <PeopleAltOutlinedIcon />,
     path: "/manageTasks",
   },
+  { text: "Create Project / SOP", icon: <ListAltOutlinedIcon />, path: "/createProject" },
+  {
+    text: "Manage Projects",
+    icon: <PeopleAltOutlinedIcon />,
+    path: "/manageProjects",
+  },
+  {
+    text: "Manage SOPs",
+    icon: <PeopleAltOutlinedIcon />,
+    path: "/manageSOPs",
+  },
   { text: "Kanban Board", icon: <PeopleAltOutlinedIcon />, path: "/kanban" },
   { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
   { section: "Charts" },

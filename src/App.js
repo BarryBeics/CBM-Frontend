@@ -13,6 +13,8 @@ import MainLayout from "./components/MainLayout";
 // Views
 import ManageUsers from "./views/manageUsers";
 import ManageTasks from "./views/manageTasks";
+import ManageProjects from "./views/manageProjects";
+import ManageSOPs from "./views/manageSOPs";
 import LandingPage from "./views/landingPage";
 import Bots from "./views/bots";
 import PairsChart from "./views/pairsChart";
@@ -21,6 +23,7 @@ import AvgGainChart from "./views/avgGainChart";
 import Register from "./views/register";
 import CreateUser from "./views/createUser";
 import CreateTask from "./views/createTask";
+import CreateProject from "./views/createProject";
 import Login from "./views/auth/Login";
 
 // To be deleted
@@ -115,6 +118,30 @@ function App() {
               element={
                 <ProtectedRoute role={["admin"]}>
                   <ManageTasks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/createProject"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <CreateProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageProjects"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageProjects />
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/manageSOPs"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageSOPs />
                 </ProtectedRoute>
               }
             />
