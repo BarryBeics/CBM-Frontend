@@ -124,10 +124,19 @@ const ManageTasks = () => {
 
   return (
     <Box m="20px">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
       <Header title="TASKS" subtitle="View and Manage Tasks" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
+      <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => navigate("/createTask")}
+                >
+                  Create Task
+                </Button>
+              </Box>
+              <Box
+                m="40px 0 0 0"
+                height="75vh"
         sx={{
           "& .MuiDataGrid-root": { border: "none" },
           "& .MuiDataGrid-cell": { borderBottom: "none" },

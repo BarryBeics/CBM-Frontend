@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
@@ -35,6 +36,10 @@ const DELETE_PROJECT_MUTATION = `
 const ManageSOPs = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const { sop = true, name = "SOP" } = location.state || {};
 
   const [projects, setProjects] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -81,8 +86,10 @@ const ManageSOPs = () => {
 
   const handleEdit = (id) => {
     console.log(`Edit SOP project with id ${id}`);
-    // TODO: Add edit functionality
+    navigate(`/sops/edit/${id}`);
   };
+
+ 
 
   const columns = [
     { field: "title", headerName: "Title", flex: 1 },
@@ -119,10 +126,22 @@ const ManageSOPs = () => {
 
   return (
     <Box m="20px">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
       <Header title="SOPs (Standard Operating Proceedures)" subtitle="Manage SOP these are template from which you can create instances" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
+      <Button
+          variant="contained"
+          color="secondary"
+          onClick={() =>
+            navigate("/createProject", { state: { sop: true, name: "SOP", redirectPath: "/manageSOPs"  } })
+          }
+        >
+          Create SOP
+        </Button>
+
+              </Box>
+              <Box
+                m="40px 0 0 0"
+                height="75vh"
         sx={{
           "& .MuiDataGrid-root": { border: "none" },
           "& .MuiDataGrid-cell": { borderBottom: "none" },

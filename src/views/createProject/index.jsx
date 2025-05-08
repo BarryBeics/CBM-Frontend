@@ -7,7 +7,8 @@ import {
     Select,
     MenuItem,
   } from "@mui/material";
-  import { Formik } from "formik";
+  import { useNavigate, useLocation } from "react-router-dom";
+  import { Formik, Field } from "formik";
   import * as yup from "yup";
   import useMediaQuery from "@mui/material/useMediaQuery";
   import Header from "../../components/Header";
@@ -35,6 +36,25 @@ import {
   
   const CreateProjectForm = () => {
     const isNonMobile = useMediaQuery("(min-width:600px)");
+    const navigate = useNavigate();
+    const { state } = useLocation();
+  
+    const sopValue = state?.sop ?? false;
+    const name = state?.name ?? "Project";
+    const redirectPath = state?.redirectPath ?? "/manageProjects";
+
+    console.log("SOP:", sopValue, "Name:", name);
+
+    // Initial form values
+  const initialProjectValues = {
+    title: "",
+    description: "",
+    sop: sopValue,
+    labels: [],
+    assignedTo: "",
+    dueDate: "",
+    status: "todo",
+  };
   
     const handleFormSubmit = async (values, { resetForm }) => {
       try {
@@ -45,8 +65,9 @@ import {
         };
   
         await client.request(CREATE_PROJECT_MUTATION, { input: formattedValues });
-        alert("Project created successfully!");
+        alert("Created successfully!");
         resetForm();
+        navigate(redirectPath);
       } catch (err) {
         console.error("Error creating project:", err);
         alert("Failed to create project.");
@@ -55,8 +76,7 @@ import {
   
     return (
       <Box m="20px">
-        <Header title="CREATE PROJECT" subtitle="Create a New Project" />
-  
+        <Header title={`CREATE ${name}`} subtitle={`Create a New ${name}`} />  
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialProjectValues}
@@ -121,18 +141,8 @@ import {
                   </Select>
                 </FormControl>
   
-                <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }}>
-                  <InputLabel>SOP</InputLabel>
-                  <Select
-                    name="sop"
-                    value={values.sop}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  >
-                    <MenuItem value={true}>Yes</MenuItem>
-                    <MenuItem value={false}>No</MenuItem>
-                  </Select>
-                </FormControl>
+                <Field type="hidden" name="sop" />
+
   
                 <TextField
                   fullWidth
@@ -182,7 +192,7 @@ import {
   
               <Box display="flex" justifyContent="end" mt="20px">
                 <Button type="submit" color="secondary" variant="contained">
-                  Create Project
+                  Create {name}
                 </Button>
               </Box>
             </form>
@@ -203,16 +213,7 @@ import {
     status: yup.string().required("Status is required"),
   });
   
-  // Initial form values
-  const initialProjectValues = {
-    title: "",
-    description: "",
-    sop: false,
-    labels: [],
-    assignedTo: "",
-    dueDate: "",
-    status: "todo",
-  };
+  
   
   export default CreateProjectForm;
   

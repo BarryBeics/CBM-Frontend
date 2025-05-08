@@ -7,6 +7,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -40,12 +41,14 @@ const CREATE_TASK_MUTATION = `
 
 const CreateTaskForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
       await client.request(CREATE_TASK_MUTATION, { input: values });
       alert("Task created successfully!");
       resetForm();
+      navigate("/manageTasks");
     } catch (err) {
       console.error("Error creating task:", err);
       alert("Failed to create task.");

@@ -27,55 +27,62 @@ import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
+import FormatListNumberedOutlinedIcon from "@mui/icons-material/FormatListNumberedOutlined";
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
+import ArticleIcon from '@mui/icons-material/Article';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import MultilineChartOutlinedIcon from '@mui/icons-material/MultilineChartOutlined';
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+
+
 
 import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
 
 const navItems = [
+  { section: "Public" },
   { text: "Landing Page", icon: <HomeOutlinedIcon />, path: "/" },
-  { text: "Dashboard", icon: <HomeOutlinedIcon />, path: "/dashboard" },
+  { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
   {
     text: "Register Interest",
     icon: <PersonOutlinedIcon />,
     path: "/register",
   },
-  { section: "Data" },
+  { section: "Strategy" },
+  { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
   // { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
   //  { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },
   { text: "Manage Bots", icon: <CodeOffOutlined />, path: "/bots" },
   // { text: "Template - Invoices", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
-  { section: "Pages" },
-  { text: "Create User", icon: <PersonAddOutlinedIcon />, path: "/createUser" },
+  { section: "Admin" },
   {
     text: "Manage Users",
     icon: <PeopleAltOutlinedIcon />,
     path: "/manageUsers",
   },
-  { text: "Create Task", icon: <ListAltOutlinedIcon />, path: "/createTask" },
   {
     text: "Manage Tasks",
-    icon: <PeopleAltOutlinedIcon />,
+    icon: <FormatListNumberedOutlinedIcon />,
     path: "/manageTasks",
   },
-  { text: "Create Project / SOP", icon: <ListAltOutlinedIcon />, path: "/createProject" },
   {
     text: "Manage Projects",
-    icon: <PeopleAltOutlinedIcon />,
+    icon: <AccountTreeOutlinedIcon />,
     path: "/manageProjects",
   },
   {
     text: "Manage SOPs",
-    icon: <PeopleAltOutlinedIcon />,
+    icon: <ArticleIcon />,
     path: "/manageSOPs",
   },
-  { text: "Kanban Board", icon: <PeopleAltOutlinedIcon />, path: "/kanban" },
-  { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
+  { text: "Kanban Board", icon: <ViewKanbanIcon />, path: "/kanban" },
+  
   { section: "Charts" },
   { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
-  { text: "SMA Chart", icon: <TimelineOutlinedIcon />, path: "/smaChart" },
+  { text: "SMA Chart", icon: <MultilineChartOutlinedIcon />, path: "/smaChart" },
   {
     text: "Avg Gain Chart",
-    icon: <TimelineOutlinedIcon />,
+    icon: <TrendingUpOutlinedIcon />,
     path: "/avgGainChart",
   },
   // { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },

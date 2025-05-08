@@ -7,6 +7,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -35,6 +36,7 @@ const CREATE_USER_MUTATION = `
 
 const CreateUserForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
@@ -43,6 +45,7 @@ const CreateUserForm = () => {
       await client.request(CREATE_USER_MUTATION, { input: values });
       alert("User created successfully!");
       resetForm();
+      navigate("/manageUsers");
     } catch (err) {
       console.error("Error creating user:", err);
       alert("Failed to create user.");

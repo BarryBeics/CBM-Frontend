@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
@@ -36,6 +37,10 @@ const DELETE_PROJECT_MUTATION = `
 const ManageProjects = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const { sop = false, name = "Project" } = location.state || {};
 
   const [projects, setProjects] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -82,7 +87,7 @@ const ManageProjects = () => {
 
   const handleEdit = (id) => {
     console.log(`Edit project with id ${id}`);
-    // TODO: Navigate or open a modal
+    navigate(`/projects/edit/${id}`);
   };
 
   const columns = [
@@ -122,10 +127,21 @@ const ManageProjects = () => {
 
   return (
     <Box m="20px">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
       <Header title="PROJECTS" subtitle="Manage All Projects" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
+      <Button
+            variant="contained"
+            color="secondary"
+            onClick={() =>
+              navigate("/createProject", { state: { sop: false, name: "PROJECT", redirectPath: "/manageProjects" } })
+            }
+          >
+            Create Project
+          </Button>
+        </Box>
+        <Box
+          m="40px 0 0 0"
+          height="75vh"
         sx={{
           "& .MuiDataGrid-root": { border: "none" },
           "& .MuiDataGrid-cell": { borderBottom: "none" },

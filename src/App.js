@@ -8,6 +8,8 @@ import { ColorModeContext, useMode } from "./theme";
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditTaskForm from "./views/manageTasks/EditTaskForm";
+import EditProjectForm from "./views/manageProjects/EditProjectForm";
+import EditSOPForm from "./views/manageSOPs/EditSOPForm";
 import EditUserForm from "./views/manageUsers/EditUserForm";
 import MainLayout from "./components/MainLayout";
 
@@ -154,6 +156,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/projects/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditProjectForm />
+                </ProtectedRoute>
+              }
+            />
              <Route
               path="/manageSOPs"
               element={
@@ -162,7 +172,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+            <Route
+              path="/sops/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditSOPForm />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/kanban"
               element={

@@ -165,11 +165,20 @@ const ManageUsers = () => {
 
   return (
     <Box m="20px">
-      <Header title="USERS" subtitle="Managing the Users" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
+  <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Header title="USERS" subtitle="Managing the Users" />
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={() => navigate("/createUser")}
+    >
+      Create User
+    </Button>
+  </Box>
+  <Box
+    m="40px 0 0 0"
+    height="75vh"
+    sx={{
           "& .MuiDataGrid-root": { border: "none" },
           "& .MuiDataGrid-cell": { borderBottom: "none" },
           "& .name-column--cell": { color: colors.greenAccent[300] },
