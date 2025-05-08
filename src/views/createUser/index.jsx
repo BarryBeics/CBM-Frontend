@@ -1,4 +1,13 @@
-import { Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -17,6 +26,9 @@ const CREATE_USER_MUTATION = `
       firstName
       lastName
       email
+      contact
+      address1
+      address2
       role
     }
   }
@@ -24,12 +36,16 @@ const CREATE_USER_MUTATION = `
 
 const CreateUserForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
+      console.log("Sending input:", { input: values });
+
       await client.request(CREATE_USER_MUTATION, { input: values });
       alert("User created successfully!");
       resetForm();
+      navigate("/manageUsers");
     } catch (err) {
       console.error("Error creating user:", err);
       alert("Failed to create user.");
@@ -142,7 +158,11 @@ const CreateUserForm = () => {
               />
 
               {/* Role Dropdown */}
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
+              <FormControl
+                fullWidth
+                variant="filled"
+                sx={{ gridColumn: "span 4" }}
+              >
                 <InputLabel>User Role</InputLabel>
                 <Select
                   name="role"
@@ -157,6 +177,19 @@ const CreateUserForm = () => {
                   <MenuItem value="admin">Admin</MenuItem>
                 </Select>
               </FormControl>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="password"
+                label="Password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: "span 4" }}
+              />
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px">
@@ -184,7 +217,14 @@ const checkoutSchema = yup.object().shape({
     .required("required"),
   address1: yup.string().required("required"),
   address2: yup.string().required("required"),
-  role: yup.string().oneOf(["public", "interested", "member", "admin"]).required("required"),
+  role: yup
+    .string()
+    .oneOf(["public", "interested", "member", "admin"])
+    .required("required"),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("required"), // <-- New
 });
 
 const initialValues = {
@@ -195,6 +235,7 @@ const initialValues = {
   address1: "",
   address2: "",
   role: "public",
+  password: "",
 };
 
 export default CreateUserForm;

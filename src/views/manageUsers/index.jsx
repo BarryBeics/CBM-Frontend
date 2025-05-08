@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -41,6 +42,7 @@ const DELETE_USER_MUTATION = `
 const ManageUsers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -92,10 +94,11 @@ const ManageUsers = () => {
   };
   
 
-  const handleEdit = (id) => {
-    console.log(`Edit user with id ${id}`);
-    // Future: navigate to an edit form
+  const handleEdit = (email) => {
+    console.log(`Edit user with email ${email}`);
+    navigate(`/users/edit/${email}`);
   };
+  
 
   const columns = [
     { field: "name", headerName: "Name", flex: 1, cellClassName: "name-column--cell" },
@@ -143,7 +146,7 @@ const ManageUsers = () => {
             variant="contained"
             color="primary"
             size="small"
-            onClick={() => handleEdit(row.id)}
+            onClick={() => handleEdit(row.email)}
           >
             Edit
           </Button>
@@ -162,11 +165,20 @@ const ManageUsers = () => {
 
   return (
     <Box m="20px">
-      <Header title="USERS" subtitle="Managing the Users" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
+  <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Header title="USERS" subtitle="Managing the Users" />
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={() => navigate("/createUser")}
+    >
+      Create User
+    </Button>
+  </Box>
+  <Box
+    m="40px 0 0 0"
+    height="75vh"
+    sx={{
           "& .MuiDataGrid-root": { border: "none" },
           "& .MuiDataGrid-cell": { borderBottom: "none" },
           "& .name-column--cell": { color: colors.greenAccent[300] },
