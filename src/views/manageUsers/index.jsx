@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -41,6 +42,7 @@ const DELETE_USER_MUTATION = `
 const ManageUsers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -92,10 +94,11 @@ const ManageUsers = () => {
   };
   
 
-  const handleEdit = (id) => {
-    console.log(`Edit user with id ${id}`);
-    // Future: navigate to an edit form
+  const handleEdit = (email) => {
+    console.log(`Edit user with email ${email}`);
+    navigate(`/users/edit/${email}`);
   };
+  
 
   const columns = [
     { field: "name", headerName: "Name", flex: 1, cellClassName: "name-column--cell" },
@@ -143,7 +146,7 @@ const ManageUsers = () => {
             variant="contained"
             color="primary"
             size="small"
-            onClick={() => handleEdit(row.id)}
+            onClick={() => handleEdit(row.email)}
           >
             Edit
           </Button>

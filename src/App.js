@@ -8,6 +8,7 @@ import { ColorModeContext, useMode } from "./theme";
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditTaskForm from "./views/manageTasks/EditTaskForm";
+import EditUserForm from "./views/manageUsers/EditUserForm";
 import MainLayout from "./components/MainLayout";
 
 // Views
@@ -106,6 +107,14 @@ function App() {
               }
             />
             <Route
+              path="/users/edit/:email"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditUserForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/createTask"
               element={
                 <ProtectedRoute role={["admin"]}>
@@ -118,6 +127,14 @@ function App() {
               element={
                 <ProtectedRoute role={["admin"]}>
                   <ManageTasks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditTaskForm />
                 </ProtectedRoute>
               }
             />
@@ -145,14 +162,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/tasks/edit/:id"
-              element={
-                <ProtectedRoute role={["admin"]}>
-                  <EditTaskForm />
-                </ProtectedRoute>
-              }
-            />
+            
             <Route
               path="/kanban"
               element={

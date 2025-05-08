@@ -18,17 +18,19 @@ import { graphqlEndpoint } from "../../config";
 const client = new GraphQLClient(graphqlEndpoint);
 
 const GET_TASK_QUERY = `
-  query GetTask($id: ID!) {
-    task(id: $id) {
+  query GetTaskById($id: ID!) {
+    taskById(id: $id) {
       id
       title
       description
       status
       priority
+      type
+      labels
       assignedTo
       dueDate
       category
-      sopLink
+      projectId
     }
   }
 `;
@@ -41,16 +43,15 @@ const UPDATE_TASK_MUTATION = `
       description
       status
       priority
+      type
+      labels
       assignedTo
       dueDate
       category
-      sopLink
-      createdAt
-      updatedAt
+      projectId
     }
   }
 `;
-
 
 const EditTaskForm = () => {
   const { id } = useParams();
@@ -60,12 +61,27 @@ const EditTaskForm = () => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const { task } = await client.request(GET_TASK_QUERY, { id });
-        setInitialValues(task);
+        const { taskById } = await client.request(GET_TASK_QUERY, { id });
+
+        setInitialValues({
+          title: taskById.title || "",
+          description: taskById.description || "",
+          status: taskById.status || "",
+          priority: taskById.priority || "",
+          type: taskById.type || "",
+          labels: taskById.labels || "",
+          assignedTo: taskById.assignedTo || "",
+          dueDate: taskById.dueDate
+            ? new Date(taskById.dueDate).toISOString().split("T")[0]
+            : "",
+          category: taskById.category || "",
+          projectId: taskById.projectId || "",
+        });
       } catch (err) {
         console.error("Error fetching task:", err);
       }
     };
+
     fetchTask();
   }, [id]);
 
@@ -74,22 +90,22 @@ const EditTaskForm = () => {
     description: yup.string(),
     status: yup.string().required("required"),
     priority: yup.string(),
+    type: yup.string(),
+    labels: yup.string(),
     assignedTo: yup.string(),
     dueDate: yup.string(),
     category: yup.string(),
-    sopLink: yup.string(),
+    projectId: yup.string(),
   });
 
   const handleFormSubmit = async (values) => {
-    console.log("Form is submitting")
     const formattedValues = {
       ...values,
       id,
       dueDate: values.dueDate ? new Date(values.dueDate).toISOString() : null,
     };
-  
+
     try {
-      console.log("Submitting:", formattedValues);
       const response = await client.request(UPDATE_TASK_MUTATION, {
         input: formattedValues,
       });
@@ -101,7 +117,6 @@ const EditTaskForm = () => {
       alert("Failed to update task.");
     }
   };
-  
 
   if (!initialValues) return <div>Loading...</div>;
 
@@ -135,6 +150,7 @@ const EditTaskForm = () => {
                 helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
               />
+
               <TextField
                 label="Description"
                 name="description"
@@ -145,6 +161,7 @@ const EditTaskForm = () => {
                 rows={3}
                 sx={{ gridColumn: "span 4" }}
               />
+
               <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
                 <InputLabel>Status</InputLabel>
                 <Select name="status" value={values.status} onChange={handleChange}>
@@ -153,6 +170,7 @@ const EditTaskForm = () => {
                   <MenuItem value="done">Done</MenuItem>
                 </Select>
               </FormControl>
+
               <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
                 <InputLabel>Priority</InputLabel>
                 <Select name="priority" value={values.priority} onChange={handleChange}>
@@ -161,6 +179,21 @@ const EditTaskForm = () => {
                   <MenuItem value="Low">Low</MenuItem>
                 </Select>
               </FormControl>
+
+              <TextField
+                label="Type"
+                name="type"
+                value={values.assignedTo}
+                onChange={handleChange}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                label="Labels"
+                name="labels"
+                value={values.assignedTo}
+                onChange={handleChange}
+                sx={{ gridColumn: "span 2" }}
+              />
               <TextField
                 label="Assigned To"
                 name="assignedTo"
@@ -177,6 +210,7 @@ const EditTaskForm = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ gridColumn: "span 2" }}
               />
+
               <TextField
                 label="Category"
                 name="category"
@@ -184,9 +218,10 @@ const EditTaskForm = () => {
                 onChange={handleChange}
                 sx={{ gridColumn: "span 2" }}
               />
+
               <TextField
-                label="SOP Link"
-                name="sopLink"
+                label="Project Id"
+                name="projectId"
                 value={values.sopLink}
                 onChange={handleChange}
                 sx={{ gridColumn: "span 2" }}
