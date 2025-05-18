@@ -1,0 +1,37 @@
+{
+  "statusOptions": [
+    { "label": "To Do", "value": "todo" },
+    { "label": "In Progress", "value": "inProgress" },
+    { "label": "Complete", "value": "complete" }
+  ],
+  "priorityOptions": [
+    { "label": "Low", "value": "low" },
+    { "label": "Medium", "value": "medium" },
+    { "label": "High", "value": "high" }
+  ],
+  "roleOptions": [
+    { "label": "Public", "value": "public" },
+    { "label": "Interested", "value": "interested" },
+    { "label": "Member", "value": "member" },
+    { "label": "Admin", "value": "admin" }
+  ],
+  "categoryOptions": [
+    { "label": "Sales", "value": "sales" },
+    { "label": "Marketing", "value": "marketing" },
+    { "label": "Accounts", "value": "accounts" },
+    { "label": "Admin", "value": "admin" }
+  ],
+  "contextOptions": [
+    { "label": "Work", "value": "work" },
+    { "label": "Home", "value": "home" },
+    { "label": "Errands", "value": "errands" },
+    { "label": "Waiting For", "value": "waitingFor" },
+    { "label": "Someday/Maybe", "value": "somedayMaybe" }
+  ],
+  "labelSuggestions": [
+    "cleaning",
+    "compliance",
+    "training",
+    "safety"
+  ]
+}

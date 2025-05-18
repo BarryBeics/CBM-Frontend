@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
@@ -171,10 +172,11 @@ const CreateUserForm = () => {
                   onBlur={handleBlur}
                   error={!!touched.role && !!errors.role}
                 >
-                  <MenuItem value="public">Public</MenuItem>
-                  <MenuItem value="interested">Interested</MenuItem>
-                  <MenuItem value="member">Member</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
+                  {formOptions.statusOptions.map((opt) => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
                 </Select>
               </FormControl>
               <TextField

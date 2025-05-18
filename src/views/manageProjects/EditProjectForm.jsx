@@ -9,6 +9,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
+import formOptions from "../../config/formOptions.json";
 import { graphqlEndpoint } from "../../config";
 
 const client = new GraphQLClient(graphqlEndpoint);

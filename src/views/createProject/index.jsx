@@ -11,6 +11,7 @@ import {
   import { Formik, Field } from "formik";
   import * as yup from "yup";
   import useMediaQuery from "@mui/material/useMediaQuery";
+  import formOptions from "../../config/formOptions.json";
   import Header from "../../components/Header";
   import { GraphQLClient } from "graphql-request";
   import { graphqlEndpoint } from "../../config";
@@ -135,9 +136,11 @@ import {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   >
-                    <MenuItem value="todo">To Do</MenuItem>
-                    <MenuItem value="inProgress">In Progress</MenuItem>
-                    <MenuItem value="complete">Complete</MenuItem>
+                    {formOptions.roleOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
                   </Select>
                 </FormControl>
   
