@@ -118,11 +118,19 @@ const ManageProjects = () => {
             size="small"
             onClick={() => handleOpenDeleteModal(row)}
           >
-            Delete
-          </Button>
-        </Box>
-      ),
-    },
+             Delete
+      </Button>
+      <Button
+        variant="contained"
+        color="success"
+        size="small"
+        onClick={() => navigate("/createTask", { state: { projectId: row.id } })}
+      >
+        + Task
+      </Button>
+    </Box>
+  ),
+},
   ];
 
   return (

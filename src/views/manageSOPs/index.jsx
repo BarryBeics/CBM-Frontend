@@ -118,10 +118,18 @@ const ManageSOPs = () => {
             onClick={() => handleOpenDeleteModal(row)}
           >
             Delete
-          </Button>
-        </Box>
-      ),
-    },
+      </Button>
+      <Button
+        variant="contained"
+        color="success"
+        size="small"
+        onClick={() => navigate("/createTask", { state: { projectId: row.id } })}
+      >
+        + Task
+      </Button>
+    </Box>
+  ),
+},
   ];
 
   return (
