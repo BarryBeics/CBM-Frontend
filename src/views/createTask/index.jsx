@@ -7,7 +7,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -43,10 +43,17 @@ const CREATE_TASK_MUTATION = `
 const CreateTaskForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
+  const location = useLocation();
+  const passedProjectId = location.state?.projectId || "";
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      await client.request(CREATE_TASK_MUTATION, { input: values });
+      // Remove empty optional fields
+      const cleanedValues = Object.fromEntries(
+        Object.entries(values).filter(([_, v]) => v !== "")
+      );
+  
+      await client.request(CREATE_TASK_MUTATION, { input: cleanedValues });
       alert("Task created successfully!");
       resetForm();
       navigate("/manageTasks");
@@ -55,6 +62,8 @@ const CreateTaskForm = () => {
       alert("Failed to create task.");
     }
   };
+  
+  
 
   return (
     <Box m="20px">
@@ -62,7 +71,7 @@ const CreateTaskForm = () => {
 
       <Formik
         onSubmit={handleFormSubmit}
-        initialValues={initialTaskValues}
+        initialValues={{ ...initialTaskValues, projectId: passedProjectId }}
         validationSchema={taskSchema}
       >
         {({
@@ -225,16 +234,10 @@ const CreateTaskForm = () => {
                     ))}
                 </Select>
               </FormControl>
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Project ID"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.projectId}
+              <input
+                type="hidden"
                 name="projectId"
-                sx={{ gridColumn: "span 4" }}
+                value={values.projectId}
               />
             </Box>
 
@@ -270,6 +273,7 @@ const initialTaskValues = {
   dueDate: "",
   category: "",
   sopLink: "",
+  projectId: "",
 };
 
 export default CreateTaskForm;
