@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
@@ -143,12 +144,14 @@ const CreateTaskForm = () => {
                   value={values.status}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                >
-                  <MenuItem value="todo">To Do</MenuItem>
-                  <MenuItem value="inProgress">In Progress</MenuItem>
-                  <MenuItem value="done">Done</MenuItem>
-                </Select>
-              </FormControl>
+                  >
+                    {formOptions.statusOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
               <FormControl
                 fullWidth
@@ -162,9 +165,11 @@ const CreateTaskForm = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 >
-                  <MenuItem value="low">Low</MenuItem>
-                  <MenuItem value="medium">Medium</MenuItem>
-                  <MenuItem value="high">High</MenuItem>
+                  {formOptions.priorityOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
 
@@ -201,17 +206,25 @@ const CreateTaskForm = () => {
                 sx={{ gridColumn: "span 2" }}
               />
 
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Category"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.category}
-                name="category"
                 sx={{ gridColumn: "span 2" }}
-              />
+              >
+                <InputLabel>Category</InputLabel>
+                <Select
+                  name="category"
+                  value={values.category}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                >
+                  {formOptions.categoryOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
