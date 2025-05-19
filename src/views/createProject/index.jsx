@@ -136,7 +136,7 @@ import {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   >
-                    {formOptions.roleOptions.map((opt) => (
+                    {formOptions.statusOptions.map((opt) => (
                     <MenuItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </MenuItem>

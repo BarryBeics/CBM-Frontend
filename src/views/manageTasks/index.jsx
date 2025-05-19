@@ -48,15 +48,18 @@ const ManageTasks = () => {
   const fetchTasks = useCallback(async () => {
     try {
       const data = await client.request(GET_ALL_TASKS_QUERY);
-      const formattedTasks = data.allTasks.map((task) => ({
-        ...task,
-        id: task.id,
-      }));
-      setTasks(formattedTasks);
+      const filteredTasks = data.allTasks
+        .filter((task) => !task.projectId) // 👈 Only tasks with no projectId
+        .map((task) => ({
+          ...task,
+          id: task.id,
+        }));
+      setTasks(filteredTasks);
     } catch (err) {
       console.error("Failed to fetch tasks:", err);
     }
   }, []);
+  
 
   useEffect(() => {
     fetchTasks();
@@ -107,7 +110,7 @@ const ManageTasks = () => {
             size="small"
             onClick={() => handleEdit(row.id)}
           >
-            Edit
+            View / Edit
           </Button>
           <Button
             variant="contained"

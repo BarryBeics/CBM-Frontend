@@ -4,7 +4,12 @@ import {
   Box,
   Button,
   TextField,
+  Modal,
+  Typography,
 } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { tokens } from "../../theme";
+import { useTheme } from "@mui/material/styles";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
@@ -23,9 +28,25 @@ const GET_PROJECT_QUERY = `
       assignedTo
       dueDate
       status
+      tasks {
+        id
+        title
+        description
+        status
+        priority
+        type
+        labels
+        assignedTo
+        dueDate
+        category
+        projectId
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
+
 
 
 
@@ -43,6 +64,14 @@ const UPDATE_PROJECT_MUTATION = `
   }
 `;
 
+const DELETE_TASK_MUTATION = `
+  mutation DeleteTask($id: ID!) {
+    deleteTask(id: $id)
+  }
+`;
+
+
+
 
 const validationSchema = yup.object().shape({
     title: yup.string().required("Title is required"),
@@ -56,7 +85,39 @@ const validationSchema = yup.object().shape({
   const ProjectEditForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+    
     const [initialValues, setInitialValues] = useState(null);
+    const [tasks, setTasks] = useState([]);
+
+    const handleDeleteTask = async (taskId) => {
+      if (!window.confirm("Are you sure you want to delete this task?")) return;
+      try {
+        await client.request(DELETE_TASK_MUTATION, { id: taskId });
+        setTasks((prev) => prev.filter((task) => task.id !== taskId));
+        alert("Task deleted.");
+      } catch (error) {
+        console.error("Error deleting task:", error);
+        alert("Failed to delete task.");
+      }
+    };
+
+    const handleConfirmDelete = async () => {
+      if (!selectedTask?.id) return;
+      try {
+        await client.request(DELETE_TASK_MUTATION, { id: selectedTask.id });
+        setTasks((prev) => prev.filter((task) => task.id !== selectedTask.id));
+        setDeleteModalOpen(false);
+        setSelectedTask(null);
+        alert("Task deleted.");
+      } catch (error) {
+        console.error("Error deleting task:", error);
+        alert("Failed to delete task.");
+      }
+    };
   
     useEffect(() => {
       const fetchProject = async () => {
@@ -65,6 +126,19 @@ const validationSchema = yup.object().shape({
             console.log("GraphQL response:", response);
 
             const project = response?.projectById;
+            if (project) {
+              setInitialValues({
+                id: project.id,
+                title: project.title || "",
+                description: project.description || "",
+                labels: (project.labels || []).join(", "),
+                assignedTo: project.assignedTo || "",
+                dueDate: project.dueDate || "",
+                status: project.status || "",
+              });
+              setTasks(project.tasks || []);
+            }
+
             
             if (!project) {
               console.error("SOP not found for id:", id);
@@ -115,6 +189,7 @@ const validationSchema = yup.object().shape({
     return (
       <Box m="20px">
         <Header title="EDIT SOP" subtitle="Modify Standard Operating Proceedure details" />
+       
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -186,7 +261,99 @@ const validationSchema = yup.object().shape({
             </form>
           )}
         </Formik>
+{/* Task Management Table */}
+<Box mt="40px">
+    <Header title="RELATED TASKS" subtitle="Tasks linked to this SOP" />
+    <Button
+      variant="contained"
+      color="success"
+      size="small"
+      onClick={() =>
+        navigate("/createTask", {
+          state: {
+            projectId: id,
+            redirectPath: `/sops/edit/${id}`,
+          },
+        })
+      }
+    >
+      + Task
+    </Button>
+    <DataGrid
+      autoHeight
+      rows={tasks}
+      columns={[
+        { field: "title", headerName: "Title", flex: 1 },
+        { field: "status", headerName: "Status", flex: 1 },
+        { field: "priority", headerName: "Priority", flex: 1 },
+        { field: "assignedTo", headerName: "Assigned To", flex: 1 },
+        { field: "dueDate", headerName: "Due Date", flex: 1 },
+        {
+          field: "actions",
+          headerName: "Actions",
+          flex: 1,
+          sortable: false,
+          renderCell: ({ row }) => (
+            <Box display="flex" gap="10px">
+              <Button
+                            size="small"
+                            variant="contained"
+                            onClick={() =>
+                              navigate(`/tasks/edit/${row.id}`, {
+                                state: {
+                                  redirectPath: `/sops/edit/${id}`,
+                                },
+                              })
+                            }
+                          >
+                            View / Edit
+                          </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  setSelectedTask(row);
+                  setDeleteModalOpen(true);
+                }}
+              >
+                Delete
+              </Button>
+            </Box>
+          ),
+        },
+      ]}
+    />
+  </Box>
+
+      {/* Delete Confirmation Modal */}
+  <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+    <Box
+      p={4}
+      bgcolor="background.paper"
+      borderRadius="10px"
+      mx="auto"
+      my="20vh"
+      width="400px"
+      boxShadow={24}
+    >
+      <Typography variant="h6">Delete Task</Typography>
+      <Typography mb={2}>
+        Are you sure you want to delete this task?
+      </Typography>
+      <Box display="flex" justifyContent="flex-end" gap={2}>
+        <Button onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={handleConfirmDelete}
+        >
+          Delete
+        </Button>
       </Box>
+    </Box>
+  </Modal>
+</Box>
     );
   };
   

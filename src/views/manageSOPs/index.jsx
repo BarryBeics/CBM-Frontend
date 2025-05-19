@@ -109,7 +109,7 @@ const ManageSOPs = () => {
             size="small"
             onClick={() => handleEdit(row.id)}
           >
-            Edit
+            View / Edit
           </Button>
           <Button
             variant="contained"
@@ -119,11 +119,18 @@ const ManageSOPs = () => {
           >
             Delete
       </Button>
-      <Button
+            <Button
         variant="contained"
         color="success"
         size="small"
-        onClick={() => navigate("/createTask", { state: { projectId: row.id } })}
+        onClick={() =>
+          navigate("/createTask", {
+            state: {
+              projectId: row.id,
+              redirectPath: "/manageSOPs", 
+            },
+          })
+        }
       >
         + Task
       </Button>

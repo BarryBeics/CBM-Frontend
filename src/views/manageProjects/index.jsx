@@ -110,7 +110,7 @@ const ManageProjects = () => {
             size="small"
             onClick={() => handleEdit(row.id)}
           >
-            Edit
+            View / Edit
           </Button>
           <Button
             variant="contained"
@@ -121,13 +121,21 @@ const ManageProjects = () => {
              Delete
       </Button>
       <Button
-        variant="contained"
-        color="success"
-        size="small"
-        onClick={() => navigate("/createTask", { state: { projectId: row.id } })}
-      >
-        + Task
-      </Button>
+  variant="contained"
+  color="success"
+  size="small"
+  onClick={() =>
+    navigate("/createTask", {
+      state: {
+        projectId: row.id,
+        redirectPath: "/manageProjects", 
+      },
+    })
+  }
+>
+  + Task
+</Button>
+
     </Box>
   ),
 },
