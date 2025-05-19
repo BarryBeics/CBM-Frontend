@@ -110,7 +110,7 @@ const LandingPage = () => {
       </Section>
 
       <Box mt={8} textAlign="center">
-        <Typography variant="body2">Your Name — Founder of Scalpel Hound</Typography>
+        <Typography variant="body2">BArry Marples — Founder of Scalpel Hound Ltd</Typography>
         <Typography variant="body2" color="primary">
           your@email.com
         </Typography>

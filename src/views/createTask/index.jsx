@@ -45,6 +45,11 @@ const CreateTaskForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const passedProjectId = location.state?.projectId || "";
+  const redirectPath = location.state?.redirectPath || "/manageTasks"; // default fallback
+
+  console.log("Received location state:", location.state);
+  console.log("Parsed projectId from location state:", passedProjectId);
+
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
@@ -52,11 +57,14 @@ const CreateTaskForm = () => {
       const cleanedValues = Object.fromEntries(
         Object.entries(values).filter(([_, v]) => v !== "")
       );
+
+      console.log("Submitting task with values:", cleanedValues);
+
   
       await client.request(CREATE_TASK_MUTATION, { input: cleanedValues });
       alert("Task created successfully!");
       resetForm();
-      navigate("/manageTasks");
+      navigate(redirectPath); 
     } catch (err) {
       console.error("Error creating task:", err);
       alert("Failed to create task.");
@@ -73,7 +81,9 @@ const CreateTaskForm = () => {
         onSubmit={handleFormSubmit}
         initialValues={{ ...initialTaskValues, projectId: passedProjectId }}
         validationSchema={taskSchema}
+        
       >
+        
         {({
           values,
           errors,
@@ -272,8 +282,6 @@ const initialTaskValues = {
   assignedTo: "",
   dueDate: "",
   category: "",
-  sopLink: "",
-  projectId: "",
 };
 
 export default CreateTaskForm;

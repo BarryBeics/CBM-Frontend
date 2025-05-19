@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,6 +12,7 @@ import {
 import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
+import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
 import { graphqlEndpoint } from "../../config";
 
@@ -57,6 +58,12 @@ const EditTaskForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [initialValues, setInitialValues] = useState(null);
+  const location = useLocation();
+  const passedProjectId = location.state?.projectId || "";
+  const redirectPath = location.state?.redirectPath || "/manageTasks"; // default fallback
+
+  console.log("Received location state:", location.state);
+  console.log("Parsed projectId from location state:", passedProjectId);
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -111,7 +118,7 @@ const EditTaskForm = () => {
       });
       console.log("Update response:", response);
       alert("Task updated!");
-      navigate("/manageTasks");
+      navigate(redirectPath); 
     } catch (err) {
       console.error("Update failed:", err.response?.errors || err);
       alert("Failed to update task.");
@@ -164,20 +171,34 @@ const EditTaskForm = () => {
 
               <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
                 <InputLabel>Status</InputLabel>
-                <Select name="status" value={values.status} onChange={handleChange}>
-                  <MenuItem value="toDo">To Do</MenuItem>
-                  <MenuItem value="inProgress">In Progress</MenuItem>
-                  <MenuItem value="done">Done</MenuItem>
-                </Select>
+                <Select
+                  name="status"
+                  value={values.status}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  >
+                    {formOptions.statusOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
               </FormControl>
 
               <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
                 <InputLabel>Priority</InputLabel>
-                <Select name="priority" value={values.priority} onChange={handleChange}>
-                  <MenuItem value="High">High</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="Low">Low</MenuItem>
-                </Select>
+                  <Select
+                                  name="priority"
+                                  value={values.priority}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                >
+                                  {formOptions.priorityOptions.map((opt) => (
+                                      <MenuItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </MenuItem>
+                                    ))}
+                                </Select>
               </FormControl>
 
               <TextField
