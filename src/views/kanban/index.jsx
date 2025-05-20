@@ -5,12 +5,19 @@ import {
   Paper,
   Button,
   useTheme,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
 import { tokens } from "../../theme";
 import Header from "../../components/Header"; // Assuming you use this elsewhere
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+} from "@hello-pangea/dnd";
 
 
 const client = new GraphQLClient(graphqlEndpoint);
@@ -27,6 +34,16 @@ const GET_ALL_TASKS = `
   }
 `;
 
+const UPDATE_TASK_STATUS = `
+  mutation UpdateTaskStatus($input: UpdateTaskInput!) {
+    updateTask(input: $input) {
+      id
+      status
+    }
+  }
+`;
+
+
 
 const STATUS_COLUMNS = {
   inbox: "Inbox",
@@ -38,10 +55,17 @@ const STATUS_COLUMNS = {
 };
 
 
+
+
 const KanbanBoard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // 'error', 'warning', 'info'
+  });
 
   const [tasksByStatus, setTasksByStatus] = useState({
     inbox: [],
@@ -51,6 +75,67 @@ const KanbanBoard = () => {
     somedayMaybe: [],
     complete: [],
   });
+
+  const updateTaskStatus = async (id, status) => {
+    try {
+      const input = { id, status };
+      await client.request(UPDATE_TASK_STATUS, { input });
+      setSnackbar({
+        open: true,
+        message: `Task updated to "${status}"`,
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to update task status:", error.response || error.message);
+      setSnackbar({
+        open: true,
+        message: "Failed to update task",
+        severity: "error",
+      });
+    }
+  };
+  
+  
+  
+  
+  const handleDragEnd = (result) => {
+    const { destination, source } = result;
+  
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+  
+    const sourceCol = source.droppableId;
+    const destCol = destination.droppableId;
+  
+    const sourceTasks = [...tasksByStatus[sourceCol]];
+    const destTasks = [...tasksByStatus[destCol]];
+  
+    const [movedTask] = sourceTasks.splice(source.index, 1);
+    movedTask.status = destCol;
+  
+    if (sourceCol === destCol) {
+      sourceTasks.splice(destination.index, 0, movedTask);
+      setTasksByStatus({
+        ...tasksByStatus,
+        [sourceCol]: sourceTasks,
+      });
+    } else {
+      destTasks.splice(destination.index, 0, movedTask);
+      setTasksByStatus({
+        ...tasksByStatus,
+        [sourceCol]: sourceTasks,
+        [destCol]: destTasks,
+      });
+  
+      // 🔥 persist to backend
+      updateTaskStatus(movedTask.id, destCol);
+    }
+  };
   
 
   useEffect(() => {
@@ -109,106 +194,103 @@ const KanbanBoard = () => {
       </Box>
 
       {/* Kanban Columns */}
-      <Box
-        display="flex"
-        gap={2}
-        p={2}
-        overflow="auto"
-        backgroundColor={colors.primary[400]}
-        borderRadius="8px"
-        boxShadow={1}
-        minHeight="60vh"
-      >
-        {Object.entries(STATUS_COLUMNS).map(([key, label]) => {
-          const tasks = tasksByStatus[key] || [];
-          return (
+      <DragDropContext onDragEnd={handleDragEnd}>
+  <Box display="flex" gap={2} p={2} overflow="auto" backgroundColor={colors.primary[400]} borderRadius="8px" boxShadow={1} minHeight="60vh">
+    {Object.entries(STATUS_COLUMNS).map(([key, label]) => {
+      const tasks = tasksByStatus[key] || [];
+
+      return (
+        <Droppable droppableId={key} key={key}>
+          {(provided) => (
             <Box
-              key={key}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
               minWidth="300px"
               flexShrink={0}
               backgroundColor={colors.primary[500]}
               borderRadius="8px"
               boxShadow={2}
               p={2}
-              sx={{
-                border: `1px solid ${colors.grey[700]}`,
-              }}
+              sx={{ border: `1px solid ${colors.grey[700]}` }}
             >
-              {/* Column Header */}
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-                pb={1}
-                borderBottom={`2px solid ${colors.greenAccent[400]}`}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: colors.greenAccent[400],
-                    fontWeight: 600,
-                  }}
-                >
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} pb={1} borderBottom={`2px solid ${colors.greenAccent[400]}`}>
+                <Typography variant="h6" sx={{ color: colors.greenAccent[400], fontWeight: 600 }}>
                   {label} ({tasks.length})
                 </Typography>
               </Box>
 
-              {/* Task Cards */}
-              {tasks.map((task) => (
-                <Paper
-                  key={task.id}
-                  sx={{
-                    p: 2,
-                    mb: 2,
-                    borderRadius: "8px",
-                    backgroundColor: colors.primary[300],
-                    color: colors.grey[100],
-                    border: `1px solid ${colors.grey[600]}`,
-                    transition: "transform 0.1s ease-in-out, box-shadow 0.2s",
-                    "&:hover": {
-                      transform: "scale(1.02)",
-                      boxShadow: `0 4px 20px ${colors.blueAccent[700]}`,
-                    },
-                  }}
-                  elevation={3}
-                >
-                  <Typography
-                    fontWeight="bold"
-                    fontSize="0.95rem"
-                    sx={{ mb: 0.5 }}
-                  >
-                    {task.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: colors.grey[300], mb: 0.5 }}
-                  >
-                    👤 {task.assignedTo || "Unassigned"}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color:
-                        task.priority === "high"
-                          ? colors.redAccent[400]
-                          : task.priority === "medium"
-                          ? colors.yellowAccent[400]
-                          : colors.greenAccent[400],
-                      fontWeight: 500,
-                    }}
-                  >
-                    ⚡{" "}
-                    {task.priority.charAt(0).toUpperCase() +
-                      task.priority.slice(1)}
-                  </Typography>
-                </Paper>
+              {tasks.map((task, index) => (
+                <Draggable draggableId={task.id} index={index} key={task.id}>
+                  {(provided) => (
+                    <Paper
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      sx={{
+                        p: 2,
+                        mb: 2,
+                        borderRadius: "8px",
+                        backgroundColor: colors.primary[400],
+                        color: colors.grey[100],
+                        border: `1px solid ${colors.grey[600]}`,
+                        transition: "transform 0.1s ease-in-out, box-shadow 0.2s",
+                        "&:hover": {
+                          transform: "scale(1.02)",
+                          boxShadow: `0 4px 20px ${colors.blueAccent[700]}`,
+                        },
+                      }}
+                      elevation={3}
+                    >
+                      <Typography fontWeight="bold" fontSize="0.95rem" sx={{ mb: 0.5 }}>
+                        {task.title}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: colors.grey[300], mb: 0.5 }}>
+                        👤 {task.assignedTo || "Unassigned"}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color:
+                            task.priority === "high"
+                              ? colors.redAccent[400]
+                              : task.priority === "medium"
+                              ? colors.yellowAccent[400]
+                              : colors.greenAccent[400],
+                          fontWeight: 500,
+                        }}
+                      >
+                        ⚡ {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                      </Typography>
+                    </Paper>
+                  )}
+                </Draggable>
               ))}
+
+              {provided.placeholder}
             </Box>
-          );
-        })}
-      </Box>
+          )}
+        </Droppable>
+      );
+    })}
+  </Box>
+</DragDropContext>
+<Snackbar
+  open={snackbar.open}
+  autoHideDuration={3000}
+  onClose={() => setSnackbar({ ...snackbar, open: false })}
+  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+>
+  <Alert
+    onClose={() => setSnackbar({ ...snackbar, open: false })}
+    severity={snackbar.severity}
+    sx={{ width: "100%" }}
+  >
+    {snackbar.message}
+  </Alert>
+</Snackbar>
+
     </Box>
+    
   );
 };
 
