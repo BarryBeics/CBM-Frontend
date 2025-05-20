@@ -1,9 +1,12 @@
 {
   "statusOptions": [
-    { "label": "To Do", "value": "todo" },
-    { "label": "In Progress", "value": "inProgress" },
-    { "label": "Complete", "value": "complete" }
-  ],
+  { "label": "Inbox", "value": "inbox" },
+  { "label": "Next Action", "value": "nextAction" },
+  { "label": "Waiting For", "value": "waitingFor" },
+  { "label": "Scheduled", "value": "scheduled" },
+  { "label": "Someday/Maybe", "value": "somedayMaybe" },
+  { "label": "Complete", "value": "complete" }
+],
   "priorityOptions": [
     { "label": "Low", "value": "low" },
     { "label": "Medium", "value": "medium" },
