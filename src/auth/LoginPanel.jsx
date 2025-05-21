@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useAuth } from "./AuthContext";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { GraphQLClient, gql } from "graphql-request";
-import { graphqlEndpoint } from "../../config";
-import logo from "../../assets/logo.png";
+import { graphqlEndpoint } from "../config";
+import logo from "../assets/logo.png";
 
 const LOGIN_MUTATION = gql`
   mutation Login($input: LoginInput!) {
@@ -26,14 +27,19 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const handleLogin = async () => {
     const client = new GraphQLClient(graphqlEndpoint);
     try {
       const data = await client.request(LOGIN_MUTATION, { input: { email, password } });
       const { token, user } = data.login;
 
+      // Store in localStorage
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+
+      // Update context (this triggers re-renders everywhere)
+      login(user);
 
       navigate("/dashboard");
     } catch (err) {
