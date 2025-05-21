@@ -1,6 +1,6 @@
 // components/MainLayout.jsx
-import SideBarNav from "../scenes/global/Sidebar";
-import Topbar from "../scenes/global/Topbar";
+import SideBarNav from "../navigation/Sidebar";
+import Topbar from "../navigation/Topbar";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {

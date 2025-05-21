@@ -12,8 +12,8 @@ import {
   Avatar,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import { tokens } from "../../theme";
-import userImage from "../../assets/logo.png";
+import { tokens } from "../theme";
+import userImage from "../assets/logo.png";
 
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
