@@ -13,7 +13,7 @@
     { "label": "High", "value": "high" }
   ],
   "roleOptions": [
-    { "label": "Public", "value": "public" },
+    { "label": "Guest", "value": "guest" },
     { "label": "Interested", "value": "interested" },
     { "label": "Member", "value": "member" },
     { "label": "Admin", "value": "admin" }
