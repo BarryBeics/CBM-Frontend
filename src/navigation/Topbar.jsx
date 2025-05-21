@@ -1,57 +1,87 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
+import { Box, IconButton, useTheme, Tooltip } from "@mui/material";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ColorModeContext, tokens } from "../theme";
-import InputBase from "@mui/material/InputBase";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import LogoutButton from "../components/LogoutButton";
+import {
+  DarkModeOutlined as DarkModeOutlinedIcon,
+  LightModeOutlined as LightModeOutlinedIcon,
+  NotificationsOutlined as NotificationsOutlinedIcon,
+  SettingsOutlined as SettingsOutlinedIcon,
+  PersonOutlined as PersonOutlinedIcon,
+  LoginOutlined as LoginOutlinedIcon,
+} from "@mui/icons-material";
+
+import { useAuth } from "../auth/AuthContext";
+import LogoutButton from "../auth/LogoutButton";
 
 const Topbar = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const colorMode = useContext(ColorModeContext);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
+  const navigate = useNavigate();
 
-    return (
-        <Box display="flex" justifyContent="space-between" p={2}> 
-        {/* SEACH BAR */}
-        <Box 
-            display="flex" 
-            backgroundColor={colors.primary[400]}
-            borderRadius="3px"
-        >
-            <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-            <IconButton type="button" sx={{ p: 1}}>
-                <SearchIcon />
-            </IconButton>
-        </Box>
+  const { user, role } = useAuth();
+  const isLoggedIn = !!user;
 
+  const showPrivateIcons = role === "member" || role === "admin";
 
-        {/* ICONS */}
-        <Box display="flex">
-            <IconButton onClick={colorMode.toggleColorMode}>
-                {theme.palette.mode === 'dark' ? (
-                    <DarkModeOutlinedIcon />
-                ) : (
-                    <LightModeOutlinedIcon />
-                )}
-            </IconButton>
-            <IconButton>
+  useEffect(() => {
+    console.log("Topbar re-rendered - role:", role, "| logged in:", isLoggedIn);
+  }, [role, isLoggedIn]);
+
+  return (
+    <Box display="flex" justifyContent="space-between" p={2}>
+      {/* LEFT */}
+      <Box />
+
+      {/* RIGHT */}
+      <Box display="flex" alignItems="center">
+        <Tooltip title="Toggle theme">
+          <IconButton onClick={colorMode.toggleColorMode}>
+            {theme.palette.mode === "dark" ? (
+              <DarkModeOutlinedIcon />
+            ) : (
+              <LightModeOutlinedIcon />
+            )}
+          </IconButton>
+        </Tooltip>
+
+        {showPrivateIcons && (
+          <>
+            <Tooltip title="Notifications">
+              <IconButton>
                 <NotificationsOutlinedIcon />
-            </IconButton>
-            <IconButton>
-                <SettingsOutlinedIcon />
-            </IconButton>
-            <IconButton>
-                <PersonOutlinedIcon />
-            </IconButton>
-            <LogoutButton />
+              </IconButton>
+            </Tooltip>
 
-        </Box>
-        </Box>);
-}
+            <Tooltip title="Settings">
+              <IconButton>
+                <SettingsOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Profile">
+              <IconButton>
+                <PersonOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+
+        {isLoggedIn ? (
+          <Tooltip title="Logout">
+            <LogoutButton />
+          </Tooltip>
+        ) : (
+          <Tooltip title="Login">
+            <IconButton onClick={() => navigate("/login")}>
+              <LoginOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
+    </Box>
+  );
+};
 
 export default Topbar;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Drawer,
@@ -10,94 +10,34 @@ import {
   Typography,
   useTheme,
   Avatar,
+  Tooltip,
 } from "@mui/material";
+import { useAuth } from "../auth/AuthContext";
+import { navItems } from "./navItems";
 import { Link, useLocation } from "react-router-dom";
 import { tokens } from "../theme";
 import userImage from "../assets/logo.png";
 
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import FormatListNumberedOutlinedIcon from "@mui/icons-material/FormatListNumberedOutlined";
-import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
-import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
-import ArticleIcon from '@mui/icons-material/Article';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import MultilineChartOutlinedIcon from '@mui/icons-material/MultilineChartOutlined';
-import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
-
-
-
-import CodeOffOutlined from "@mui/icons-material/CodeOffOutlined";
-
-const navItems = [
-  { section: "Public" },
-  { text: "Landing Page", icon: <HomeOutlinedIcon />, path: "/" },
-  { text: "FAQ Page", icon: <HelpOutlineOutlinedIcon />, path: "/faq" },
-  {
-    text: "Register Interest",
-    icon: <PersonOutlinedIcon />,
-    path: "/register",
-  },
-  { section: "Strategy" },
-  { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  // { text: "Template - Manage Team", icon: <PeopleOutlinedIcon />, path: "/team" },
-  //  { text: "Template - Contacts Info", icon: <ContactsOutlinedIcon />, path: "/contacts" },
-  { text: "Manage Bots", icon: <CodeOffOutlined />, path: "/bots" },
-  // { text: "Template - Invoices", icon: <ReceiptOutlinedIcon />, path: "/invoices" },
-  { section: "Admin" },
-  {
-    text: "Manage Users",
-    icon: <PeopleAltOutlinedIcon />,
-    path: "/manageUsers",
-  },
-  {
-    text: "Manage Tasks",
-    icon: <FormatListNumberedOutlinedIcon />,
-    path: "/manageTasks",
-  },
-  {
-    text: "Manage Projects",
-    icon: <AccountTreeOutlinedIcon />,
-    path: "/manageProjects",
-  },
-  {
-    text: "Manage SOPs",
-    icon: <ArticleIcon />,
-    path: "/manageSOPs",
-  },
-  { text: "Kanban Board", icon: <ViewKanbanIcon />, path: "/kanban" },
-  
-  { section: "Charts" },
-  { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart" },
-  { text: "SMA Chart", icon: <MultilineChartOutlinedIcon />, path: "/smaChart" },
-  {
-    text: "Avg Gain Chart",
-    icon: <TrendingUpOutlinedIcon />,
-    path: "/avgGainChart",
-  },
-  // { text: "Template - Bar Chart", icon: <BarChartOutlinedIcon />, path: "/bar" },
-  // { text: "Template - Pie Chart", icon: <PieChartOutlineOutlinedIcon />, path: "/pie" },
-  // { text: "Template - Line Chart", icon: <TimelineOutlinedIcon />, path: "/line" },
-];
 
 const SidebarNav = () => {
+  const { user, role = "guest" } = useAuth() || {};
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user"));
   const userName = user ? `${user.firstName} ${user.lastName}` : "Guest";
-  const userRole = user?.role || "N/A";
+  const userRole = user?.role || "";
+
+  const hasAccess = (itemRoles = []) =>
+    itemRoles.length === 0 || itemRoles.includes(role);
+  
+  console.log("Current role:", role);
+  console.log("Visible nav items:", navItems.filter(item => !item.section && (item.roles.length === 0 || item.roles.includes(role))));
+
+ useEffect(() => {
+    console.log("Topbar re-rendered - role:", role);
+  }, [role]);
 
   return (
     <Drawer
@@ -149,49 +89,66 @@ const SidebarNav = () => {
 
         {/* Navigation */}
         <List>
-          {navItems.map((item, index) => {
-            if (item.section) {
-              return (
-                !isCollapsed && (
-                  <Typography
-                    key={`section-${item.section}`}
-                    sx={{ m: "20px 0 5px 15px" }}
-                    variant="h6"
-                    color={colors.grey[300]}
-                  >
-                    {item.section}
-                  </Typography>
-                )
-              );
-            }
+        {navItems.map((item) => {
+          /* hide whole Admin section for non-admins */
+          if (item.adminOnly && role !== "admin") return null;
 
-            const isActive = location.pathname === item.path;
+          /* render section label */
+          if (item.section) {
             return (
-              <ListItem
-                key={item.text}
-                button
-                component={Link}
-                to={item.path}
-                sx={{
-                  mb: 1,
-                  bgcolor: isActive ? "#6870fa" : "transparent",
-                  color: isActive ? "#ffffff" : colors.grey[100],
-                  borderRadius: 1,
-                  "&:hover": {
-                    bgcolor: "#868dfb",
-                    color: "#fff",
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ color: "inherit", minWidth: 36 }}>
-                  {item.icon}
-                </ListItemIcon>
-                {!isCollapsed && <ListItemText primary={item.text} />}
-              </ListItem>
+              !isCollapsed && (
+                <Typography key={`section-${item.section}`} sx={{ m: "20px 0 5px 15px" }}
+                  variant="h6" color={colors.grey[300]}>
+                  {item.section}
+                </Typography>
+              )
             );
-          })}
-        </List>
-      </Box>
+          }
+
+          const accessible = hasAccess(item.roles);
+          const isActive   = location.pathname === item.path;
+
+          const listItem = (
+            <ListItem
+              key={item.text}
+              button={accessible}
+              component={accessible ? Link : "div"}
+              to={accessible ? item.path : undefined}
+              disabled={!accessible}
+              sx={{
+                mb: 1,
+                opacity: accessible ? 1 : 0.45,
+                bgcolor: isActive && accessible ? "#6870fa" : "transparent",
+                "&:hover": {
+                  bgcolor: accessible ? "#868dfb" : "transparent",
+                },
+                borderRadius: 1,
+                cursor: accessible ? "pointer" : "default",
+              }}
+            >
+              <ListItemIcon sx={{ color: "inherit", minWidth: 36 }}>
+                {item.icon}
+              </ListItemIcon>
+              {!isCollapsed && <ListItemText primary={item.text} />}
+            </ListItem>
+          );
+
+          return accessible ? (
+            listItem
+          ) : (
+            <Tooltip
+              key={item.text}
+              title="Login or upgrade to access"
+              arrow
+              placement="right"
+            >
+              {/* span wrapper lets tooltip show on disabled item */}
+              <span>{listItem}</span>
+            </Tooltip>
+          );
+        })}
+      </List>
+      </Box> 
     </Drawer>
   );
 };
