@@ -1,15 +1,55 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  MenuItem,
+  useMediaQuery,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import { GraphQLClient, gql } from "graphql-request";
+import { graphqlEndpoint } from "../../config";
+
+const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      firstName
+      lastName
+      email
+      role
+    }
+  }
+`;
 
 const Register = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    console.log("Ballot Registration:", values);
-    // You can replace this with an API call or GraphQL mutation
+  const handleFormSubmit = async (values, { resetForm }) => {
+    const client = new GraphQLClient(graphqlEndpoint);
+
+    const input = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: "ballot-temp-password", // Placeholder, or you could randomize & never expose
+      mobileNumber: values.mobileNumber,
+      role: "interested",
+      invitedBy: null,
+      preferredContactMethod: values.preferredContactMethod,
+    };
+
+    try {
+      const data = await client.request(CREATE_USER_MUTATION, { input });
+      console.log("Registration successful:", data.createUser);
+      resetForm();
+      // Show success banner/snackbar here
+    } catch (error) {
+      console.error("Registration error", error);
+      // Show error banner/snackbar here
+    }
   };
 
   return (
@@ -20,7 +60,8 @@ const Register = () => {
       />
 
       <Typography variant="body1" mb={3}>
-        Submit your details to be considered for early access to Scalpel Hound. Selected members will be contacted directly.
+        Submit your details to be considered for early access to Scalpel Hound.
+        Selected members will be contacted directly.
       </Typography>
 
       <Formik
@@ -35,6 +76,7 @@ const Register = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -48,26 +90,38 @@ const Register = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Full Name"
+                label="First Name"
+                name="firstName"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.name}
-                name="name"
-                error={!!touched.name && !!errors.name}
-                helperText={touched.name && errors.name}
-                sx={{ gridColumn: "span 4" }}
+                value={values.firstName}
+                error={!!touched.firstName && !!errors.firstName}
+                helperText={touched.firstName && errors.firstName}
+                sx={{ gridColumn: "span 2" }}
               />
 
               <TextField
                 fullWidth
                 variant="filled"
-                type="email"
+                label="Last Name"
+                name="lastName"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.lastName}
+                error={!!touched.lastName && !!errors.lastName}
+                helperText={touched.lastName && errors.lastName}
+                sx={{ gridColumn: "span 2" }}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
                 label="Email"
+                name="email"
+                type="email"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.email}
-                name="email"
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
                 sx={{ gridColumn: "span 4" }}
@@ -76,20 +130,47 @@ const Register = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Telegram (optional)"
+                label="Mobile Number"
+                name="mobileNumber"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.telegram}
-                name="telegram"
-                error={!!touched.telegram && !!errors.telegram}
-                helperText={touched.telegram && errors.telegram}
+                value={values.mobileNumber}
+                error={!!touched.mobileNumber && !!errors.mobileNumber}
+                helperText={touched.mobileNumber && errors.mobileNumber}
                 sx={{ gridColumn: "span 4" }}
               />
+
+              <TextField
+                select
+                fullWidth
+                variant="filled"
+                label="Preferred Contact Method"
+                name="preferredContactMethod"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.preferredContactMethod}
+                error={
+                  !!touched.preferredContactMethod &&
+                  !!errors.preferredContactMethod
+                }
+                helperText={
+                  touched.preferredContactMethod &&
+                  errors.preferredContactMethod
+                }
+                sx={{ gridColumn: "span 4" }}
+              >
+                <MenuItem value="email">Email</MenuItem>
+                <MenuItem value="whatsapp">WhatsApp</MenuItem>
+              </TextField>
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={isSubmitting}
+              >
                 Submit Application
               </Button>
             </Box>
@@ -102,16 +183,25 @@ const Register = () => {
 
 // Validation Schema
 const registerSchema = yup.object().shape({
-  name: yup.string().required("Full name is required"),
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  telegram: yup.string().notRequired(),
+  mobileNumber: yup.string()
+    .required("Mobile number is required")
+    .matches(/^[+0-9 ]+$/, "Must be a valid phone number"),
+  preferredContactMethod: yup
+    .string()
+    .oneOf(["email", "whatsapp"])
+    .required("Preferred contact method is required"),
 });
 
 // Default Form Values
 const initialValues = {
-  name: "",
+  firstName: "",
+  lastName: "",
   email: "",
-  telegram: "",
+  mobileNumber: "",
+  preferredContactMethod: "email",
 };
 
 export default Register;
