@@ -26,7 +26,6 @@ const GET_ALL_USERS_QUERY = `
       firstName
       lastName
       email
-      contact
       role
     }
   }
