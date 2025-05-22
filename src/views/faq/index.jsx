@@ -56,6 +56,41 @@ const FAQ = () => {
         </AccordionDetails>
       </Accordion>
 
+      <Accordion>
+  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Typography color={colors.greenAccent[500]} variant="h5">
+      Why does this cost more than other platforms?
+    </Typography>
+  </AccordionSummary>
+  <AccordionDetails>
+    <Typography>
+      You’re not buying a course or a signal group. You’re backing a real-time, full-time builder.
+      <br /><br />
+      This isn’t content. It’s commitment. There are no subscriptions, affiliate links, or commission kickbacks.
+      <br /><br />
+      You pay once. I trade. If I win, you win.
+    </Typography>
+  </AccordionDetails>
+</Accordion>
+
+<Accordion>
+  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Typography color={colors.greenAccent[500]} variant="h5">
+      Is this running right now?
+    </Typography>
+  </AccordionSummary>
+  <AccordionDetails>
+    <Typography>
+      The system is actively in development. It’s already pulling live market data and generating charts.
+      <br /><br />
+      The next step: building bots that comb historical data for high-probability setups, then executing those through live trading.
+      <br /><br />
+      You’re not late. You’re early.
+    </Typography>
+  </AccordionDetails>
+</Accordion>
+
+
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
