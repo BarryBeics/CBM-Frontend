@@ -15,6 +15,8 @@ import { GraphQLClient } from "graphql-request";
 import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
 import { graphqlEndpoint } from "../../config";
+import LabelSelector from "../../components/LabelSelector";
+
 
 const client = new GraphQLClient(graphqlEndpoint);
 
@@ -22,16 +24,17 @@ const GET_TASK_QUERY = `
   query GetTaskById($id: ID!) {
     taskById(id: $id) {
       id
-      title
-      description
-      status
-      priority
-      type
-      labels
-      assignedTo
-      dueDate
-      category
-      projectId
+    title
+    description
+    status
+    labels
+    assignedTo
+    dueDate
+    deferDate
+    department
+    projectId
+    isWaitingFor
+    isSomedayMaybe
     }
   }
 `;
@@ -40,16 +43,17 @@ const UPDATE_TASK_MUTATION = `
   mutation UpdateTask($input: UpdateTaskInput!) {
     updateTask(input: $input) {
       id
-      title
-      description
-      status
-      priority
-      type
-      labels
-      assignedTo
-      dueDate
-      category
-      projectId
+    title
+    description
+    status
+    labels
+    assignedTo
+    dueDate
+    deferDate
+    department
+    projectId
+    isWaitingFor
+    isSomedayMaybe
     }
   }
 `;
@@ -74,15 +78,18 @@ const EditTaskForm = () => {
           title: taskById.title || "",
           description: taskById.description || "",
           status: taskById.status || "",
-          priority: taskById.priority || "",
-          type: taskById.type || "",
-          labels: taskById.labels || "",
+          labels: taskById.labels || [],
           assignedTo: taskById.assignedTo || "",
           dueDate: taskById.dueDate
             ? new Date(taskById.dueDate).toISOString().split("T")[0]
             : "",
-          category: taskById.category || "",
+          deferDate: taskById.deferDate
+            ? new Date(taskById.deferDate).toISOString().split("T")[0]
+            : "",
+          department: taskById.department || "",
           projectId: taskById.projectId || "",
+          isWaitingFor: taskById.isWaitingFor || false,
+          isSomedayMaybe: taskById.isSomedayMaybe || false,
         });
       } catch (err) {
         console.error("Error fetching task:", err);
@@ -92,13 +99,17 @@ const EditTaskForm = () => {
     fetchTask();
   }, [id]);
 
+  const allowedLabels = formOptions?.labelOptions || [];
+
   const validationSchema = yup.object().shape({
     title: yup.string().required("required"),
     description: yup.string(),
     status: yup.string().required("required"),
     priority: yup.string(),
     type: yup.string(),
-    labels: yup.string(),
+    labels: yup
+    .array()
+    .of(yup.string().oneOf(allowedLabels, "Invalid label")),
     assignedTo: yup.string(),
     dueDate: yup.string(),
     category: yup.string(),
@@ -144,109 +155,121 @@ const EditTaskForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box display="grid" gap="20px" gridTemplateColumns="repeat(4, minmax(0, 1fr))">
-              <TextField
-                label="Title"
-                name="title"
-                value={values.title}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={!!touched.title && !!errors.title}
-                helperText={touched.title && errors.title}
-                sx={{ gridColumn: "span 4" }}
-              />
+            <TextField
+  label="Title"
+  name="title"
+  value={values.title}
+  onChange={handleChange}
+  onBlur={handleBlur}
+  error={!!touched.title && !!errors.title}
+  helperText={touched.title && errors.title}
+  sx={{ gridColumn: "span 4" }}
+/>
 
-              <TextField
-                label="Description"
-                name="description"
-                value={values.description}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                multiline
-                rows={3}
-                sx={{ gridColumn: "span 4" }}
-              />
+<LabelSelector
+  selectedLabels={values.labels}
+  setFieldValue={setFieldValue}
+/>
 
-              <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
-                <InputLabel>Status</InputLabel>
-                <Select
-                  name="status"
-                  value={values.status}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  >
-                    {formOptions.statusOptions.map((opt) => (
-                      <MenuItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-              </FormControl>
 
-              <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
-                <InputLabel>Priority</InputLabel>
-                  <Select
-                                  name="priority"
-                                  value={values.priority}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                >
-                                  {formOptions.priorityOptions.map((opt) => (
-                                      <MenuItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-              </FormControl>
 
-              <TextField
-                label="Type"
-                name="type"
-                value={values.assignedTo}
-                onChange={handleChange}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                label="Labels"
-                name="labels"
-                value={values.assignedTo}
-                onChange={handleChange}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                label="Assigned To"
-                name="assignedTo"
-                value={values.assignedTo}
-                onChange={handleChange}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                label="Due Date"
-                name="dueDate"
-                type="date"
-                value={values.dueDate}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                sx={{ gridColumn: "span 2" }}
-              />
+<FormControl fullWidth sx={{ gridColumn: "span 2" }}>
+  <InputLabel>Status</InputLabel>
+  <Select
+    name="status"
+    value={values.status}
+    onChange={handleChange}
+    onBlur={handleBlur}
+  >
+    {formOptions.taskStatusOptions.map((opt) => (
+      <MenuItem key={opt.value} value={opt.value}>
+        {opt.label}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-              <TextField
-                label="Category"
-                name="category"
-                value={values.category}
-                onChange={handleChange}
-                sx={{ gridColumn: "span 2" }}
-              />
 
-              <TextField
-                label="Project Id"
-                name="projectId"
-                value={values.sopLink}
-                onChange={handleChange}
-                sx={{ gridColumn: "span 2" }}
-              />
+<TextField
+  label="Assigned To"
+  name="assignedTo"
+  value={values.assignedTo}
+  onChange={handleChange}
+  sx={{ gridColumn: "span 2" }}
+/>
+
+<TextField
+  label="Due Date"
+  name="dueDate"
+  type="date"
+  value={values.dueDate}
+  onChange={handleChange}
+  InputLabelProps={{ shrink: true }}
+  sx={{ gridColumn: "span 2" }}
+/>
+
+<TextField
+  label="Defer Date"
+  name="deferDate"
+  type="date"
+  value={values.deferDate}
+  onChange={handleChange}
+  InputLabelProps={{ shrink: true }}
+  sx={{ gridColumn: "span 2" }}
+/>
+
+<FormControl fullWidth sx={{ gridColumn: "span 2" }}>
+  <InputLabel>Department</InputLabel>
+  <Select
+    name="department"
+    value={values.department}
+    onChange={handleChange}
+  >
+    {formOptions.departmentOptions?.map((opt) => (
+      <MenuItem key={opt.value} value={opt.value}>
+        {opt.label}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+<FormControl
+  fullWidth
+  sx={{ gridColumn: "span 2", display: "flex", flexDirection: "row", alignItems: "center" }}
+>
+  <label style={{ marginRight: "20px" }}>
+    <input
+      type="checkbox"
+      name="isWaitingFor"
+      checked={values.isWaitingFor}
+      onChange={handleChange}
+    />{" "}
+    Waiting For
+  </label>
+
+  <label>
+    <input
+      type="checkbox"
+      name="isSomedayMaybe"
+      checked={values.isSomedayMaybe}
+      onChange={handleChange}
+    />{" "}
+    Someday/Maybe
+  </label>
+</FormControl>
+
+<TextField
+  label="Project ID"
+  name="projectId"
+  value={values.projectId}
+  onChange={handleChange}
+  sx={{ gridColumn: "span 2" }}
+/>
+
             </Box>
 
             <Box display="flex" justifyContent="flex-end" mt="20px">

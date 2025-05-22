@@ -32,9 +32,6 @@ const SidebarNav = () => {
   const hasAccess = (itemRoles = []) =>
     itemRoles.length === 0 || itemRoles.includes(role);
   
-  console.log("Current role:", role);
-  console.log("Visible nav items:", navItems.filter(item => !item.section && (item.roles.length === 0 || item.roles.includes(role))));
-
  useEffect(() => {
     console.log("Topbar re-rendered - role:", role);
   }, [role]);
