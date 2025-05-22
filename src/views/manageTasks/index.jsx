@@ -19,11 +19,14 @@ const GET_ALL_TASKS_QUERY = `
     title
     description
     status
-    priority
+    labels
     assignedTo
     dueDate
-    category
+    deferDate
+    department
     projectId
+    isWaitingFor
+    isSomedayMaybe
     createdAt
     updatedAt
   }
@@ -94,7 +97,6 @@ const ManageTasks = () => {
   const columns = [
     { field: "title", headerName: "Title", flex: 1 },
     { field: "status", headerName: "Status", flex: 1 },
-    { field: "priority", headerName: "Priority", flex: 1 },
     { field: "dueDate", headerName: "Due Date", flex: 1 },
     { field: "assignedTo", headerName: "Assigned To", flex: 1 },
     { field: "category", headerName: "Category", flex: 1 },

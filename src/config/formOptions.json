@@ -1,5 +1,5 @@
 {
-  "statusOptions": [
+  "taskStatusOptions": [
   { "label": "Inbox", "value": "inbox" },
   { "label": "Next Action", "value": "nextAction" },
   { "label": "Waiting For", "value": "waitingFor" },
@@ -7,35 +7,39 @@
   { "label": "Someday/Maybe", "value": "somedayMaybe" },
   { "label": "Complete", "value": "complete" }
 ],
-  "priorityOptions": [
-    { "label": "Low", "value": "low" },
-    { "label": "Medium", "value": "medium" },
-    { "label": "High", "value": "high" }
-  ],
+"projectStatusOptions": [
+  { "label": "Active", "value": "active" },
+  { "label": "On Hold", "value": "onHold" },
+  { "label": "Completed", "value": "completed" },
+  { "label": "Cancelled", "value": "cancelled" },
+  { "label": "Archived", "value": "archived" }
+],
   "roleOptions": [
     { "label": "Guest", "value": "guest" },
     { "label": "Interested", "value": "interested" },
     { "label": "Member", "value": "member" },
     { "label": "Admin", "value": "admin" }
   ],
-  "categoryOptions": [
+  "departmentOptions": [
     { "label": "Sales", "value": "sales" },
     { "label": "Marketing", "value": "marketing" },
     { "label": "Accounts", "value": "accounts" },
     { "label": "Admin", "value": "admin" },
-    { "label": "Programing", "value": "programing" }
+    { "label": "Programing", "value": "programing" },
+    { "label": "Design", "value": "design" }
   ],
-  "contextOptions": [
-    { "label": "Work", "value": "work" },
-    { "label": "Home", "value": "home" },
-    { "label": "Errands", "value": "errands" },
-    { "label": "Waiting For", "value": "waitingFor" },
-    { "label": "Someday/Maybe", "value": "somedayMaybe" }
-  ],
-  "labelSuggestions": [
-    "cleaning",
+  "labelOptions": [
     "compliance",
     "training",
-    "safety"
+    "safety",
+    "High Priority",
+    "Meeting",
+    "Call",
+    "Programming",
+    "Design",
+    "Compliance",
+    "Follow-up",
+    "Internal",
+    "External"
   ]
 }

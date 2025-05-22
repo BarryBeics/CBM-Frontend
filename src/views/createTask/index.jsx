@@ -15,6 +15,7 @@ import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
+import LabelSelector from "../../components/LabelSelector";
 
 // GraphQL client
 const client = new GraphQLClient(graphqlEndpoint);
@@ -27,18 +28,20 @@ const CREATE_TASK_MUTATION = `
       title
       description
       status
-      priority
-      type
       labels
       assignedTo
       dueDate
-      category
+      deferDate
+      department
       projectId
+      isWaitingFor
+      isSomedayMaybe
       createdAt
       updatedAt
     }
   }
 `;
+
 
 const CreateTaskForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -54,9 +57,14 @@ const CreateTaskForm = () => {
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
       // Remove empty optional fields
-      const cleanedValues = Object.fromEntries(
-        Object.entries(values).filter(([_, v]) => v !== "")
-      );
+      const cleanedValues = {
+        ...values,
+        labels: values.labels || [],
+        isWaitingFor: !!values.isWaitingFor,
+        isSomedayMaybe: !!values.isSomedayMaybe,
+      };
+      
+      
 
       console.log("Submitting task with values:", cleanedValues);
 
@@ -91,6 +99,7 @@ const CreateTaskForm = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -164,86 +173,80 @@ const CreateTaskForm = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   >
-                    {formOptions.statusOptions.map((opt) => (
+                    {formOptions.taskStatusOptions.map((opt) => (
                       <MenuItem key={opt.value} value={opt.value}>
                         {opt.label}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
+                <TextField
+  fullWidth
+  variant="filled"
+  type="date"
+  label="Defer Date"
+  InputLabelProps={{ shrink: true }}
+  onBlur={handleBlur}
+  onChange={handleChange}
+  value={values.deferDate}
+  name="deferDate"
+  sx={{ gridColumn: "span 2" }}
+/>
 
-              <FormControl
-                fullWidth
-                variant="filled"
-                sx={{ gridColumn: "span 2" }}
-              >
-                <InputLabel>Priority</InputLabel>
-                <Select
-                  name="priority"
-                  value={values.priority}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                >
-                  {formOptions.priorityOptions.map((opt) => (
-                      <MenuItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+<FormControl
+  fullWidth
+  variant="filled"
+  sx={{ gridColumn: "span 2" }}
+>
+  <InputLabel>Department</InputLabel>
+  <Select
+    name="department"
+    value={values.department}
+    onChange={handleChange}
+    onBlur={handleBlur}
+  >
+    {formOptions.departmentOptions.map((opt) => (
+      <MenuItem key={opt.value} value={opt.value}>
+        {opt.label}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Type"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.type}
-                name="type"
-                sx={{ gridColumn: "span 2" }}
-              />
+<FormControl
+  fullWidth
+  sx={{ gridColumn: "span 2", display: "flex", flexDirection: "row", alignItems: "center" }}
+>
+  <label style={{ marginRight: "10px" }}>
+    <input
+      type="checkbox"
+      name="isWaitingFor"
+      checked={values.isWaitingFor}
+      onChange={handleChange}
+    />
+    Waiting For
+  </label>
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Labels (comma separated)"
-                onBlur={handleBlur}
-                onChange={(e) =>
-                  handleChange({
-                    target: {
-                      name: "labels",
-                      value: e.target.value
-                        .split(",")
-                        .map((label) => label.trim()),
-                    },
-                  })
-                }
-                value={values.labels?.join(", ")}
-                name="labels"
-                sx={{ gridColumn: "span 2" }}
-              />
+  <label>
+    <input
+      type="checkbox"
+      name="isSomedayMaybe"
+      checked={values.isSomedayMaybe}
+      onChange={handleChange}
+    />
+    Someday/Maybe
+  </label>
+</FormControl>
 
-              <FormControl
-                fullWidth
-                variant="filled"
-                sx={{ gridColumn: "span 2" }}
-              >
-                <InputLabel>Category</InputLabel>
-                <Select
-                  name="category"
-                  value={values.category}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                >
-                  {formOptions.categoryOptions.map((opt) => (
-                      <MenuItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+              
+<LabelSelector
+  selectedLabels={values.labels}
+  setFieldValue={setFieldValue}
+  error={errors.labels}
+  touched={touched.labels}
+/>
+           
+              
               <input
                 type="hidden"
                 name="projectId"
@@ -263,25 +266,36 @@ const CreateTaskForm = () => {
   );
 };
 
+const allowedLabels = formOptions?.labelOptions || [];
+
 const taskSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   description: yup.string(),
   status: yup.string().required("Status is required"),
-  priority: yup.string().required("Priority is required"),
+  labels: yup
+    .array()
+    .of(yup.string().oneOf(allowedLabels, "Invalid label")),
   assignedTo: yup.string(),
   dueDate: yup.string(),
-  category: yup.string(),
-  sopLink: yup.string(),
+  deferDate: yup.string(),
+  department: yup.string(),
+  isWaitingFor: yup.boolean(),
+  isSomedayMaybe: yup.boolean(),
 });
+
 
 const initialTaskValues = {
   title: "",
   description: "",
-  status: "todo",
-  priority: "medium",
+  status: "inbox",
+  labels: [],
   assignedTo: "",
   dueDate: "",
-  category: "",
+  deferDate: "",
+  department: "",
+  isWaitingFor: false,
+  isSomedayMaybe: false,
 };
+
 
 export default CreateTaskForm;
