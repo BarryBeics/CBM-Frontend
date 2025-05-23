@@ -44,7 +44,7 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
         },
         tooltip: {
           container: {
-            color: colors.primary[500],
+            color: colors.houndGold[500],
           },
         },
       }}

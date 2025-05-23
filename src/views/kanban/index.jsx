@@ -26,10 +26,13 @@ const GET_ALL_TASKS = `
   query {
     allTasks {
       id
-      title
-      priority
-      assignedTo
-      status
+    title
+    status
+    labels
+    assignedTo
+    department
+    isWaitingFor
+    isSomedayMaybe
     }
   }
 `;
@@ -46,11 +49,11 @@ const UPDATE_TASK_STATUS = `
 
 
 const STATUS_COLUMNS = {
-  inbox: "Inbox",
+//  inbox: "Inbox",
   nextAction: "Next Action",
   waitingFor: "Waiting For",
   scheduled: "Scheduled",
-  somedayMaybe: "Someday/Maybe",
+ // somedayMaybe: "Someday/Maybe",
   complete: "Complete",
 };
 
@@ -68,11 +71,11 @@ const KanbanBoard = () => {
   });
 
   const [tasksByStatus, setTasksByStatus] = useState({
-    inbox: [],
+    //inbox: [],
     nextAction: [],
     waitingFor: [],
     scheduled: [],
-    somedayMaybe: [],
+    //somedayMaybe: [],
     complete: [],
   });
 
@@ -195,7 +198,7 @@ const KanbanBoard = () => {
 
       {/* Kanban Columns */}
       <DragDropContext onDragEnd={handleDragEnd}>
-  <Box display="flex" gap={2} p={2} overflow="auto" backgroundColor={colors.primary[400]} borderRadius="8px" boxShadow={1} minHeight="60vh">
+  <Box display="flex" gap={2} p={2} overflow="auto" backgroundColor={colors.grey[600]} borderRadius="5px" boxShadow={1} minHeight="60vh">
     {Object.entries(STATUS_COLUMNS).map(([key, label]) => {
       const tasks = tasksByStatus[key] || [];
 
@@ -207,14 +210,14 @@ const KanbanBoard = () => {
               {...provided.droppableProps}
               minWidth="300px"
               flexShrink={0}
-              backgroundColor={colors.primary[500]}
-              borderRadius="8px"
+              backgroundColor={colors.grey[700]}
+              borderRadius="5px"
               boxShadow={2}
               p={2}
               sx={{ border: `1px solid ${colors.grey[700]}` }}
             >
-              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} pb={1} borderBottom={`2px solid ${colors.greenAccent[400]}`}>
-                <Typography variant="h6" sx={{ color: colors.greenAccent[400], fontWeight: 600 }}>
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} pb={1} borderBottom={`2px solid ${colors.scalpelTeal[400]}`}>
+                <Typography variant="h6" sx={{ color: colors.grey[200], fontWeight: 600 }}>
                   {label} ({tasks.length})
                 </Typography>
               </Box>
@@ -230,13 +233,13 @@ const KanbanBoard = () => {
                         p: 2,
                         mb: 2,
                         borderRadius: "8px",
-                        backgroundColor: colors.primary[400],
+                        backgroundColor: colors.grey[800],
                         color: colors.grey[100],
-                        border: `1px solid ${colors.grey[600]}`,
+                        border: `1px solid ${colors.scalpelTeal[500]}`,
                         transition: "transform 0.1s ease-in-out, box-shadow 0.2s",
                         "&:hover": {
                           transform: "scale(1.02)",
-                          boxShadow: `0 4px 20px ${colors.blueAccent[700]}`,
+                          boxShadow: `0 4px 20px ${colors.scalpelTeal[700]}`,
                         },
                       }}
                       elevation={3}
@@ -245,22 +248,9 @@ const KanbanBoard = () => {
                         {task.title}
                       </Typography>
                       <Typography variant="body2" sx={{ color: colors.grey[300], mb: 0.5 }}>
-                        👤 {task.assignedTo || "Unassigned"}
+                        {task.assignedTo || "Unassigned"}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color:
-                            task.priority === "high"
-                              ? colors.redAccent[400]
-                              : task.priority === "medium"
-                              ? colors.yellowAccent[400]
-                              : colors.greenAccent[400],
-                          fontWeight: 500,
-                        }}
-                      >
-                        ⚡ {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                      </Typography>
+                     
                     </Paper>
                   )}
                 </Draggable>

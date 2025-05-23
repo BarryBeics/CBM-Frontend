@@ -6,13 +6,14 @@ import {
   useTheme,
   Button,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { GraphQLClient } from "graphql-request";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import DeleteUserModal from "../../components/DeleteUserModal";
+import TableActions from "../../components/TableActions";
+import ThemedDataGrid from "../../components/ThemedDataGrid";
 import { graphqlEndpoint } from "../../config";
 import { tokens } from "../../theme";
 
@@ -117,10 +118,10 @@ const ManageUsers = () => {
           justifyContent="center"
           backgroundColor={
             access === "admin"
-              ? colors.greenAccent[600]
+              ? colors.scalpelTeal[600]
               : access === "member"
-              ? colors.greenAccent[700]
-              : colors.greenAccent[800]
+              ? colors.scalpelTeal[700]
+              : colors.scalpelTeal[800]
           }
           borderRadius="4px"
           sx={{ maxHeight: "30px" }}
@@ -140,26 +141,13 @@ const ManageUsers = () => {
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
-        <Box display="flex" gap="10px" m="10px auto">
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => handleEdit(row.email)}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={() => handleOpenDeleteModal(row)}
-          >
-            Delete
-          </Button>
-        </Box>
-      ),
-    },
+        <TableActions
+        onEdit={() => handleEdit(row.id)}
+        onDelete={() => handleOpenDeleteModal(row)}
+        hideCreate={true} 
+      />
+  ),
+},
   ];
 
   return (
@@ -174,28 +162,7 @@ const ManageUsers = () => {
       Create User
     </Button>
   </Box>
-  <Box
-    m="40px 0 0 0"
-    height="75vh"
-    sx={{
-          "& .MuiDataGrid-root": { border: "none" },
-          "& .MuiDataGrid-cell": { borderBottom: "none" },
-          "& .name-column--cell": { color: colors.greenAccent[300] },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-        }}
-      >
-        <DataGrid rows={users} columns={columns} />
-      </Box>
+  <ThemedDataGrid rows={users} columns={columns} />
 
       {/* Delete Modal */}
       <DeleteUserModal

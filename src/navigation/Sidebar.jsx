@@ -14,14 +14,19 @@ import {
 } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
 import { navItems } from "./navItems";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { tokens } from "../theme";
 import userImage from "../assets/logo.png";
 
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 const SidebarNav = () => {
-  const { user, role = "guest" } = useAuth() || {};
+  const { user } = useAuth() || {};
+const role = user?.role || "guest";
+useEffect(() => {
+  console.log("Sidebar re-rendered — role:", role);
+}, [role]);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const location = useLocation();
@@ -29,8 +34,11 @@ const SidebarNav = () => {
   const userName = user ? `${user.firstName} ${user.lastName}` : "Guest";
   const userRole = user?.role || "";
 
-  const hasAccess = (itemRoles = []) =>
-    itemRoles.length === 0 || itemRoles.includes(role);
+  const hasAccess = (itemRoles = []) => {
+    if (!role) return false;
+    return itemRoles.length === 0 || itemRoles.includes(role);
+  };
+  
   
  useEffect(() => {
     console.log("Topbar re-rendered - role:", role);
@@ -45,7 +53,7 @@ const SidebarNav = () => {
         "& .MuiDrawer-paper": {
           width: isCollapsed ? 80 : 250,
           boxSizing: "border-box",
-          backgroundColor: colors.primary[400],
+          backgroundColor: colors.grey[800],
           color: colors.grey[100],
         },
       }}
@@ -58,7 +66,7 @@ const SidebarNav = () => {
           alignItems="center"
         >
           <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-            <MenuOutlinedIcon sx={{ color: colors.grey[100] }} />
+            <MenuOutlinedIcon sx={{ color: colors.scalpelTeal[500] }} />
           </IconButton>
         </Box>
 
@@ -75,10 +83,10 @@ const SidebarNav = () => {
                 cursor: "pointer",
               }}
             />
-            <Typography variant="h4" mt={1}>
+            <Typography variant="h3" color={colors.scalpelTeal[500]} mt={1}>
               {userName}
             </Typography>
-            <Typography variant="body2" color={colors.greenAccent[500]}>
+            <Typography variant="body2" color={colors.houndGold[500]}>
               {userRole}
             </Typography>
           </Box>
@@ -95,7 +103,7 @@ const SidebarNav = () => {
             return (
               !isCollapsed && (
                 <Typography key={`section-${item.section}`} sx={{ m: "20px 0 5px 15px" }}
-                  variant="h6" color={colors.grey[300]}>
+                  variant="h5" color={colors.houndGold[400]}>
                   {item.section}
                 </Typography>
               )
@@ -107,27 +115,28 @@ const SidebarNav = () => {
 
           const listItem = (
             <ListItem
-              key={item.text}
-              button={accessible}
-              component={accessible ? Link : "div"}
-              to={accessible ? item.path : undefined}
-              disabled={!accessible}
-              sx={{
-                mb: 1,
-                opacity: accessible ? 1 : 0.45,
-                bgcolor: isActive && accessible ? "#6870fa" : "transparent",
-                "&:hover": {
-                  bgcolor: accessible ? "#868dfb" : "transparent",
-                },
-                borderRadius: 1,
-                cursor: accessible ? "pointer" : "default",
-              }}
-            >
-              <ListItemIcon sx={{ color: "inherit", minWidth: 36 }}>
-                {item.icon}
-              </ListItemIcon>
-              {!isCollapsed && <ListItemText primary={item.text} />}
-            </ListItem>
+            key={item.text}
+            button={accessible}
+            component={accessible ? "a" : "div"}
+            href={accessible ? item.path : undefined}
+            disabled={!accessible}
+            sx={{
+              mb: 1,
+              opacity: accessible ? 1 : 0.45,
+              bgcolor: isActive && accessible ? colors.scalpelTeal?.[600] : "transparent",
+              "&:hover": {
+                bgcolor: accessible ? colors.scalpelTeal?.[400] : "transparent",
+              },
+              borderRadius: 1,
+              cursor: accessible ? "pointer" : "default",
+              color: colors.grey?.[100],
+            }}
+          >
+            <ListItemIcon sx={{ color: colors.houndGold?.[500], minWidth: 36 }}>
+              {item.icon}
+            </ListItemIcon>
+            {!isCollapsed && <ListItemText primary={item.text} />}
+          </ListItem>
           );
 
           return accessible ? (

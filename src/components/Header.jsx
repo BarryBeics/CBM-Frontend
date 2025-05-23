@@ -1,25 +1,47 @@
-// Third-party libraries
-import { Typography, Box, useTheme } from "@mui/material";
-
-// Theme
+// components/Header.jsx
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../theme";
 
-const Header = ({ title, subtitle }) => {
+const Header = ({
+  title,
+  subtitle,
+  align = "left",
+  mb = 3,
+  divider = false,
+  sx = {},
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
-    <Box mb="30px">
+    <Box mb={mb} textAlign={align} sx={sx.root}>
       <Typography
-        variant="h2"
-        color={colors.grey[100]}
+        variant="h3"
         fontWeight="bold"
-        sx={{ m: "0 0 5px 0" }}
+        color={colors.offwhite?.[600] || "primary.main"}
+        sx={{ mb: 0.5, ...sx.title }}
       >
         {title}
       </Typography>
-      <Typography variant="h5" color={colors.greenAccent[400]}>
-        {subtitle}
-      </Typography>
+
+      {subtitle && (
+        <Typography
+          variant="h5"
+          color={colors.houndGold?.[400] || "secondary.main"}
+          sx={sx.subtitle}
+        >
+          {subtitle}
+        </Typography>
+      )}
+
+      {divider && (
+        <Box
+          mt={1}
+          mb={1}
+          borderBottom="1px solid"
+          borderColor="divider"
+        />
+      )}
     </Box>
   );
 };

@@ -22,7 +22,7 @@ const LabelSelector = ({ selectedLabels, setFieldValue, error, touched }) => {
             label={label}
             clickable
             onClick={() => handleToggle(label)}
-            color={selectedLabels.includes(label) ? "primary" : "default"}
+            color={selectedLabels.includes(label) ? "gold" : "default"}
             variant={selectedLabels.includes(label) ? "filled" : "outlined"}
           />
         ))}

@@ -1,50 +1,44 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
+// Create the context
 const AuthContext = createContext();
 
+// Auth provider
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);              // user object { email, role, etc }
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // true when logged in
+  const [isLoading, setIsLoading] = useState(true);    // prevents premature route checks
 
-  // Rehydrate from localStorage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    // Simulated session restoration (replace with your real logic)
+    const session = JSON.parse(localStorage.getItem("session")); // or token, or backend call
 
-    if (storedUser && storedToken) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        setToken(storedToken);
-      } catch (err) {
-        console.error("Invalid user in localStorage. Clearing.");
-        logout(); // Clean up
-      }
+    if (session?.user) {
+      setUser(session.user);
+      setIsLoggedIn(true);
     }
+
+    setIsLoading(false); // auth check complete
   }, []);
 
-  const login = (userData, authToken) => {
+  const login = (userData) => {
     setUser(userData);
-    setToken(authToken);
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", authToken);
+    setIsLoggedIn(true);
+    localStorage.setItem("session", JSON.stringify({ user: userData }));
   };
 
   const logout = () => {
     setUser(null);
-    setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    localStorage.removeItem("session");
   };
 
-  const isLoggedIn = !!user;
-  const role = user?.role || "guest";
-
   return (
-    <AuthContext.Provider value={{ user, token, role, isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// Hook for consuming the auth context
 export const useAuth = () => useContext(AuthContext);

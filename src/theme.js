@@ -2,188 +2,165 @@ import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 
 // color design tokens
-export const tokens = (mode) => ({
-    ...(mode === 'dark'
-        ? {
-        grey: {
-            100: "#e0e0e0",
-            200: "#c2c2c2",
-            300: "#a3a3a3",
-            400: "#858585",
-            500: "#666666",
-            600: "#525252",
-            700: "#3d3d3d",
-            800: "#292929",
-            900: "#141414"
-        },
-        yellowAccent: {
-            100: "#fff9db",
-            200: "#fff3b8",
-            300: "#ffed94",
-            400: "#ffe770",
-            500: "#ffe14c",
-            600: "#ccb43d",
-            700: "#99872e",
-            800: "#665a1e",
-            900: "#332d0f"
-          },          
-        primary: {
-            100: "#d0d1d5",
-            200: "#a1a4ab",
-            300: "#727681",
-            400: "#1f2a40",
-            500: "#141b2d",
-            600: "#101624",
-            700: "#0c101b",
-            800: "#080b12",
-            900: "#040509"
-        },
-        greenAccent: {
-            100: "#dbf5ee",
-            200: "#b7ebde",
-            300: "#94e2cd",
-            400: "#70d8bd",
-            500: "#4cceac",
-            600: "#3da58a",
-            700: "#2e7c67",
-            800: "#1e5245",
-            900: "#0f2922"
-        },
-        redAccent: {
-            100: "#f8dcdb",
-            200: "#f1b9b7",
-            300: "#e99592",
-            400: "#e2726e",
-            500: "#db4f4a",
-            600: "#af3f3b",
-            700: "#832f2c",
-            800: "#58201e",
-            900: "#2c100f"
-        },
-        blueAccent: {
-          100: "#e1e2fe",
-          200: "#c3c6fd",
-          300: "#a4a9fc",
-          400: "#868dfb",
-          500: "#6870fa",
-          600: "#535ac8",
-          700: "#3e4396",
-          800: "#2a2d64",
-          900: "#151632"
-        },
-    }
-    :   {
-        grey: {
-            100: "#141414",
-            200: "#292929",
-            300: "#3d3d3d",
-            400: "#525252",
-            500: "#666666",
-            600: "#858585",
-            700: "#a3a3a3",
-            800: "#c2c2c2",
-            900: "#e0e0e0",
-        },
-        primary: {
-            100: "#040509",
-            200: "#080b12",
-            300: "#0c101b",
-            400: "#f2f0f0",
-            500: "#141b2d",
-            600: "#434957",
-            700: "#727681",
-            800: "#a1a4ab",
-            900: "#d0d1d5",
-        },
-        greenAccent: {
-            100: "#0f2922",
-            200: "#1e5245",
-            300: "#2e7c67",
-            400: "#3da58a",
-            500: "#4cceac",
-            600: "#70d8bd",
-            700: "#94e2cd",
-            800: "#b7ebde",
-            900: "#dbf5ee",
-        },
-        redAccent: {
-            100: "#2c100f",
-            200: "#58201e",
-            300: "#832f2c",
-            400: "#af3f3b",
-            500: "#db4f4a",
-            600: "#e2726e",
-            700: "#e99592",
-            800: "#f1b9b7",
-            900: "#f8dcdb",
-        },
-        blueAccent: {
-          100: "#151632",
-          200: "#2a2d64",
-          300: "#3e4396",
-          400: "#535ac8",
-          500: "#6870fa",
-          600: "#868dfb",
-          700: "#a4a9fc",
-          800: "#c3c6fd",
-          900: "#e1e2fe",
-        },
-    }),
-});
+export const tokens = (mode) => {
+  const shared = {
+    houndGold: {
+      100: "#f2e9d8",
+      200: "#e5d3b1",
+      300: "#d8be8b",
+      400: "#cba864",
+      500: "#be923d",
+      600: "#987531",
+      700: "#725825",
+      800: "#4c3a18",
+      900: "#261d0c",
+    },
+    scalpelTeal: {
+      100: "#d1e6e5",
+      200: "#a2cdcc",
+      300: "#74b4b2",
+      400: "#459b99",
+      500: "#17827f",
+      600: "#126866",
+      700: "#0e4e4c",
+      800: "#093433",
+      900: "#051a19",
+    },
+    grey: {
+      100: "#f9f9f9",
+      200: "#e0e0e0",
+      300: "#c2c2c2",
+      400: "#a3a3a3",
+      500: "#858585",
+      600: "#666666",
+      700: "#4d4d4d",
+      800: "#333333",
+      900: "#1a1a1a",
+    },
+    softRed: {
+      100: "#fbeaea",
+      200: "#f5c5c5",
+      300: "#ef9f9f",
+      400: "#e97a7a",
+      500: "#e35454",  // primary red
+      600: "#b34646",
+      700: "#843838",
+      800: "#542929",
+      900: "#251b1b"
+    },
+    
 
-// mui theme setting
-export const themeSettings = (mode) => {
-    const colors = tokens(mode);
+  };
 
-    return {
-        palette: {
-            mode: mode,
-            primary: {
-                main: colors.primary[500],
-            },
-            secondary: {
-                main: colors.greenAccent[500],
-            },
-            neutral: {
-                dark: colors.grey[700],
-                main: colors.grey[500],
-                light: colors.grey[100],
-            },
-            background: {
-                default: mode === "dark" ? colors.primary[500] : "#fcfcfc",
-            },
-        },
-        typography: {
-            fontFamily: ["Source San 3", "sans-serif"].join(","),
-            fontSize: 12,
-            h1: { fontFamily: "inherit", fontSize: 40 },
-            h2: { fontFamily: "inherit", fontSize: 32 },
-            h3: { fontFamily: "inherit", fontSize: 24 },
-            h4: { fontFamily: "inherit", fontSize: 20 },
-            h5: { fontFamily: "inherit", fontSize: 16 },
-            h6: { fontFamily: "inherit", fontSize: 14 },
-        },
-    };
+  const light = {
+    background: {
+      default: shared.grey[200],
+      paper: "#ffffff",
+    },
+    text: {
+      primary: shared.grey[900],
+      secondary: shared.grey[600],
+    },
+  };
+
+  const dark = {
+    background: {
+      default: shared.grey[900],
+      paper: shared.grey[800],
+    },
+    text: {
+      primary: shared.grey[100],
+      secondary: shared.grey[300],
+    },
+  };
+
+  return {
+    ...shared,
+    ...(mode === "dark" ? dark : light),
+  };
 };
 
+// MUI theme settings
+export const themeSettings = (mode) => {
+  const colors = tokens(mode);
+
+  return {
+    palette: {
+      mode,
+      primary: {
+        main: colors.scalpelTeal[500],
+      },
+      secondary: {
+        main: colors.houndGold[500],
+      },
+      background: {
+        default: colors.background.default,
+        paper: colors.background.paper,
+      },
+      text: {
+        primary: colors.text.primary,
+        secondary: colors.text.secondary,
+      },
+      error: {
+        main: colors.softRed[500],
+        light: colors.softRed[300],
+        dark: colors.softRed[700],
+      },
+    },
+    typography: {
+      fontFamily: ["Source Sans 3", "sans-serif"].join(","),
+      fontSize: 12,
+      h1: {
+        fontSize: 40,
+        fontWeight: 700,
+        color: colors.text.primary,
+      },
+      h2: {
+        fontSize: 32,
+        fontWeight: 600,
+        color: colors.text.primary,
+      },
+      h3: {
+        fontSize: 24,
+        fontWeight: 600,
+        color: colors.text.primary,
+      },
+      h4: {
+        fontSize: 20,
+        fontWeight: 600,
+        color: colors.text.primary,
+      },
+      h5: {
+        fontSize: 16,
+        fontWeight: 500,
+        color: colors.text.secondary,
+      },
+      h6: {
+        fontSize: 14,
+        fontWeight: 500,
+        color: colors.text.secondary,
+      },
+    },
+  };
+};
 
 // context for color mode
 export const ColorModeContext = createContext({
-    toggleColorMode: () => {}
+  toggleColorMode: () => {},
 });
 
 export const useMode = () => {
-    const [mode, setMode] = useState("dark");
+  const [mode, setMode] = useState("dark");
 
-    const colorMode = useMemo(
-        () => ({
-            toggleColorMode: () =>
-            setMode((prev) => (prev === "light" ? "dark" : "light")),
-        }),
-        []
-    );
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () =>
+        setMode((prev) => (prev === "light" ? "dark" : "light")),
+    }),
+    []
+  );
 
-    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-    return [theme, colorMode];
-}
+  return [theme, colorMode];
+};

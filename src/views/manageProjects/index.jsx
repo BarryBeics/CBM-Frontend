@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Box, useTheme, Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
 import DeleteProjectModal from "../../components/DeleteProjectModal";
+import TableActions from "../../components/TableActions";
+import ThemedDataGrid from "../../components/ThemedDataGrid";
 import { graphqlEndpoint } from "../../config";
 import { tokens } from "../../theme";
 
@@ -103,40 +104,19 @@ const ManageProjects = () => {
       flex: 1,
       sortable: false,
       renderCell: ({ row }) => (
-        <Box display="flex" gap="10px" m="10px auto">
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => handleEdit(row.id)}
-          >
-            View / Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={() => handleOpenDeleteModal(row)}
-          >
-             Delete
-      </Button>
-      <Button
-  variant="contained"
-  color="success"
-  size="small"
-  onClick={() =>
-    navigate("/createTask", {
-      state: {
-        projectId: row.id,
-        redirectPath: "/manageProjects", 
-      },
-    })
-  }
->
-  + Task
-</Button>
-
-    </Box>
+        <TableActions
+        onEdit={() => handleEdit(row.id)}
+        onDelete={() => handleOpenDeleteModal(row)}
+        onCreateTask={() =>
+          navigate("/createTask", {
+            state: {
+              projectId: row.id,
+              redirectPath: "/managePrijects", 
+            },
+          })
+        }
+        hideCreate={false} 
+      />
   ),
 },
   ];
@@ -155,27 +135,8 @@ const ManageProjects = () => {
             Create Project
           </Button>
         </Box>
-        <Box
-          m="40px 0 0 0"
-          height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": { border: "none" },
-          "& .MuiDataGrid-cell": { borderBottom: "none" },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-        }}
-      >
-        <DataGrid rows={projects} columns={columns} />
-      </Box>
+        <ThemedDataGrid rows={projects} columns={columns} />
+
 
       <DeleteProjectModal
         open={deleteModalOpen}

@@ -60,8 +60,8 @@ const SMAChart = () => {
     },
     tooltip: {
       container: {
-        background: colors.primary[400],
-        color: colors.primary[100],
+        background: colors.grey[800],
+        color: colors.houndGold[100],
       },
     },
   };
@@ -167,8 +167,8 @@ const SMAChart = () => {
 
         {/* Dropdown */}
         <Box
-          backgroundColor={colors.primary[400]}
-          borderRadius="8px"
+          backgroundColor={colors.grey[800]}
+          borderRadius="5px"
           boxShadow={1}
           p={2}
           minHeight="100px"

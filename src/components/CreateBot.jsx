@@ -116,8 +116,8 @@ const CreateBot = ({ onCreated }) => {
   {/* Bot Name Dropdown */}
   <Grid item xs={12} sm={6} md={4}>
     <Box
-      backgroundColor={colors.primary[400]}
-      borderRadius="8px"
+      backgroundColor={colors.grey[700]}
+      borderRadius="5px"
       boxShadow={1}
       p={2}
        minHeight="100px"
@@ -134,9 +134,9 @@ const CreateBot = ({ onCreated }) => {
           }
           label="Bot Name"
           sx={{
-            color: colors.greenAccent[500],
+            color: colors.scalpelTeal[500],
             "& .MuiSvgIcon-root": {
-              color: colors.greenAccent[500],
+              color: colors.scalpelTeal[500],
             },
           }}
         >
@@ -162,8 +162,8 @@ const CreateBot = ({ onCreated }) => {
   ].map(([field, label, min, max, step]) => (
     <Grid item xs={12} sm={6} md={4} key={field}>
       <Box
-        backgroundColor={colors.primary[400]}
-        borderRadius="8px"
+        backgroundColor={colors.grey[700]}
+        borderRadius="5px"
         boxShadow={1}
         p={2}
         minHeight="100px"
@@ -179,13 +179,13 @@ const CreateBot = ({ onCreated }) => {
           onChange={handleSliderChange(field)}
           valueLabelDisplay="auto"
           sx={{
-            color: colors.greenAccent[500],
+            color: colors.scalpelTeal[500],
             "& .MuiSlider-thumb": {
               borderRadius: "50%",
-              backgroundColor: colors.greenAccent[500],
+              backgroundColor: colors.scalpelTeal[500],
             },
             "& .MuiSlider-track": {
-              backgroundColor: colors.greenAccent[500],
+              backgroundColor: colors.scalpelTeal[500],
             },
             "& .MuiSlider-rail": {
               backgroundColor: colors.grey[700],
@@ -199,8 +199,8 @@ const CreateBot = ({ onCreated }) => {
   {/* Submit Button */}
   <Grid item xs={12}>
     <Box
-      backgroundColor={colors.primary[400]}
-      borderRadius="8px"
+      backgroundColor={colors.grey[700]}
+      borderRadius="5px"
       boxShadow={1}
       p={2}
        minHeight="100px"
@@ -210,10 +210,10 @@ const CreateBot = ({ onCreated }) => {
       <Button
         variant="contained"
         sx={{
-          backgroundColor: colors.greenAccent[500],
+          backgroundColor: colors.scalpelTeal[500],
           color: "#fff",
           "&:hover": {
-            backgroundColor: colors.greenAccent[700],
+            backgroundColor: colors.scalpelTeal[700],
           },
           width: "150px",
         }}
