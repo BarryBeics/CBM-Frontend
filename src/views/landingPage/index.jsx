@@ -7,7 +7,7 @@ const LandingPage = () => {
   const colors = tokens(theme.palette.mode);
 
   const Section = ({ children }) => (
-    <Box my={6} p={4} backgroundColor={colors.primary[400]} borderRadius="8px">
+    <Box my={6} p={4} backgroundColor={colors.grey[700]} borderRadius="5px">
       {children}
     </Box>
   );
@@ -30,7 +30,7 @@ const LandingPage = () => {
             <br /><br />
             Seats are limited. Entry is final.
           </Typography>
-          <Button variant="contained" color="success" size="large" href="#register">
+          <Button variant="contained" color="secondary" size="large" href="/register">
             Apply for a Seat
           </Button>
         </Section>
@@ -146,7 +146,7 @@ const LandingPage = () => {
           <Typography variant="body1" mb={3}>
             Will you have a seat?
           </Typography>
-          <Button variant="contained" color="success" size="large" href="#register">
+          <Button variant="contained" color="secondary" size="large" href="/register">
             Apply for a Seat
           </Button>
           <Typography variant="caption" display="block" mt={2}>

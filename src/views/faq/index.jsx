@@ -17,7 +17,7 @@ const FAQ = () => {
 
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography color={colors.greenAccent[500]} variant="h5">
+          <Typography color={colors.houndGold[500]} variant="h5">
             What is Scalpel Hound?
           </Typography>
         </AccordionSummary>
@@ -31,7 +31,7 @@ const FAQ = () => {
 
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography color={colors.greenAccent[500]} variant="h5">
+          <Typography color={colors.houndGold[500]} variant="h5">
             Do I get ownership in Scalpel Hound?
           </Typography>
         </AccordionSummary>
@@ -44,7 +44,7 @@ const FAQ = () => {
 
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography color={colors.greenAccent[500]} variant="h5">
+          <Typography color={colors.houndGold[500]} variant="h5">
             How much does it cost to join?
           </Typography>
         </AccordionSummary>
@@ -58,7 +58,7 @@ const FAQ = () => {
 
       <Accordion>
   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-    <Typography color={colors.greenAccent[500]} variant="h5">
+    <Typography color={colors.houndGold[500]} variant="h5">
       Why does this cost more than other platforms?
     </Typography>
   </AccordionSummary>
@@ -75,7 +75,7 @@ const FAQ = () => {
 
 <Accordion>
   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-    <Typography color={colors.greenAccent[500]} variant="h5">
+    <Typography color={colors.houndGold[500]} variant="h5">
       Is this running right now?
     </Typography>
   </AccordionSummary>
@@ -93,7 +93,7 @@ const FAQ = () => {
 
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography color={colors.greenAccent[500]} variant="h5">
+          <Typography color={colors.houndGold[500]} variant="h5">
             How do I connect my Binance account?
           </Typography>
         </AccordionSummary>
@@ -110,20 +110,9 @@ const FAQ = () => {
         <Typography variant="h5" gutterBottom>
           The table is being set. Will you have a seat?
         </Typography>
-        <Button
-          variant="contained"
-          size="large"
-          sx={{
-            mt: 2,
-            backgroundColor: "#00FFFF", // Bright cyan
-            color: "#000",
-            "&:hover": {
-              backgroundColor: "#00e0e0",
-            },
-          }}
-        >
-          Apply for a Seat
-        </Button>
+        <Button variant="contained" color="secondary" size="large" href="/register">
+                    Apply for a Seat
+                  </Button>
       </Box>
     </Box>
   );

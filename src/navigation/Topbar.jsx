@@ -20,8 +20,10 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
 
-  const { user, role } = useAuth();
-  const isLoggedIn = !!user;
+  const { user } = useAuth();
+const role = user?.role;
+const isLoggedIn = !!user;
+
 
   const showPrivateIcons = role === "member" || role === "admin";
 
@@ -36,7 +38,7 @@ const Topbar = () => {
 
       {/* RIGHT */}
       <Box display="flex" alignItems="center">
-        <Tooltip title="Toggle theme">
+        <Tooltip title="Toggle theme" color="secondary">
           <IconButton onClick={colorMode.toggleColorMode}>
             {theme.palette.mode === "dark" ? (
               <DarkModeOutlinedIcon />
@@ -48,19 +50,19 @@ const Topbar = () => {
 
         {showPrivateIcons && (
           <>
-            <Tooltip title="Notifications">
+            <Tooltip title="Notifications" color="secondary">
               <IconButton>
                 <NotificationsOutlinedIcon />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Settings">
+            <Tooltip title="Settings" color="secondary">
               <IconButton>
                 <SettingsOutlinedIcon />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Profile">
+            <Tooltip title="Profile" color="secondary">
               <IconButton>
                 <PersonOutlinedIcon />
               </IconButton>
@@ -69,11 +71,11 @@ const Topbar = () => {
         )}
 
         {isLoggedIn ? (
-          <Tooltip title="Logout">
+          <Tooltip title="Logout" color="secondary">
             <LogoutButton />
           </Tooltip>
         ) : (
-          <Tooltip title="Login">
+          <Tooltip title="Login" >
             <IconButton onClick={() => navigate("/login")}>
               <LoginOutlinedIcon />
             </IconButton>

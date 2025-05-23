@@ -12,8 +12,8 @@ const BotForm = ({ title, subtitle, icon, progress, increase, children }) => {
     <Box
       width="100%"
       p={2}
-      backgroundColor={colors.primary[400]}
-      borderRadius="8px"
+      backgroundColor={colors.houndGold[400]}
+      borderRadius="5px"
       boxShadow={1}
       m="10px"
     >
@@ -35,7 +35,7 @@ const BotForm = ({ title, subtitle, icon, progress, increase, children }) => {
       )}
 
       {subtitle && (
-        <Typography variant="h5" sx={{ color: colors.greenAccent[500], mb: 2 }}>
+        <Typography variant="h5" sx={{ color: colors.scalpelTeal[500], mb: 2 }}>
           {subtitle}
         </Typography>
       )}

@@ -97,8 +97,8 @@ const PriceChart = () => {
 
         {/* Styled Slider Box */}
         <Box
-          backgroundColor={colors.primary[400]}
-          borderRadius="8px"
+          backgroundColor={colors.grey[800]}
+          borderRadius="5px"
           boxShadow={1}
           p={2}
           minHeight="100px"
@@ -146,8 +146,8 @@ const PriceChart = () => {
               },
               tooltip: {
                 container: {
-                  color: colors.primary[500],
-                  background: colors.primary[400],
+                  color: colors.houndGold[500],
+                  background: colors.houndGold[400],
                 },
               },
             }}

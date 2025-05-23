@@ -31,8 +31,8 @@ const SymbolDropdown = ({ selectedSymbol, setSelectedSymbol}) => {
 
   return (
     <Box
-      backgroundColor={colors.primary[400]}
-      borderRadius="8px"
+      backgroundColor={colors.grey[800]}
+      borderRadius="5px"
       boxShadow={1}
       p={2}
       minHeight="100px"
@@ -54,10 +54,10 @@ const SymbolDropdown = ({ selectedSymbol, setSelectedSymbol}) => {
           loading={loading}
           sx={{
             "& .MuiInputBase-root": {
-              color: colors.greenAccent[500],
+              color: colors.scalpelTeal[500],
             },
             "& .MuiSvgIcon-root": {
-              color: colors.greenAccent[500],
+              color: colors.scalpelTeal[500],
             },
           }}
           renderInput={(params) => (

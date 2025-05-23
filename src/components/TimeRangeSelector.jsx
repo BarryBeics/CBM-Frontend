@@ -23,14 +23,14 @@ const TimeRangeSelector = ({ value, onChange, colorMode }) => {
           sx={{
             backgroundColor:
               value === intervals
-                ? colorMode.greenAccent[600]
-                : colorMode.blueAccent[700],
+                ? colorMode.houndGold[500]
+                : colorMode.scalpelTeal[500],
             color: colorMode.grey[100],
             fontWeight: "bold",
             padding: "6px 12px",
             fontSize: "13px",
             "&:hover": {
-              backgroundColor: colorMode.greenAccent[500],
+              backgroundColor: colorMode.scalpelTeal[400],
             },
           }}
         >

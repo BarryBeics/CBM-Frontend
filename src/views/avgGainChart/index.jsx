@@ -54,8 +54,8 @@ export default function TopGainersScatterWithTrend() {
     },
     tooltip: {
       container: {
-        background: colors.primary[400],
-        color: colors.primary[100],
+        background: colors.grey[400],
+        color: colors.grey[100],
       },
     },
   };
@@ -157,8 +157,8 @@ export default function TopGainersScatterWithTrend() {
       />
 
       <Box
-        backgroundColor={colors.primary[400]}
-        borderRadius="8px"
+        backgroundColor={colors.grey[800]}
+        borderRadius="5px"
         boxShadow={1}
         p={2}
         minHeight="100px"
