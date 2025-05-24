@@ -11,7 +11,7 @@ const LabelSelector = ({ selectedLabels, setFieldValue, error, touched }) => {
   };
 
   return (
-    <Box>
+    <Box width="100%" sx={{ gridColumn: "span 4" }}>
       <Typography variant="subtitle2" gutterBottom>
         Labels
       </Typography>

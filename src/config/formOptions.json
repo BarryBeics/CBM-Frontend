@@ -8,6 +8,7 @@
   { "label": "Complete", "value": "complete" }
 ],
 "projectStatusOptions": [
+  { "label": "Initialised", "value": "initialised" },
   { "label": "Active", "value": "active" },
   { "label": "On Hold", "value": "onHold" },
   { "label": "Completed", "value": "completed" },

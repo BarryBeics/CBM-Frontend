@@ -53,10 +53,12 @@ import {
     title: "",
     description: "",
     sop: sopValue,
-    labels: [],
+    labels: Array.isArray(formOptions.labelOptions)
+    ? formOptions.labelOptions
+    : (formOptions.labelOptions || "").split(",").map((l) => l.trim()).filter(Boolean),
     assignedTo: "",
     dueDate: "",
-    status: "todo",
+    status: "initialised",
   };
   
     const handleFormSubmit = async (values, { resetForm }) => {

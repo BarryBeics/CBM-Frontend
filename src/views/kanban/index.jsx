@@ -161,20 +161,15 @@ const KanbanBoard = () => {
         const validStatuses = Object.keys(grouped);
 
         for (const task of allTasks) {
-          let key = task.status;
-
-          // Map legacy statuses to GTD
-          if (key === "todo") key = "inbox";
-          if (key === "inProgress") key = "nextAction";
-
-          if (validStatuses.includes(key)) {
-            grouped[key].push(task);
+          const status = task.status;
+        
+          if (validStatuses.includes(status)) {
+            grouped[status].push(task);
           } else {
-            grouped.inbox.push(task); // fallback
+            grouped.inbox.push(task); // fallback for future-proofing
           }
         }
-
-          
+                  
         setTasksByStatus(grouped);
       } catch (err) {
         console.error("Error loading tasks:", err);

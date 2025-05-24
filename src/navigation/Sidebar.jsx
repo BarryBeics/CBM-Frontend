@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListItemButton,
   Typography,
   useTheme,
   Avatar,
@@ -14,7 +15,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
 import { navItems } from "./navItems";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { tokens } from "../theme";
 import userImage from "../assets/logo.png";
 
@@ -113,45 +114,51 @@ useEffect(() => {
           const accessible = hasAccess(item.roles);
           const isActive   = location.pathname === item.path;
 
-          const listItem = (
-            <ListItem
-            key={item.text}
-            button={accessible}
-            component={accessible ? "a" : "div"}
-            href={accessible ? item.path : undefined}
-            disabled={!accessible}
-            sx={{
-              mb: 1,
-              opacity: accessible ? 1 : 0.45,
-              bgcolor: isActive && accessible ? colors.scalpelTeal?.[600] : "transparent",
-              "&:hover": {
-                bgcolor: accessible ? colors.scalpelTeal?.[400] : "transparent",
-              },
-              borderRadius: 1,
-              cursor: accessible ? "pointer" : "default",
-              color: colors.grey?.[100],
-            }}
-          >
-            <ListItemIcon sx={{ color: colors.houndGold?.[500], minWidth: 36 }}>
-              {item.icon}
-            </ListItemIcon>
-            {!isCollapsed && <ListItemText primary={item.text} />}
-          </ListItem>
-          );
-
-          return accessible ? (
-            listItem
+          
+          // Inside your map:
+          const listItem = accessible ? (
+            <ListItem disablePadding key={item.text}>
+              <ListItemButton
+                component={Link}
+                to={item.path}
+                sx={{
+                  mb: 1,
+                  bgcolor: isActive ? colors.scalpelTeal?.[600] : "transparent",
+                  "&:hover": {
+                    bgcolor: colors.scalpelTeal?.[400],
+                  },
+                  borderRadius: 1,
+                  color: colors.grey?.[100],
+                }}
+              >
+                <ListItemIcon sx={{ color: colors.scalpelTeal?.[300], minWidth: 36 }}>
+                  {item.icon}
+                </ListItemIcon>
+                {!isCollapsed && <ListItemText primary={item.text} />}
+              </ListItemButton>
+            </ListItem>
           ) : (
-            <Tooltip
-              key={item.text}
-              title="Login or upgrade to access"
-              arrow
-              placement="right"
-            >
-              {/* span wrapper lets tooltip show on disabled item */}
-              <span>{listItem}</span>
+            <Tooltip key={item.text} title="Login or upgrade to access" arrow placement="right">
+              <span>
+                <ListItem
+                  key={item.text}
+                  sx={{
+                    mb: 1,
+                    opacity: 0.45,
+                    borderRadius: 1,
+                    cursor: "default",
+                    color: colors.grey?.[100],
+                  }}
+                >
+                  <ListItemIcon sx={{ color: colors.scalpelTeal?.[300], minWidth: 36 }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  {!isCollapsed && <ListItemText primary={item.text} />}
+                </ListItem>
+              </span>
             </Tooltip>
           );
+          return listItem;
         })}
       </List>
       </Box> 
