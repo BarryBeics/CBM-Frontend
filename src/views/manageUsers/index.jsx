@@ -142,7 +142,7 @@ const ManageUsers = () => {
       sortable: false,
       renderCell: ({ row }) => (
         <TableActions
-        onEdit={() => handleEdit(row.id)}
+        onEdit={() => handleEdit(row.email)}
         onDelete={() => handleOpenDeleteModal(row)}
         hideCreate={true} 
       />
