@@ -262,7 +262,7 @@ const CreateTaskForm = () => {
   );
 };
 
-const allowedLabels = formOptions?.labelOptions || [];
+ const allowedLabels = formOptions?.labelOptions.map((l) => l.value) || [];
 
 const taskSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -270,7 +270,9 @@ const taskSchema = yup.object().shape({
   status: yup.string().required("Status is required"),
   labels: yup
     .array()
-    .of(yup.string().oneOf(allowedLabels, "Invalid label")),
+    .of(yup.string().oneOf(allowedLabels, "Invalid label"))
+        .min(1, "Select at least one label")
+        .required("Select at least one label"),
   assignedTo: yup.string(),
   dueDate: yup.string(),
   deferDate: yup.string(),
