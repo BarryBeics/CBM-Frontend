@@ -30,17 +30,18 @@
     { "label": "Design", "value": "design" }
   ],
   "labelOptions": [
-    "compliance",
-    "training",
-    "safety",
-    "High Priority",
-    "Meeting",
-    "Call",
-    "Programming",
-    "Design",
-    "Compliance",
-    "Follow-up",
-    "Internal",
-    "External"
+    { "value": "Compliance", "color": "#FFD8BE" },
+    { "value": "Training", "color": "#AEDFF7" },
+    { "value":"safety", "color": "#E0C3FC" },
+    { "value":"High Priority", "color": "#E0C3FC" },
+    { "value":"Meeting", "color": "#E0C3FC" },
+    { "value": "Call", "color": "#FCE1E4" },
+    { "value":"Programming", "color": "#E0C3FC" },
+    { "value": "Design", "color": "#E0C3FC" },
+    { "value":"Follow-up", "color": "#E0C3FC" },
+    { "value":"Internal", "color": "#E0C3FC" },
+    { "value":"External", "color": "#E0C3FC" }
   ]
 }
+
+

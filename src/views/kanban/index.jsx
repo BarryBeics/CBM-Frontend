@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import UserAvatar from "../../components/UserAvatar";
+import formOptions from "../../config/formOptions";
 import {
   Box,
   Typography,
+  Chip,
   Paper,
   Button,
   useTheme,
@@ -70,6 +72,7 @@ const KanbanBoard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const [selectedLabels, setSelectedLabels] = useState([]);
   const [lastMovedTask, setLastMovedTask] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -185,12 +188,40 @@ const KanbanBoard = () => {
       {/* Page Header and +Task Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="KANBAN" subtitle="View and organise tasks" />
+        {/* Pill Filter */}
+        <Box mb={2} display="flex" alignItems="center" flexWrap="wrap" gap={1}>
+  {formOptions.labelOptions.map((label) => {
+    const isSelected = selectedLabels.includes(label.value);
+    return (
+      <Chip
+        key={label.value}
+        label={label.value}
+        clickable
+        onClick={() => {
+          setSelectedLabels((prev) =>
+            isSelected
+              ? prev.filter((l) => l !== label.value)
+              : [...prev, label.value]
+          );
+        }}
+        sx={{
+          backgroundColor: isSelected ? label.color : colors.grey[600],
+          color: isSelected ? "#333" : colors.grey[200],
+          border: isSelected ? `2px solid ${label.color}` : "1px solid #555",
+          fontWeight: isSelected ? "bold" : "normal",
+        }}
+      />
+    );
+  })}
+</Box>
+        {/* User Filter */}
         <Box width="250px" mb={2}>
           <AdminUserSelect
             selectedAdmin={selectedAdminId}
             setFieldValue={(field, value) => setSelectedAdminId(value)}
           />
         </Box>
+        {/* Add Task */}
         <Button
           variant="contained"
           color="secondary"
@@ -208,11 +239,12 @@ const KanbanBoard = () => {
       <DragDropContext onDragEnd={handleDragEnd}>
   <Box display="flex" gap={2} p={2} overflow="auto" backgroundColor={colors.grey[600]} borderRadius="5px" boxShadow={1} minHeight="60vh">
     {Object.entries(STATUS_COLUMNS).map(([key, label]) => {
-      const tasks = (tasksByStatus[key] || []).filter(task =>
-        !selectedAdminId || task.assignedTo === selectedAdminId
-      );
+      const tasks = (tasksByStatus[key] || []).filter((task) => {
+        if (selectedLabels.length === 0) return true;
+        return task.labels?.some((label) => selectedLabels.includes(label));
+      });
       
-
+    
       return (
         <Droppable droppableId={key} key={key}>
           {(provided) => (
@@ -325,6 +357,25 @@ const KanbanBoard = () => {
                         </Typography>
                       </Tooltip>
                     </Box>
+                    {/* Labels*/}
+                    <Box mt={1} display="flex" flexWrap="wrap" gap={1}>
+                      {task.labels.map((labelText) => {
+                        const labelDef = formOptions.labelOptions.find(l => l.value === labelText);
+                        return (
+                          <Chip
+                            key={labelText}
+                            label={labelText}
+                            size="small"
+                            style={{
+                              backgroundColor: labelDef?.color || "#ccc",
+                              color: "#333",
+                              fontWeight: "bold",
+                            }}
+                          />
+                        );
+                      })}
+                    </Box>
+
                   </Paper>
                 )}
               </Draggable>
