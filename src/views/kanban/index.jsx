@@ -6,12 +6,16 @@ import {
   Button,
   useTheme,
   Snackbar,
-  Alert
+  Alert,
+  Checkbox,
+  Tooltip
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
 import { tokens } from "../../theme";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Header from "../../components/Header"; // Assuming you use this elsewhere
 import {
   DragDropContext,
@@ -64,6 +68,7 @@ const KanbanBoard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const [lastMovedTask, setLastMovedTask] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -135,7 +140,7 @@ const KanbanBoard = () => {
         [destCol]: destTasks,
       });
   
-      // 🔥 persist to backend
+      // persist to backend
       updateTaskStatus(movedTask.id, destCol);
     }
   };
@@ -226,32 +231,73 @@ const KanbanBoard = () => {
                 <Draggable draggableId={task.id} index={index} key={task.id}>
                   {(provided) => (
                     <Paper
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      sx={{
-                        p: 2,
-                        mb: 2,
-                        borderRadius: "8px",
-                        backgroundColor: colors.grey[800],
-                        color: colors.grey[100],
-                        border: `1px solid ${colors.scalpelTeal[500]}`,
-                        transition: "transform 0.1s ease-in-out, box-shadow 0.2s",
-                        "&:hover": {
-                          transform: "scale(1.02)",
-                          boxShadow: `0 4px 20px ${colors.scalpelTeal[700]}`,
-                        },
-                      }}
-                      elevation={3}
-                    >
-                      <Typography fontWeight="bold" fontSize="0.95rem" sx={{ mb: 0.5 }}>
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    sx={{
+                      position: "relative",
+                      p: 2,
+                      mb: 2,
+                      borderRadius: "8px",
+                      backgroundColor: colors.grey[800],
+                      color: colors.grey[100],
+                      border: `1px solid ${colors.scalpelTeal[500]}`,
+                      transition: "transform 0.1s ease-in-out, box-shadow 0.2s",
+                      "&:hover": {
+                        transform: "scale(1.02)",
+                        boxShadow: `0 4px 20px ${colors.scalpelTeal[700]}`,
+                      },
+                    }}
+                    elevation={3}
+                  >
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography fontWeight="bold" fontSize="0.95rem">
                         {task.title}
                       </Typography>
-                      <Typography variant="body2" sx={{ color: colors.grey[300], mb: 0.5 }}>
-                        {task.assignedTo || "Unassigned"}
-                      </Typography>
-                     
-                    </Paper>
+                  
+                      {/* Complete Checkbox */}
+                      {task.status !== "complete" && (
+                        <Tooltip title="Mark as complete" arrow>
+                        <Checkbox
+                            icon={<CheckCircleOutlineIcon />}
+                            checkedIcon={<CheckCircleIcon />}
+                            sx={{
+                              color: colors.scalpelTeal[300],
+                              '&.Mui-checked': {
+                                color: colors.scalpelTeal[500],
+                              },
+                            }}
+                            onChange={() => {
+                            const originalStatus = task.status;
+                          
+                            updateTaskStatus(task.id, "complete");
+                          
+                            setTasksByStatus((prev) => {
+                              const updated = { ...prev };
+                              updated[originalStatus] = updated[originalStatus].filter((t) => t.id !== task.id);
+                              updated.complete = [...updated.complete, { ...task, status: "complete" }];
+                              return updated;
+                            });
+                          
+                            setLastMovedTask({ ...task, status: originalStatus }); // ✅ Correctly preserve old status
+                          
+                            setSnackbar({
+                              open: true,
+                              message: "Task marked as complete",
+                              severity: "success",
+                            });
+                          }}
+                          
+                        />
+                        </Tooltip>
+                      )}
+                    </Box>
+                  
+                    <Typography variant="body2" sx={{ color: colors.grey[300], mt: 0.5 }}>
+                      {task.assignedTo || "Unassigned"}
+                    </Typography>
+                  </Paper>
+                  
                   )}
                 </Draggable>
               ))}
@@ -266,7 +312,7 @@ const KanbanBoard = () => {
 </DragDropContext>
 <Snackbar
   open={snackbar.open}
-  autoHideDuration={3000}
+  autoHideDuration={4000}
   onClose={() => setSnackbar({ ...snackbar, open: false })}
   anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 >
@@ -274,10 +320,37 @@ const KanbanBoard = () => {
     onClose={() => setSnackbar({ ...snackbar, open: false })}
     severity={snackbar.severity}
     sx={{ width: "100%" }}
+    action={
+      lastMovedTask ? (
+        <Button
+          color="inherit"
+          size="small"
+          onClick={() => {
+            updateTaskStatus(lastMovedTask.id, lastMovedTask.status);
+            setTasksByStatus((prev) => {
+              const updated = { ...prev };
+              updated.complete = updated.complete.filter(
+                (t) => t.id !== lastMovedTask.id
+              );
+              updated[lastMovedTask.status] = [
+                ...updated[lastMovedTask.status],
+                lastMovedTask,
+              ];
+              return updated;
+            });
+            setSnackbar({ open: false, message: "", severity: "info" });
+            setLastMovedTask(null);
+          }}
+        >
+          UNDO
+        </Button>
+      ) : null
+    }
   >
     {snackbar.message}
   </Alert>
 </Snackbar>
+
 
     </Box>
     
