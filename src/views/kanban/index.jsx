@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import UserAvatar from "../../components/UserAvatar";
 import {
   Box,
   Typography,
@@ -234,8 +235,8 @@ const KanbanBoard = () => {
 
               {tasks.map((task, index) => (
                 <Draggable draggableId={task.id} index={index} key={task.id}>
-                  {(provided) => (
-                    <Paper
+                {(provided) => (
+                  <Paper
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
@@ -255,75 +256,79 @@ const KanbanBoard = () => {
                     }}
                     elevation={3}
                   >
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Tooltip title="Edit Task" arrow>
-                    <Typography
-                      fontWeight="bold"
-                      fontSize="0.95rem"
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": {
-                          color: colors.scalpelTeal[300],
-                        },
-                      }}
-                      onClick={() =>
-                        navigate(`/tasks/edit/${task.id}`, {
-                          state: {
-                            redirectPath: "/kanban",
-                          },
-                        })
-                      }
-                    >
-                      {task.title}
-                    </Typography>
-                  </Tooltip>
-
-                  
-                      {/* Complete Checkbox */}
+                    {/* Top-Right User Avatar */}
+                    {task.assignedTo && (
+                      <Box position="absolute" top={8} right={8}>
+                        <UserAvatar fullName={task.assignedTo} size={28} />
+                      </Box>
+                    )}
+              
+                    {/* Task Title & Checkbox (side-by-side) */}
+                    <Box display="flex" alignItems="center" gap={1}>
+                      {/* Checkbox on the left */}
                       {task.status !== "complete" && (
                         <Tooltip title="Mark as complete" arrow>
-                        <Checkbox
+                          <Checkbox
                             icon={<CheckCircleOutlineIcon />}
                             checkedIcon={<CheckCircleIcon />}
                             sx={{
                               color: colors.scalpelTeal[300],
-                              '&.Mui-checked': {
+                              "&.Mui-checked": {
                                 color: colors.scalpelTeal[500],
                               },
+                              p: 0.5,
                             }}
                             onChange={() => {
-                            const originalStatus = task.status;
-                          
-                            updateTaskStatus(task.id, "complete");
-                          
-                            setTasksByStatus((prev) => {
-                              const updated = { ...prev };
-                              updated[originalStatus] = updated[originalStatus].filter((t) => t.id !== task.id);
-                              updated.complete = [...updated.complete, { ...task, status: "complete" }];
-                              return updated;
-                            });
-                          
-                            setLastMovedTask({ ...task, status: originalStatus }); // ✅ Correctly preserve old status
-                          
-                            setSnackbar({
-                              open: true,
-                              message: "Task marked as complete",
-                              severity: "success",
-                            });
-                          }}
-                          
-                        />
+                              const originalStatus = task.status;
+              
+                              updateTaskStatus(task.id, "complete");
+              
+                              setTasksByStatus((prev) => {
+                                const updated = { ...prev };
+                                updated[originalStatus] = updated[originalStatus].filter((t) => t.id !== task.id);
+                                updated.complete = [...updated.complete, { ...task, status: "complete" }];
+                                return updated;
+                              });
+              
+                              setLastMovedTask({ ...task, status: originalStatus });
+              
+                              setSnackbar({
+                                open: true,
+                                message: "Task marked as complete",
+                                severity: "success",
+                              });
+                            }}
+                          />
                         </Tooltip>
                       )}
+              
+                      {/* Clickable task title with tooltip */}
+                      <Tooltip title="Edit Task" arrow>
+                        <Typography
+                          fontWeight="bold"
+                          fontSize="0.95rem"
+                          sx={{
+                            cursor: "pointer",
+                            "&:hover": {
+                              color: colors.scalpelTeal[300],
+                            },
+                          }}
+                          onClick={() =>
+                            navigate(`/tasks/edit/${task.id}`, {
+                              state: {
+                                redirectPath: "/kanban",
+                              },
+                            })
+                          }
+                        >
+                          {task.title}
+                        </Typography>
+                      </Tooltip>
                     </Box>
-                  
-                    <Typography variant="body2" sx={{ color: colors.grey[300], mt: 0.5 }}>
-                      {task.assignedTo || "Unassigned"}
-                    </Typography>
                   </Paper>
-                  
-                  )}
-                </Draggable>
+                )}
+              </Draggable>
+              
               ))}
 
               {provided.placeholder}
