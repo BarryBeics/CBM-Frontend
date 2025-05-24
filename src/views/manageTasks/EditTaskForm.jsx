@@ -100,9 +100,9 @@ const EditTaskForm = () => {
     fetchTask();
   }, [id]);
 
-  const allowedLabels = formOptions?.labelOptions || [];
+  const allowedLabels = formOptions?.labelOptions.map((l) => l.value) || [];
 
-  const validationSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
     title: yup.string().required("required"),
     description: yup.string(),
     status: yup.string().required("required"),
@@ -110,7 +110,10 @@ const EditTaskForm = () => {
     type: yup.string(),
     labels: yup
     .array()
-    .of(yup.string().oneOf(allowedLabels, "Invalid label")),
+    .of(yup.string().oneOf(allowedLabels, "Invalid label"))
+    .min(1, "Select at least one label")
+    .required("Select at least one label"),
+
     assignedTo: yup.string(),
     dueDate: yup.string(),
     category: yup.string(),
@@ -174,9 +177,9 @@ const EditTaskForm = () => {
 <LabelSelector
   selectedLabels={values.labels}
   setFieldValue={setFieldValue}
+  error={errors.labels}
+  touched={touched.labels}
 />
-
-
 
 <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
   <InputLabel>Status</InputLabel>
