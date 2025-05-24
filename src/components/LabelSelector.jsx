@@ -18,13 +18,17 @@ const LabelSelector = ({ selectedLabels, setFieldValue, error, touched }) => {
       <Box display="flex" flexWrap="wrap" gap={1}>
         {formOptions.labelOptions.map((label) => (
           <Chip
-            key={label}
-            label={label}
-            clickable
-            onClick={() => handleToggle(label)}
-            color={selectedLabels.includes(label) ? "gold" : "default"}
-            variant={selectedLabels.includes(label) ? "filled" : "outlined"}
-          />
+          key={label.value}
+          label={label.value}
+          onClick={() => handleToggle(label.value)}
+          clickable
+          style={{
+            backgroundColor: label.color,
+            color: "#333",
+            fontWeight: selectedLabels.includes(label.value) ? "bold" : "normal",
+            border: selectedLabels.includes(label.value) ? "2px solid #444" : "none",
+          }}
+        />
         ))}
       </Box>
       {touched && error && (
