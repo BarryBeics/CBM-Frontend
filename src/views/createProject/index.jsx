@@ -13,8 +13,10 @@ import {
   import useMediaQuery from "@mui/material/useMediaQuery";
   import formOptions from "../../config/formOptions.json";
   import Header from "../../components/Header";
+  import AdminUserSelect from "../../components/AdminUserSelect";
   import { GraphQLClient } from "graphql-request";
   import { graphqlEndpoint } from "../../config";
+  import LabelSelector from "../../components/LabelSelector";
   
   // GraphQL client
   const client = new GraphQLClient(graphqlEndpoint);
@@ -90,6 +92,7 @@ import {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
               <Box
@@ -136,7 +139,7 @@ import {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   >
-                    {formOptions.statusOptions.map((opt) => (
+                   {(formOptions.projectStatusOptions || []).map((opt) => (
                     <MenuItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </MenuItem>
@@ -147,50 +150,29 @@ import {
                 <Field type="hidden" name="sop" />
 
   
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Assigned To"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.assignedTo}
-                  name="assignedTo"
-                  sx={{ gridColumn: "span 2" }}
+                <AdminUserSelect
+                  selectedAdmin={values.assignedTo}
+                  setFieldValue={setFieldValue}
                 />
+
                 <TextField
                   fullWidth
                   variant="filled"
                   type="date"
-                  label="Due Date"
+                  label="Due Date"  
                   InputLabelProps={{ shrink: true }}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.dueDate}
                   name="dueDate"
                   sx={{ gridColumn: "span 2" }}
-                />
-  
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Labels (comma separated)"
-                  onBlur={handleBlur}
-                  onChange={(e) =>
-                    handleChange({
-                      target: {
-                        name: "labels",
-                        value: e.target.value
-                          .split(",")
-                          .map((label) => label.trim()),
-                      },
-                    })
-                  }
-                  value={values.labels.join(", ")}
-                  name="labels"
-                  sx={{ gridColumn: "span 4" }}
-                />
+                /> 
+                <LabelSelector
+                selectedLabels={values.labels}
+                setFieldValue={setFieldValue}
+                error={errors.labels}
+                touched={touched.labels}
+              />
               </Box>
   
               <Box display="flex" justifyContent="end" mt="20px">

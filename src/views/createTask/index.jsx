@@ -13,6 +13,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
+import AdminUserSelect from "../../components/AdminUserSelect";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
 import LabelSelector from "../../components/LabelSelector";
@@ -137,17 +138,12 @@ const CreateTaskForm = () => {
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Assigned To"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.assignedTo}
-                name="assignedTo"
-                sx={{ gridColumn: "span 2" }}
+              <AdminUserSelect
+                selectedAdmin={values.assignedTo}
+                setFieldValue={setFieldValue}
               />
+
+
               <TextField
                 fullWidth
                 variant="filled"
