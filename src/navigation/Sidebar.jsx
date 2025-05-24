@@ -17,7 +17,7 @@ import { useAuth } from "../auth/AuthContext";
 import { navItems } from "./navItems";
 import { useLocation, Link } from "react-router-dom";
 import { tokens } from "../theme";
-import userImage from "../assets/logo.png";
+import UserAvatar from "../components/UserAvatar";
 
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
@@ -74,16 +74,20 @@ useEffect(() => {
         {/* Profile Info */}
         {!isCollapsed && (
           <Box textAlign="center" mt={2}>
-            <Avatar
-              src={userImage}
-              alt="user"
-              sx={{
-                width: 120,
-                height: 120,
-                margin: "0 auto",
-                cursor: "pointer",
-              }}
-            />
+           <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ width: "100%", mt: 2 }}
+            >
+              <UserAvatar
+                firstName={user?.firstName}
+                lastName={user?.lastName}
+                size={120}
+              />
+            </Box>
+
+
             <Typography variant="h3" color={colors.scalpelTeal[500]} mt={1}>
               {userName}
             </Typography>
