@@ -256,9 +256,28 @@ const KanbanBoard = () => {
                     elevation={3}
                   >
                     <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Typography fontWeight="bold" fontSize="0.95rem">
-                        {task.title}
-                      </Typography>
+                    <Tooltip title="Edit Task" arrow>
+                    <Typography
+                      fontWeight="bold"
+                      fontSize="0.95rem"
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": {
+                          color: colors.scalpelTeal[300],
+                        },
+                      }}
+                      onClick={() =>
+                        navigate(`/tasks/edit/${task.id}`, {
+                          state: {
+                            redirectPath: "/kanban",
+                          },
+                        })
+                      }
+                    >
+                      {task.title}
+                    </Typography>
+                  </Tooltip>
+
                   
                       {/* Complete Checkbox */}
                       {task.status !== "complete" && (
