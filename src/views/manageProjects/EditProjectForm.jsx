@@ -5,17 +5,23 @@ import {
   Button,
   TextField,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Modal
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
+import AdminUserSelect from "../../components/AdminUserSelect";
 import formOptions from "../../config/formOptions.json";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import { graphqlEndpoint } from "../../config";
+import LabelSelector from "../../components/LabelSelector";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
@@ -23,26 +29,30 @@ const GET_PROJECT_QUERY = `
   query GetProjectById($id: ID!) {
     projectById(id: $id) {
       id
-      title
-      description
-      labels
-      assignedTo
-      dueDate
-      status
-      tasks {
-        id
-        title
-        description
-        status
-        priority
-        type
-        labels
-        assignedTo
-        dueDate
-        category
-        projectId
-        createdAt
-        updatedAt
+    title
+    sop
+    description
+    labels
+    assignedTo
+    dueDate
+    status
+    createdAt
+    updatedAt
+    tasks {
+id
+    title
+    description
+    status
+    labels
+    assignedTo
+    dueDate
+    deferDate
+    department
+    projectId
+    isWaitingFor
+    isSomedayMaybe
+    createdAt
+    updatedAt
       }
     }
   }
@@ -73,7 +83,7 @@ const DELETE_TASK_MUTATION = `
 const validationSchema = yup.object().shape({
     title: yup.string().required("Title is required"),
     description: yup.string(),
-    labels: yup.string(),
+    labels: yup.array().of(yup.string()),
     assignedTo: yup.string(),
     dueDate: yup.string(),
     status: yup.string(),
@@ -101,7 +111,7 @@ const validationSchema = yup.object().shape({
             id: project.id,
             title: project.title || "",
             description: project.description || "",
-            labels: (project.labels || []).join(", "),
+            labels: project.labels || [],
             assignedTo: project.assignedTo || "",
             dueDate: project.dueDate || "",
             status: project.status || "",
@@ -126,7 +136,7 @@ const validationSchema = yup.object().shape({
             id: values.id,
             title: values.title,
             description: values.description,
-            labels: values.labels.split(",").map(l => l.trim()),
+            labels: values.labels,
             assignedTo: values.assignedTo,
             dueDate: values.dueDate,
             status: values.status,
@@ -165,7 +175,15 @@ const validationSchema = yup.object().shape({
           onSubmit={handleFormSubmit}
           enableReinitialize
         >
-          {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          {({ 
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+            setFieldValue,
+           }) => (
             <form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
@@ -188,21 +206,15 @@ const validationSchema = yup.object().shape({
                 onChange={handleChange}
                 margin="normal"
               />
-              <TextField
-                fullWidth
-                label="Labels (comma-separated)"
-                name="labels"
-                value={values.labels}
-                onChange={handleChange}
-                margin="normal"
+              <LabelSelector
+                selectedLabels={values.labels}
+                setFieldValue={setFieldValue}
+                error={errors.labels}
+                touched={touched.labels}
               />
-              <TextField
-                fullWidth
-                label="Assigned To"
-                name="assignedTo"
-                value={values.assignedTo}
-                onChange={handleChange}
-                margin="normal"
+              <AdminUserSelect
+                selectedAdmin={values.assignedTo}
+                setFieldValue={setFieldValue}
               />
               <TextField
                 fullWidth
@@ -214,14 +226,21 @@ const validationSchema = yup.object().shape({
                 InputLabelProps={{ shrink: true }}
                 margin="normal"
               />
-              <TextField
-                fullWidth
-                label="Status"
-                name="status"
-                value={values.status}
-                onChange={handleChange}
-                margin="normal"
-              />
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }}>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    name="status"
+                    value={values.status}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  >
+                   {(formOptions.projectStatusOptions || []).map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                  </Select>
+                </FormControl>
               <Box display="flex" justifyContent="flex-end" mt="20px">
                  <Button type="submit" color="secondary" variant="contained">
                   Save Changes

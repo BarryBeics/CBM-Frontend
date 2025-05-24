@@ -14,6 +14,7 @@ import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
 import formOptions from "../../config/formOptions.json";
 import Header from "../../components/Header";
+import AdminUserSelect from "../../components/AdminUserSelect";
 import { graphqlEndpoint } from "../../config";
 import LabelSelector from "../../components/LabelSelector";
 
@@ -194,13 +195,10 @@ const EditTaskForm = () => {
 </FormControl>
 
 
-<TextField
-  label="Assigned To"
-  name="assignedTo"
-  value={values.assignedTo}
-  onChange={handleChange}
-  sx={{ gridColumn: "span 2" }}
-/>
+<AdminUserSelect
+                selectedAdmin={values.assignedTo}
+                setFieldValue={setFieldValue}
+              />
 
 <TextField
   label="Due Date"

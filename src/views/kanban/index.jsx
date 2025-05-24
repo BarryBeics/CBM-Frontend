@@ -16,7 +16,8 @@ import { graphqlEndpoint } from "../../config";
 import { tokens } from "../../theme";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import Header from "../../components/Header"; // Assuming you use this elsewhere
+import Header from "../../components/Header";
+import AdminUserSelect from "../../components/AdminUserSelect";
 import {
   DragDropContext,
   Droppable,
@@ -74,7 +75,7 @@ const KanbanBoard = () => {
     message: "",
     severity: "success", // 'error', 'warning', 'info'
   });
-
+  const [selectedAdminId, setSelectedAdminId] = useState("");
   const [tasksByStatus, setTasksByStatus] = useState({
     //inbox: [],
     nextAction: [],
@@ -161,20 +162,15 @@ const KanbanBoard = () => {
         const validStatuses = Object.keys(grouped);
 
         for (const task of allTasks) {
-          let key = task.status;
-
-          // Map legacy statuses to GTD
-          if (key === "todo") key = "inbox";
-          if (key === "inProgress") key = "nextAction";
-
-          if (validStatuses.includes(key)) {
-            grouped[key].push(task);
+          const status = task.status;
+        
+          if (validStatuses.includes(status)) {
+            grouped[status].push(task);
           } else {
-            grouped.inbox.push(task); // fallback
+            grouped.inbox.push(task); // fallback for future-proofing
           }
         }
-
-          
+                  
         setTasksByStatus(grouped);
       } catch (err) {
         console.error("Error loading tasks:", err);
@@ -188,6 +184,12 @@ const KanbanBoard = () => {
       {/* Page Header and +Task Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="KANBAN" subtitle="View and organise tasks" />
+        <Box width="250px" mb={2}>
+          <AdminUserSelect
+            selectedAdmin={selectedAdminId}
+            setFieldValue={(field, value) => setSelectedAdminId(value)}
+          />
+        </Box>
         <Button
           variant="contained"
           color="secondary"
@@ -205,7 +207,10 @@ const KanbanBoard = () => {
       <DragDropContext onDragEnd={handleDragEnd}>
   <Box display="flex" gap={2} p={2} overflow="auto" backgroundColor={colors.grey[600]} borderRadius="5px" boxShadow={1} minHeight="60vh">
     {Object.entries(STATUS_COLUMNS).map(([key, label]) => {
-      const tasks = tasksByStatus[key] || [];
+      const tasks = (tasksByStatus[key] || []).filter(task =>
+        !selectedAdminId || task.assignedTo === selectedAdminId
+      );
+      
 
       return (
         <Droppable droppableId={key} key={key}>

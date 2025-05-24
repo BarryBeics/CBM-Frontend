@@ -2,8 +2,9 @@ import { IconButton, Tooltip } from "@mui/material";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import React from "react";
 
-const LogoutButton = () => {
+const LogoutButton = React.forwardRef(function LogoutButton(props, ref) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -21,6 +22,6 @@ const LogoutButton = () => {
       </IconButton>
     </Tooltip>
   );
-};
+});
 
 export default LogoutButton;
