@@ -12,16 +12,17 @@ import {
   Modal
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
-import { useTheme } from "@mui/material/styles";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
-import Header from "../../components/Header";
-import AdminUserSelect from "../../components/AdminUserSelect";
 import formOptions from "../../config/formOptions.json";
 import { graphqlEndpoint } from "../../config";
+import { parse, isValid } from "date-fns";
+
+import Header from "../../components/Header";
+import AdminUserSelect from "../../components/AdminUserSelect";
 import LabelSelector from "../../components/LabelSelector";
+import DateInput from "../../components/DateInput";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
@@ -96,8 +97,6 @@ const validationSchema = yup.object().shape({
   const ProjectEditForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     
@@ -144,7 +143,9 @@ const validationSchema = yup.object().shape({
                 description: project.description || "",
                 labels: project.labels || [],
                 assignedTo: project.assignedTo || "",
-                dueDate: project.dueDate || "",
+                dueDate: project.dueDate && isValid(parse(project.dueDate, "dd-MM-yyyy", new Date()))
+                          ? project.dueDate
+                          : "",
                 status: project.status || "",
               });
               setTasks(project.tasks || []);
@@ -248,16 +249,17 @@ const validationSchema = yup.object().shape({
                 selectedAdmin={values.assignedTo}
                 setFieldValue={setFieldValue}
               />
-              <TextField
-                fullWidth
-                label="Due Date"
-                name="dueDate"
-                type="date"
-                value={values.dueDate}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                margin="normal"
-              />
+              <DateInput
+                  label="Due Date"
+                  name="dueDate"
+                  value={values.dueDate}
+                  onChange={setFieldValue}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  error={errors.dueDate}
+                  touched={touched.dueDate}
+                />
+
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }}>
                   <InputLabel>Status</InputLabel>
                   <Select

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Box, useTheme, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
@@ -7,7 +7,6 @@ import DeleteProjectModal from "../../components/DeleteProjectModal";
 import TableActions from "../../components/TableActions";
 import ThemedDataGrid from "../../components/ThemedDataGrid";
 import { graphqlEndpoint } from "../../config";
-import { tokens } from "../../theme";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
@@ -36,8 +35,6 @@ const DELETE_PROJECT_MUTATION = `
 `;
 
 const ManageProjects = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
   const location = useLocation();

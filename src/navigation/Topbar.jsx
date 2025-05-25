@@ -1,7 +1,7 @@
 import { Box, IconButton, useTheme, Tooltip } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ColorModeContext, tokens } from "../theme";
+import { ColorModeContext } from "../theme";
 import {
   DarkModeOutlined as DarkModeOutlinedIcon,
   LightModeOutlined as LightModeOutlinedIcon,
@@ -16,7 +16,6 @@ import LogoutButton from "../auth/LogoutButton";
 
 const Topbar = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
 

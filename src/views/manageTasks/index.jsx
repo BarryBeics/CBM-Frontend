@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
 import { GraphQLClient } from "graphql-request";
 import Header from "../../components/Header";
 import DeleteTaskModal from "../../components/DeleteTaskModal";
 import ThemedDataGrid from "../../components/ThemedDataGrid";
 import { graphqlEndpoint } from "../../config";
-import { tokens } from "../../theme";
 import TableActions from "../../components/TableActions";
 
 
@@ -42,8 +40,6 @@ const DELETE_TASK_MUTATION = `
 `;
 
 const ManageTasks = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
   const [tasks, setTasks] = useState([]);

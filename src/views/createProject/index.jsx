@@ -7,16 +7,19 @@ import {
     Select,
     MenuItem,
   } from "@mui/material";
+  import useMediaQuery from "@mui/material/useMediaQuery";
   import { useNavigate, useLocation } from "react-router-dom";
   import { Formik, Field } from "formik";
   import * as yup from "yup";
-  import useMediaQuery from "@mui/material/useMediaQuery";
+  
   import formOptions from "../../config/formOptions.json";
-  import Header from "../../components/Header";
-  import AdminUserSelect from "../../components/AdminUserSelect";
   import { GraphQLClient } from "graphql-request";
   import { graphqlEndpoint } from "../../config";
+
+  import Header from "../../components/Header";
+  import AdminUserSelect from "../../components/AdminUserSelect";
   import LabelSelector from "../../components/LabelSelector";
+  import DateInput from "../../components/DateInput";
   
   // GraphQL client
   const client = new GraphQLClient(graphqlEndpoint);
@@ -149,24 +152,22 @@ import {
   
                 <Field type="hidden" name="sop" />
 
-  
                 <AdminUserSelect
                   selectedAdmin={values.assignedTo}
                   setFieldValue={setFieldValue}
                 />
 
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="date"
-                  label="Due Date"  
-                  InputLabelProps={{ shrink: true }}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.dueDate}
+                <DateInput
+                  label="Due Date"
                   name="dueDate"
-                  sx={{ gridColumn: "span 2" }}
-                /> 
+                  value={values.dueDate}
+                  onChange={setFieldValue}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  error={errors.dueDate}
+                  touched={touched.dueDate}
+                />
+
                 <LabelSelector
                 selectedLabels={values.labels}
                 setFieldValue={setFieldValue}
