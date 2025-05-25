@@ -1,5 +1,8 @@
 import { Box, IconButton, useTheme, Tooltip } from "@mui/material";
 import { useContext, useEffect } from "react";
+import { useSettings } from "../context/SettingsProvider";
+import SettingsModal from "../components/SettingsModal";
+import { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { ColorModeContext } from "../theme";
 import {
@@ -18,6 +21,9 @@ const Topbar = () => {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const { showComplete, setShowComplete, showSomedayMaybe, setShowSomedayMaybe } = useSettings();
+
 
   const { user } = useAuth();
 const role = user?.role;
@@ -55,11 +61,22 @@ const isLoggedIn = !!user;
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Settings" color="secondary">
+            <Tooltip title="Settings" color="secondary"
+            onClick={() => setShowSettingsModal(true)}
+            >
               <IconButton>
                 <SettingsOutlinedIcon />
               </IconButton>
             </Tooltip>
+
+            <SettingsModal
+                open={showSettingsModal}
+                onClose={() => setShowSettingsModal(false)}
+                showComplete={showComplete}
+                setShowComplete={setShowComplete}
+                showSomedayMaybe={showSomedayMaybe}
+                setShowSomedayMaybe={setShowSomedayMaybe}
+              />
 
             <Tooltip title="Profile" color="secondary">
               <IconButton>
