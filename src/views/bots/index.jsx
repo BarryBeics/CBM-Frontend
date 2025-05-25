@@ -2,13 +2,10 @@
 import { useEffect, useState } from "react";
 
 // Third-party libraries
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 
 // Graph
 import { getAllStrategies } from "../../graph/strategies/getAllStrategies";
-
-// Theme
-import { tokens } from "../../theme";
 
 // Components
 import Header from "../../components/Header";
@@ -16,8 +13,6 @@ import CreateBot from "../../components/CreateBot";
 import ThemedDataGrid from "../../components/ThemedDataGrid";
 
 const Bots = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const [botData, setBotData] = useState([]);
 
   useEffect(() => {

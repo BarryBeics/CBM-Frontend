@@ -12,11 +12,14 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import formOptions from "../../config/formOptions.json";
-import Header from "../../components/Header";
-import AdminUserSelect from "../../components/AdminUserSelect";
+
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
+
 import LabelSelector from "../../components/LabelSelector";
+import DateInput from "../../components/DateInput";
+import Header from "../../components/Header";
+import AdminUserSelect from "../../components/AdminUserSelect";
 
 // GraphQL client
 const client = new GraphQLClient(graphqlEndpoint);
@@ -144,18 +147,16 @@ const CreateTaskForm = () => {
               />
 
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="date"
-                label="Due Date"
-                InputLabelProps={{ shrink: true }}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.dueDate}
-                name="dueDate"
-                sx={{ gridColumn: "span 2" }}
-              />
+<DateInput
+                  label="Due Date"
+                  name="dueDate"
+                  value={values.dueDate}
+                  onChange={setFieldValue}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  error={errors.dueDate}
+                  touched={touched.dueDate}
+                />
 
               <FormControl
                 fullWidth
@@ -176,18 +177,8 @@ const CreateTaskForm = () => {
                     ))}
                   </Select>
                 </FormControl>
-                <TextField
-  fullWidth
-  variant="filled"
-  type="date"
-  label="Defer Date"
-  InputLabelProps={{ shrink: true }}
-  onBlur={handleBlur}
-  onChange={handleChange}
-  value={values.deferDate}
-  name="deferDate"
-  sx={{ gridColumn: "span 2" }}
-/>
+
+
 
 <FormControl
   fullWidth

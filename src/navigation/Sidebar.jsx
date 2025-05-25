@@ -10,7 +10,6 @@ import {
   ListItemButton,
   Typography,
   useTheme,
-  Avatar,
   Tooltip,
 } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";

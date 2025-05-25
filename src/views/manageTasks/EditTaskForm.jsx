@@ -13,10 +13,14 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
 import formOptions from "../../config/formOptions.json";
+import { graphqlEndpoint } from "../../config";
+import { parseUKDate } from "../../utils/dateUtiles"; 
+import { parse, isValid } from "date-fns";
+
 import Header from "../../components/Header";
 import AdminUserSelect from "../../components/AdminUserSelect";
-import { graphqlEndpoint } from "../../config";
 import LabelSelector from "../../components/LabelSelector";
+import DateInput from "../../components/DateInput";
 
 
 const client = new GraphQLClient(graphqlEndpoint);
@@ -81,12 +85,12 @@ const EditTaskForm = () => {
           status: taskById.status || "",
           labels: taskById.labels || [],
           assignedTo: taskById.assignedTo || "",
-          dueDate: taskById.dueDate
-            ? new Date(taskById.dueDate).toISOString().split("T")[0]
-            : "",
-          deferDate: taskById.deferDate
-            ? new Date(taskById.deferDate).toISOString().split("T")[0]
-            : "",
+          dueDate: taskById.dueDate && isValid(parse(taskById.dueDate, "dd-MM-yyyy", new Date()))
+          ? taskById.dueDate
+          : "",
+          deferDate: taskById.deferDate && isValid(parse(taskById.deferDate, "dd-MM-yyyy", new Date()))
+          ? taskById.deferDate
+          : "",
           department: taskById.department || "",
           projectId: taskById.projectId || "",
           isWaitingFor: taskById.isWaitingFor || false,
@@ -124,7 +128,8 @@ const validationSchema = yup.object().shape({
     const formattedValues = {
       ...values,
       id,
-      dueDate: values.dueDate ? new Date(values.dueDate).toISOString() : null,
+      dueDate: parseUKDate(values.dueDate),
+      deferDate: parseUKDate(values.deferDate),
     };
 
     try {
@@ -203,25 +208,28 @@ const validationSchema = yup.object().shape({
                 setFieldValue={setFieldValue}
               />
 
-<TextField
-  label="Due Date"
-  name="dueDate"
-  type="date"
-  value={values.dueDate}
-  onChange={handleChange}
-  InputLabelProps={{ shrink: true }}
-  sx={{ gridColumn: "span 2" }}
+<DateInput
+                  label="Due Date"
+                  name="dueDate"
+                  value={values.dueDate}
+                  onChange={setFieldValue}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  error={errors.dueDate}
+                  touched={touched.dueDate}
+                />
+
+<DateInput
+  label="Defer Until"
+  name="deferDate"
+  value={values.deferDate}
+  onChange={setFieldValue}
+  onBlur={handleBlur}
+  setFieldValue={setFieldValue}
+  error={errors.deferDate}
+  touched={touched.deferDate}
 />
 
-<TextField
-  label="Defer Date"
-  name="deferDate"
-  type="date"
-  value={values.deferDate}
-  onChange={handleChange}
-  InputLabelProps={{ shrink: true }}
-  sx={{ gridColumn: "span 2" }}
-/>
 
 <FormControl fullWidth sx={{ gridColumn: "span 2" }}>
   <InputLabel>Department</InputLabel>
