@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
 import { tokens } from "../../theme";
+import { useSettings } from "../../context/SettingsProvider";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Header from "../../components/Header";
@@ -54,26 +55,24 @@ const UPDATE_TASK_STATUS = `
   }
 `;
 
-
-
-const STATUS_COLUMNS = {
-//  inbox: "Inbox",
-  nextAction: "Next Action",
-  waitingFor: "Waiting For",
-  scheduled: "Scheduled",
- // somedayMaybe: "Someday/Maybe",
-  complete: "Complete",
-};
-
-
-
-
 const KanbanBoard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+
+  const { showSomedayMaybe, showComplete } = useSettings();
+  const STATUS_COLUMNS = {
+    inbox: "Inbox",
+    nextAction: "Next Action",
+    waitingFor: "Waiting For",
+    scheduled: "Scheduled",
+    ...(showSomedayMaybe && { somedayMaybe: "Someday/Maybe" }),
+    ...(showComplete && { complete: "Complete" }),
+  };
+
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [lastMovedTask, setLastMovedTask] = useState(null);
+  
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -81,11 +80,11 @@ const KanbanBoard = () => {
   });
   const [selectedAdminId, setSelectedAdminId] = useState("");
   const [tasksByStatus, setTasksByStatus] = useState({
-    //inbox: [],
+    inbox: [],
     nextAction: [],
     waitingFor: [],
     scheduled: [],
-    //somedayMaybe: [],
+    somedayMaybe: [],
     complete: [],
   });
 
@@ -188,8 +187,27 @@ const KanbanBoard = () => {
       {/* Page Header and +Task Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="KANBAN" subtitle="View and organise tasks" />
+        {/* Add Task */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() =>
+            navigate("/createTask", {
+              state: { redirectPath: "/kanban" },
+            })
+          }
+        >
+          + Task
+        </Button>
         {/* Pill Filter */}
-        <Box mb={2} display="flex" alignItems="center" flexWrap="wrap" gap={1}>
+        <Box
+          mb={2}
+          sx={{ width: "40%" }} 
+          display="flex"
+          alignItems="center"
+          flexWrap="wrap"
+          gap={1}
+        >
   {formOptions.labelOptions.map((label) => {
     const isSelected = selectedLabels.includes(label.value);
     return (
@@ -215,24 +233,13 @@ const KanbanBoard = () => {
   })}
 </Box>
         {/* User Filter */}
-        <Box width="250px" mb={2}>
+        <Box width="20%" mb={2}>
           <AdminUserSelect
             selectedAdmin={selectedAdminId}
             setFieldValue={(field, value) => setSelectedAdminId(value)}
           />
         </Box>
-        {/* Add Task */}
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() =>
-            navigate("/createTask", {
-              state: { redirectPath: "/kanban" },
-            })
-          }
-        >
-          + Task
-        </Button>
+        
       </Box>
 
       {/* Kanban Columns */}
@@ -240,24 +247,32 @@ const KanbanBoard = () => {
   <Box display="flex" gap={2} p={2} overflow="auto" backgroundColor={colors.grey[600]} borderRadius="5px" boxShadow={1} minHeight="60vh">
     {Object.entries(STATUS_COLUMNS).map(([key, label]) => {
       const tasks = (tasksByStatus[key] || []).filter((task) => {
-        if (selectedLabels.length === 0) return true;
-        return task.labels?.some((label) => selectedLabels.includes(label));
+        const matchesLabels =
+            selectedLabels.length === 0 ||
+            task.labels?.some((label) => selectedLabels.includes(label));
+
+        const matchesAdmin =
+          !selectedAdminId || task.assignedTo === selectedAdminId;
+      
+        return matchesLabels && matchesAdmin;
       });
       
-    
+      
       return (
         <Droppable droppableId={key} key={key}>
           {(provided) => (
             <Box
               ref={provided.innerRef}
               {...provided.droppableProps}
-              minWidth="300px"
-              flexShrink={0}
+              flex={1}
+              minWidth={200}
+              maxWidth="100%"
               backgroundColor={colors.grey[700]}
               borderRadius="5px"
               boxShadow={2}
               p={2}
-              sx={{ border: `1px solid ${colors.grey[700]}` }}
+              sx={{ 
+                flexBasis: 0, border: `1px solid ${colors.grey[700]}` }}
             >
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} pb={1} borderBottom={`2px solid ${colors.scalpelTeal[400]}`}>
                 <Typography variant="h6" sx={{ color: colors.grey[200], fontWeight: 600 }}>
