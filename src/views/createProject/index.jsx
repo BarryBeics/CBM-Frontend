@@ -53,9 +53,7 @@ import {
     title: "",
     description: "",
     sop: sopValue,
-    labels: Array.isArray(formOptions.labelOptions)
-    ? formOptions.labelOptions
-    : (formOptions.labelOptions || "").split(",").map((l) => l.trim()).filter(Boolean),
+    labels: [],
     assignedTo: "",
     dueDate: "",
     status: "initialised",
