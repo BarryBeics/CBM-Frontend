@@ -50,8 +50,7 @@ id
     deferDate
     department
     projectId
-    isWaitingFor
-    isSomedayMaybe
+    duration
     createdAt
     updatedAt
       }

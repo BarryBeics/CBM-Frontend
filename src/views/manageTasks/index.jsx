@@ -25,8 +25,7 @@ const GET_ALL_TASKS_QUERY = `
     deferDate
     department
     projectId
-    isWaitingFor
-    isSomedayMaybe
+    duration
     createdAt
     updatedAt
   }

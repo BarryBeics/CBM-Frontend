@@ -8,6 +8,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  duration,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -38,8 +39,7 @@ const GET_TASK_QUERY = `
     deferDate
     department
     projectId
-    isWaitingFor
-    isSomedayMaybe
+    duration
     }
   }
 `;
@@ -57,8 +57,7 @@ const UPDATE_TASK_MUTATION = `
     deferDate
     department
     projectId
-    isWaitingFor
-    isSomedayMaybe
+    duration
     }
   }
 `;
@@ -93,8 +92,7 @@ const EditTaskForm = () => {
           : "",
           department: taskById.department || "",
           projectId: taskById.projectId || "",
-          isWaitingFor: taskById.isWaitingFor || false,
-          isSomedayMaybe: taskById.isSomedayMaybe || false,
+          duration: taskById.duration || "",
         });
       } catch (err) {
         console.error("Error fetching task:", err);
@@ -244,31 +242,6 @@ const validationSchema = yup.object().shape({
       </MenuItem>
     ))}
   </Select>
-</FormControl>
-
-<FormControl
-  fullWidth
-  sx={{ gridColumn: "span 2", display: "flex", flexDirection: "row", alignItems: "center" }}
->
-  <label style={{ marginRight: "20px" }}>
-    <input
-      type="checkbox"
-      name="isWaitingFor"
-      checked={values.isWaitingFor}
-      onChange={handleChange}
-    />{" "}
-    Waiting For
-  </label>
-
-  <label>
-    <input
-      type="checkbox"
-      name="isSomedayMaybe"
-      checked={values.isSomedayMaybe}
-      onChange={handleChange}
-    />{" "}
-    Someday/Maybe
-  </label>
 </FormControl>
 
 <TextField
