@@ -36,11 +36,12 @@ import CreateUser from "./views/createUser";
 import CreateTask from "./views/createTask";
 import CreateProject from "./views/createProject";
 
+import ManageMeeting from "./views/manageMeeting";
+
 // Views - Charts
 import PairsChart from "./views/pairsChart";
 import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
-
 
 function App() {
   const [theme, colourMode] = useMode();
@@ -50,6 +51,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
+          {/* Topbar link */}
+          <Route path="/trackMeeting" element={<ManageMeeting />} />
+
           {/* Public pages with layout */}
           <Route element={<Layout />}>
             <Route path="/" element={<LandingPage />} />
@@ -60,23 +64,142 @@ function App() {
           {/* Protected pages wrapped in layout */}
           <Route element={<Layout />}>
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/bots" element={<ProtectedRoute><Bots /></ProtectedRoute>} />
-            <Route path="/pairsChart" element={<ProtectedRoute><PairsChart /></ProtectedRoute>} />
-            <Route path="/smaChart" element={<ProtectedRoute><SMAChart /></ProtectedRoute>} />
-            <Route path="/avgGainChart" element={<ProtectedRoute><AvgGainChart /></ProtectedRoute>} />
-            <Route path="/createUser" element={<ProtectedRoute role={["admin"]}><CreateUser /></ProtectedRoute>} />
-            <Route path="/manageUsers" element={<ProtectedRoute role={["admin"]}><ManageUsers /></ProtectedRoute>} />
-            <Route path="/users/edit/:email" element={<ProtectedRoute role={["admin"]}><EditUserForm /></ProtectedRoute>} />
-            <Route path="/createTask" element={<ProtectedRoute role={["admin"]}><CreateTask /></ProtectedRoute>} />
-            <Route path="/manageTasks" element={<ProtectedRoute role={["admin"]}><ManageTasks /></ProtectedRoute>} />
-            <Route path="/tasks/edit/:id" element={<ProtectedRoute role={["admin"]}><EditTaskForm /></ProtectedRoute>} />
-            <Route path="/createProject" element={<ProtectedRoute role={["admin"]}><CreateProject /></ProtectedRoute>} />
-            <Route path="/manageProjects" element={<ProtectedRoute role={["admin"]}><ManageProjects /></ProtectedRoute>} />
-            <Route path="/projects/edit/:id" element={<ProtectedRoute role={["admin"]}><EditProjectForm /></ProtectedRoute>} />
-            <Route path="/manageSOPs" element={<ProtectedRoute role={["admin"]}><ManageSOPs /></ProtectedRoute>} />
-            <Route path="/sops/edit/:id" element={<ProtectedRoute role={["admin"]}><EditSOPForm /></ProtectedRoute>} />
-            <Route path="/kanban" element={<ProtectedRoute role={["admin"]}><KanbanBoard /></ProtectedRoute>} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bots"
+              element={
+                <ProtectedRoute>
+                  <Bots />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pairsChart"
+              element={
+                <ProtectedRoute>
+                  <PairsChart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/smaChart"
+              element={
+                <ProtectedRoute>
+                  <SMAChart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/avgGainChart"
+              element={
+                <ProtectedRoute>
+                  <AvgGainChart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/createUser"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <CreateUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageUsers"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users/edit/:email"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditUserForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/createTask"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <CreateTask />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageTasks"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageTasks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditTaskForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/createProject"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <CreateProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageProjects"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageProjects />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projects/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditProjectForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageSOPs"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <ManageSOPs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sops/edit/:id"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <EditSOPForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/kanban"
+              element={
+                <ProtectedRoute role={["admin"]}>
+                  <KanbanBoard />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* Fallback */}

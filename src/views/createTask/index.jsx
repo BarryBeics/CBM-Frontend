@@ -6,6 +6,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  duration,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Formik } from "formik";
@@ -38,14 +39,12 @@ const CREATE_TASK_MUTATION = `
       deferDate
       department
       projectId
-      isWaitingFor
-      isSomedayMaybe
+      duration
       createdAt
       updatedAt
     }
   }
 `;
-
 
 const CreateTaskForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -57,33 +56,25 @@ const CreateTaskForm = () => {
   console.log("Received location state:", location.state);
   console.log("Parsed projectId from location state:", passedProjectId);
 
-
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
       // Remove empty optional fields
       const cleanedValues = {
         ...values,
         labels: values.labels || [],
-        isWaitingFor: !!values.isWaitingFor,
-        isSomedayMaybe: !!values.isSomedayMaybe,
       };
-      
-      
 
       console.log("Submitting task with values:", cleanedValues);
 
-  
       await client.request(CREATE_TASK_MUTATION, { input: cleanedValues });
       alert("Task created successfully!");
       resetForm();
-      navigate(redirectPath); 
+      navigate(redirectPath);
     } catch (err) {
       console.error("Error creating task:", err);
       alert("Failed to create task.");
     }
   };
-  
-  
 
   return (
     <Box m="20px">
@@ -93,9 +84,7 @@ const CreateTaskForm = () => {
         onSubmit={handleFormSubmit}
         initialValues={{ ...initialTaskValues, projectId: passedProjectId }}
         validationSchema={taskSchema}
-        
       >
-        
         {({
           values,
           errors,
@@ -146,17 +135,16 @@ const CreateTaskForm = () => {
                 setFieldValue={setFieldValue}
               />
 
-
-<DateInput
-                  label="Due Date"
-                  name="dueDate"
-                  value={values.dueDate}
-                  onChange={setFieldValue}
-                  onBlur={handleBlur}
-                  setFieldValue={setFieldValue}
-                  error={errors.dueDate}
-                  touched={touched.dueDate}
-                />
+              <DateInput
+                label="Due Date"
+                name="dueDate"
+                value={values.dueDate}
+                onChange={setFieldValue}
+                onBlur={handleBlur}
+                setFieldValue={setFieldValue}
+                error={errors.dueDate}
+                touched={touched.dueDate}
+              />
 
               <FormControl
                 fullWidth
@@ -169,76 +157,43 @@ const CreateTaskForm = () => {
                   value={values.status}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  >
-                    {formOptions.taskStatusOptions.map((opt) => (
-                      <MenuItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                >
+                  {formOptions.taskStatusOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
+              <FormControl
+                fullWidth
+                variant="filled"
+                sx={{ gridColumn: "span 2" }}
+              >
+                <InputLabel>Department</InputLabel>
+                <Select
+                  name="department"
+                  value={values.department}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                >
+                  {formOptions.departmentOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-
-<FormControl
-  fullWidth
-  variant="filled"
-  sx={{ gridColumn: "span 2" }}
->
-  <InputLabel>Department</InputLabel>
-  <Select
-    name="department"
-    value={values.department}
-    onChange={handleChange}
-    onBlur={handleBlur}
-  >
-    {formOptions.departmentOptions.map((opt) => (
-      <MenuItem key={opt.value} value={opt.value}>
-        {opt.label}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-
-<FormControl
-  fullWidth
-  sx={{ gridColumn: "span 2", display: "flex", flexDirection: "row", alignItems: "center" }}
->
-  <label style={{ marginRight: "10px" }}>
-    <input
-      type="checkbox"
-      name="isWaitingFor"
-      checked={values.isWaitingFor}
-      onChange={handleChange}
-    />
-    Waiting For
-  </label>
-
-  <label>
-    <input
-      type="checkbox"
-      name="isSomedayMaybe"
-      checked={values.isSomedayMaybe}
-      onChange={handleChange}
-    />
-    Someday/Maybe
-  </label>
-</FormControl>
-
-              
-<LabelSelector
-  selectedLabels={values.labels}
-  setFieldValue={setFieldValue}
-  error={errors.labels}
-  touched={touched.labels}
-/>
-           
-              
-              <input
-                type="hidden"
-                name="projectId"
-                value={values.projectId}
+              <LabelSelector
+                selectedLabels={values.labels}
+                setFieldValue={setFieldValue}
+                error={errors.labels}
+                touched={touched.labels}
               />
+
+              <input type="hidden" name="projectId" value={values.projectId} />
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px">
@@ -253,7 +208,7 @@ const CreateTaskForm = () => {
   );
 };
 
- const allowedLabels = formOptions?.labelOptions.map((l) => l.value) || [];
+const allowedLabels = formOptions?.labelOptions.map((l) => l.value) || [];
 
 const taskSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -262,16 +217,14 @@ const taskSchema = yup.object().shape({
   labels: yup
     .array()
     .of(yup.string().oneOf(allowedLabels, "Invalid label"))
-        .min(1, "Select at least one label")
-        .required("Select at least one label"),
+    .min(1, "Select at least one label")
+    .required("Select at least one label"),
   assignedTo: yup.string(),
   dueDate: yup.string(),
   deferDate: yup.string(),
   department: yup.string(),
-  isWaitingFor: yup.boolean(),
-  isSomedayMaybe: yup.boolean(),
+  duration: yup.string(),
 });
-
 
 const initialTaskValues = {
   title: "",
@@ -282,9 +235,7 @@ const initialTaskValues = {
   dueDate: "",
   deferDate: "",
   department: "",
-  isWaitingFor: false,
-  isSomedayMaybe: false,
+  duration: "",
 };
-
 
 export default CreateTaskForm;
