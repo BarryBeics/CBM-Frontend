@@ -9,7 +9,11 @@ const timeOptions = [
   { label: "1 hour", intervals: 12 },
   { label: "2 hours", intervals: 24 },
   { label: "4 hours", intervals: 48 },
+  { label: "6 hours", intervals: 72 },
   { label: "12 hours", intervals: 144 },
+  { label: "1 Day", intervals: 288 },
+  { label: "3 Days", intervals: 864 },
+  { label: "1 Week", intervals: 2016 },
 ];
 
 
