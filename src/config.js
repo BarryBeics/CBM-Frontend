@@ -1,8 +1,7 @@
-// config.js
-export const graphqlEndpoint = "http://localhost:8080/query";
+export const graphqlEndpoint =
+  process.env.NODE_ENV === "production"
+    ? "http://134.209.183.65:8080/query"
+    : "http://localhost:8080/query";
 
-// config.js
 export const isProd = process.env.NODE_ENV === "production";
-
-// For development mode
-export const fixedDevTime = 1743372000;  
+export const fixedDevTime = 1743372000;
