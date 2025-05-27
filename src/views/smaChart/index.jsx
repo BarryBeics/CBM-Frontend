@@ -17,6 +17,7 @@ import { GraphQLClient } from "graphql-request";
 // Componenets
 import SymbolDropdown from "../../components/SymbolDropdown";
 import Header from "../../components/Header";
+import TimeRangeSelector from "../../components/TimeRangeSelector";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
@@ -27,6 +28,7 @@ const SMAChart = () => {
   const [selectedSymbol, setSelectedSymbol] = useState("BTCUSDT");
   const [symbolOptions, setSymbolOptions] = useState([]);
   const [strategyOptions, setStrategyOptions] = useState([]);
+  const [timeFrameQty, setTimeFrameQty] = useState(12); // default to 1 hour (12 intervals of 5 minutes)
   const [selectedStrategy, setSelectedStrategy] = useState("Baz");
   const [priceData, setPriceData] = useState([]);
   const [smaData, setSmaData] = useState({ short: [], long: [] });
@@ -101,7 +103,7 @@ const SMAChart = () => {
       );
       if (!strategy) return;
 
-      const limit = strategy.LongSMADuration + 140;
+      const limit = strategy.LongSMADuration + timeFrameQty;
 
       const res = await client.request(
         `
@@ -127,14 +129,16 @@ const SMAChart = () => {
     }
 
     fetchChartData();
-  }, [selectedSymbol, selectedStrategy]);
+  }, [selectedSymbol, selectedStrategy, timeFrameQty]);
 
   const formatChartData = () => {
-    const format = arr =>
+    const format = (arr) =>
       [...arr]
         .sort((a, b) => a.Timestamp - b.Timestamp)
-        .map(d => ({ x: new Date(d.Timestamp * 1000).toLocaleTimeString(), y: d.SMA }));
-    
+        .map((d) => ({
+          x: new Date(d.Timestamp * 1000).toLocaleTimeString(),
+          y: d.SMA,
+        }));
 
     const base = [...priceData]
       .sort((a, b) => a.Timestamp - b.Timestamp)
@@ -144,9 +148,17 @@ const SMAChart = () => {
       }));
 
     return [
-      { id: "Price", color: "#81D4FA", data: base },
-      { id: "Short SMA", color: "#FFCC80", data: format(smaData.short) },
-      { id: "Long SMA", color: "#FF4081", data: format(smaData.long) },
+      { id: "Price", color: colors.houndGold[500], data: base },
+      {
+        id: "Short SMA",
+        color: colors.softRed[500],
+        data: format(smaData.short),
+      },
+      {
+        id: "Long SMA",
+        color: colors.scalpelTeal[500],
+        data: format(smaData.long),
+      },
     ];
   };
 
@@ -164,6 +176,22 @@ const SMAChart = () => {
           setSelectedSymbol={setSelectedSymbol}
           colors={colors}
         />
+
+        {/* Styled Time selector Box */}
+                <Box
+                  backgroundColor={colors.grey[800]}
+                  borderRadius="5px"
+                  boxShadow={1}
+                  p={2}
+                  minHeight="100px"
+                  width={300}
+                >
+                  <TimeRangeSelector
+                    value={timeFrameQty}
+                    onChange={setTimeFrameQty}
+                    colorMode={colors}
+                  />
+                </Box>
 
         {/* Dropdown */}
         <Box

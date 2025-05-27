@@ -7,7 +7,7 @@ import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material/styles";
 
 // Graph
-import { GraphQLClient } from "graphql-request";
+import { GraphQLClient, gql } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
 
 // Theme
@@ -18,23 +18,7 @@ import SymbolDropdown from "../../components/SymbolDropdown";
 import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
 
-const client = new GraphQLClient(graphqlEndpoint, {
-  headers: {
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache",
-  },
-  fetch: (url, options) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options.headers,
-        "Cache-Control": "no-cache",
-        "Pragma": "no-cache",
-      },
-    });
-  },
-});
-
+const client = new GraphQLClient(graphqlEndpoint);
 
 const PriceChart = () => {
   const [selectedSymbol, setSelectedSymbol] = useState("ETHBTC");
@@ -50,46 +34,25 @@ const PriceChart = () => {
     const fetchData = async () => {
       if (!selectedSymbol || timeFrameQty === 0) return;
 
-//       const query = `
-//   {
-//     getHistoricPrice(symbol: "ETHUSDT", limit: 5) {
-//       Timestamp
-//     }
-//   }
-// `;
-    
+      const query = gql`
+        query getPriceData($symbol: String!, $limit: Int!) {
+          getHistoricPrice(symbol: $symbol, limit: $limit) {
+            Pair {
+              Symbol
+              Price
+            }
+            Timestamp
+          }
+        }
+      `;
+
       try {
-        const res = await fetch("http://localhost:8080/query", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-          },
-          body: JSON.stringify({
-            query: `
-              query getPriceData($symbol: String!, $limit: Int!) {
-                getHistoricPrice(symbol: $symbol, limit: $limit) {
-                  Timestamp
-                  Pair {
-                    Symbol
-                    Price
-                  }
-                }
-              }
-            `,
-            variables: {
-              symbol: selectedSymbol,
-              limit: timeFrameQty,
-            },
-          }),
+        const res = await client.request(query, {
+          symbol: selectedSymbol,
+          limit: timeFrameQty,
         });
-        
-        const { data } = await res.json();
-        console.log("Raw response data:", data);
 
-        const rawData = data?.getHistoricPrice || [];
-
+        const rawData = res.getHistoricPrice || [];
 
         // Format for Nivo
         const formatted = [
@@ -103,7 +66,7 @@ const PriceChart = () => {
                 hour: "2-digit",
                 minute: "2-digit",
               }),
-              y: Number.parseFloat(entry.Pair.find(p => p.Symbol === selectedSymbol)?.Price ?? "0"),
+              y: entry.Pair.find(p => p.Symbol === selectedSymbol)?.Price ?? 0,
             })),
           },
         ];        
@@ -132,7 +95,7 @@ const PriceChart = () => {
           colors={colors}
         />
 
-        {/* Styled Slider Box */}
+        {/* Styled Time selector Box */}
         <Box
           backgroundColor={colors.grey[800]}
           borderRadius="5px"
