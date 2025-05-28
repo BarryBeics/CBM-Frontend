@@ -55,14 +55,31 @@ const Register = () => {
   return (
     <Box m="20px">
       <Header
-        title="BALLOT REGISTRATION"
-        subtitle="Apply for Founders’ Club lifetime membership"
+        title="Hear More. See More. Get In Early"
+        subtitle="Add your details to be first in line for exclusive updates, early results, and priority access."
       />
 
-      <Typography variant="body1" mb={3}>
-        Submit your details to be considered for early access to Scalpel Hound.
-        Selected members will be contacted directly.
-      </Typography>
+
+<Typography variant="h4" gutterBottom>
+  Hear More. See More.
+</Typography>
+<Typography variant="body1" gutterBottom>
+  This public page is just the tip of the iceberg. Add your details below to unlock:
+</Typography>
+<ul>
+  <li>Private updates on bot performance</li>
+  <li>Insights into the system’s inner workings</li>
+  <li>First access to the trading dashboard</li>
+  <li>Early seat allocation notifications</li>
+</ul>
+<Typography variant="body2" color="textSecondary" gutterBottom>
+  Only registered users get to see the real signals and summaries that drive the system forward.
+</Typography>
+<Button variant="contained" color="primary">
+  Register to See More
+</Button>
+
+
 
       <Formik
         onSubmit={handleFormSubmit}

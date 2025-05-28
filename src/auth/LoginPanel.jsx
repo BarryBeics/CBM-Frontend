@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "./AuthContext";
+import { useTheme } from "@mui/material";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { GraphQLClient, gql } from "graphql-request";
 import { graphqlEndpoint } from "../config";
 import logo from "../assets/logo.png";
+
+// Theme
+import { tokens } from "../theme";
 
 const LOGIN_MUTATION = gql`
   mutation Login($input: LoginInput!) {
@@ -26,6 +30,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const { login } = useAuth();
 
@@ -58,10 +65,13 @@ const Login = () => {
     >
       <Paper elevation={3} sx={{ p: 4, width: "350px", textAlign: "center" }}>
         
-        <Typography variant="h5" fontWeight="bold" mb={2}>
+        <Typography variant="h3" fontWeight="bold" color={colors.houndGold[500]} mb={2}>
           Welcome to Scalpel Hound
         </Typography>
         <img src={logo} alt="Scalpel Hound Logo" style={{ width: 220, marginBottom: "1rem" }} />
+        <Typography variant="h6" fontWeight="bold" color={colors.scalpelTeal[400]} mb={2}>
+        Taking cuts from the market with surgeon-like precision
+        </Typography>
 
         <TextField
           label="Email"
