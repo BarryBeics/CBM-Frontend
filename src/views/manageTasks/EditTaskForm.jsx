@@ -8,8 +8,11 @@ import {
   FormControl,
   InputLabel,
   Select,
-  duration,
+  Tooltip
 } from "@mui/material";
+import {
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { GraphQLClient } from "graphql-request";
@@ -62,6 +65,12 @@ const UPDATE_TASK_MUTATION = `
   }
 `;
 
+const DELETE_TASK_MUTATION = `
+  mutation DeleteTask($id: ID!) {
+    deleteTask(id: $id)
+  }
+`;
+
 const EditTaskForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -72,6 +81,19 @@ const EditTaskForm = () => {
 
   console.log("Received location state:", location.state);
   console.log("Parsed projectId from location state:", passedProjectId);
+
+  const handleDelete = async () => {
+  if (!window.confirm("Are you sure you want to delete this task?")) return;
+  try {
+    console.log("Deleting task with id:", id);
+await client.request(DELETE_TASK_MUTATION, { id: String(id) });
+    alert("Task deleted!");
+    navigate(redirectPath);
+  } catch (err) {
+    console.error("Delete failed:", err);
+    alert("Failed to delete task.");
+  }
+};
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -153,8 +175,21 @@ const validationSchema = yup.object().shape({
 
   return (
     <Box m="20px">
-      <Header title="EDIT TASK" subtitle={`Edit task: ${initialValues.title}`} />
-
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="EDIT TASK" subtitle={`Edit task: ${initialValues.title}`} />
+        <Tooltip title="Delete">
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            startIcon={<DeleteIcon />}
+            onClick={handleDelete}
+          >
+            Delete Task
+          </Button>
+        </Tooltip>
+      </Box>
+          
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
