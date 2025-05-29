@@ -56,25 +56,36 @@ const CreateTaskForm = () => {
   console.log("Received location state:", location.state);
   console.log("Parsed projectId from location state:", passedProjectId);
 
-  const handleFormSubmit = async (values, { resetForm }) => {
-    try {
-      // Remove empty optional fields
-      const cleanedValues = {
-        ...values,
-        labels: values.labels || [],
-      };
+ const handleFormSubmit = async (values, { resetForm }) => {
+  try {
+    // Clean up values: convert empty strings to null or omit
+    const cleanedValues = { ...values };
+for (const key of Object.keys(cleanedValues)) {
+  if (cleanedValues[key] === "") {
+    cleanedValues[key] = null;
+  }
+}
 
-      console.log("Submitting task with values:", cleanedValues);
+    // Ensure labels is always an array
+    cleanedValues.labels = cleanedValues.labels || [];
 
-      await client.request(CREATE_TASK_MUTATION, { input: cleanedValues });
-      alert("Task created successfully!");
-      resetForm();
-      navigate(redirectPath);
-    } catch (err) {
-      console.error("Error creating task:", err);
-      alert("Failed to create task.");
-    }
-  };
+    // Ensure date fields are in ISO format if not null
+    if (cleanedValues.dueDate)
+      cleanedValues.dueDate = cleanedValues.dueDate.replace(/(\d{2})-(\d{2})-(\d{4})/, "$3-$2-$1");
+    if (cleanedValues.deferDate)
+      cleanedValues.deferDate = cleanedValues.deferDate.replace(/(\d{2})-(\d{2})-(\d{4})/, "$3-$2-$1");
+
+    console.log("Submitting task with cleaned values:", cleanedValues);
+
+    await client.request(CREATE_TASK_MUTATION, { input: cleanedValues });
+    alert("Task created successfully!");
+    resetForm();
+    navigate(redirectPath);
+  } catch (err) {
+    console.error("Error creating task:", err);
+    alert("Failed to create task.");
+  }
+};
 
   return (
     <Box m="20px">
