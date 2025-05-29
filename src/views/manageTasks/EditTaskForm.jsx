@@ -123,16 +123,22 @@ const validationSchema = yup.object().shape({
   });
 
   const handleFormSubmit = async (values) => {
-    const formattedValues = {
-      ...values,
-      id,
-      dueDate: parseUKDate(values.dueDate),
-      deferDate: parseUKDate(values.deferDate),
-    };
+    // Clean up values: convert empty strings to null
+    const cleanedValues = { ...values };
+    for (const key of Object.keys(cleanedValues)) {
+      if (cleanedValues[key] === "") {
+        cleanedValues[key] = null;
+      }
+    }
+
+    // Format dates if not null
+    cleanedValues.dueDate = cleanedValues.dueDate ? parseUKDate(cleanedValues.dueDate) : null;
+    cleanedValues.deferDate = cleanedValues.deferDate ? parseUKDate(cleanedValues.deferDate) : null;
+    cleanedValues.id = id;
 
     try {
       const response = await client.request(UPDATE_TASK_MUTATION, {
-        input: formattedValues,
+        input: cleanedValues,
       });
       console.log("Update response:", response);
       alert("Task updated!");
@@ -174,6 +180,19 @@ const validationSchema = yup.object().shape({
   onBlur={handleBlur}
   error={!!touched.title && !!errors.title}
   helperText={touched.title && errors.title}
+  sx={{ gridColumn: "span 4" }}
+/>
+
+<TextField
+  label="Description"
+  name="description"
+  value={values.description}
+  onChange={handleChange}
+  onBlur={handleBlur}
+  multiline
+  rows={3}
+  error={!!touched.description && !!errors.description}
+  helperText={touched.description && errors.description}
   sx={{ gridColumn: "span 4" }}
 />
 

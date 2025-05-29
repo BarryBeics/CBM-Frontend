@@ -71,7 +71,7 @@ import {
         };
   
         await client.request(CREATE_PROJECT_MUTATION, { input: formattedValues });
-        alert("Created successfully!");
+        alert("Project created successfully!");
         resetForm();
         navigate(redirectPath);
       } catch (err) {
