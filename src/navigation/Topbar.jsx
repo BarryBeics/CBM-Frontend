@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme, Tooltip, Snackbar, Alert, } from "@mui/material";
+import { Box, IconButton, useTheme, Tooltip, Snackbar, Alert, Button } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useSettings } from "../context/SettingsProvider";
 import SettingsModal from "../components/SettingsModal";
@@ -15,12 +15,16 @@ import {
   TimerOutlined as TimerOutlinedIcon,
 } from "@mui/icons-material";
 
+// Theme
+import { tokens } from "../theme";
+
 import { useAuth } from "../auth/AuthContext";
 import LogoutButton from "../auth/LogoutButton";
 import MeetingModal from "../components/MeetingModal";
 
 const Topbar = () => {
   const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
@@ -121,11 +125,25 @@ const Topbar = () => {
             <LogoutButton />
           </Tooltip>
         ) : (
-          <Tooltip title="Login">
-            <IconButton onClick={() => navigate("/login")}>
-              <LoginOutlinedIcon />
-            </IconButton>
-          </Tooltip>
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            sx={{
+              fontWeight: "bold",
+              background: colors.houndGold[500],
+              color: "#222",
+              ml: 2,
+              boxShadow: 2,
+              textTransform: "uppercase",
+    '&:hover': {
+      background: colors.houndGold[600],
+    },
+  }}
+  onClick={() => navigate("/login")}
+          >
+            Login
+          </Button>
         )}
       </Box>
       <Snackbar
