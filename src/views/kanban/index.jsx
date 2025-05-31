@@ -36,6 +36,7 @@ const GET_ALL_TASKS = `
     assignedTo
     department
     duration
+    projectId
     }
   }
 `;
@@ -45,6 +46,14 @@ const UPDATE_TASK_STATUS = `
     updateTask(input: $input) {
       id
       status
+    }
+  }
+`;
+
+const GET_SOP_PROJECT_IDS = `
+  query {
+    filterProjects(filter: { sop: true }) {
+      id
     }
   }
 `;
@@ -146,7 +155,19 @@ const KanbanBoard = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
+        // 1. Fetch SOP project IDs
+        const sopData = await client.request(GET_SOP_PROJECT_IDS);
+        const sopProjectIds = sopData.filterProjects.map((proj) => proj.id);
+
+        // 2. Fetch all tasks
         const { allTasks } = await client.request(GET_ALL_TASKS);
+
+        // 3. Filter out tasks related to SOPs
+        const filteredTasks = allTasks.filter(
+          (task) => !sopProjectIds.includes(task.projectId)
+        );
+
+        // 4. Group and set state as before
         const grouped = {
           inbox: [],
           nextAction: [],
@@ -157,13 +178,12 @@ const KanbanBoard = () => {
         };
         const validStatuses = Object.keys(grouped);
 
-        for (const task of allTasks) {
+        for (const task of filteredTasks) {
           const status = task.status;
-
           if (validStatuses.includes(status)) {
             grouped[status].push(task);
           } else {
-            grouped.inbox.push(task); // fallback for future-proofing
+            grouped.inbox.push(task);
           }
         }
 
