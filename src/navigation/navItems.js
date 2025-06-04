@@ -33,6 +33,7 @@ export const navItems = [
   { text: "Pairs Chart", icon: <TimelineOutlinedIcon />, path: "/pairsChart", roles: ["interested", "member", "admin"], adminOnly: false },
   { text: "SMA Chart", icon: <MultilineChartOutlinedIcon />, path: "/smaChart", roles: ["interested", "member", "admin"], adminOnly: false },
   { text: "Avg Gain Chart", icon: <TrendingUpOutlinedIcon />, path: "/avgGainChart", roles: ["interested", "member", "admin"], adminOnly: false },
+  { text: "Liquidity Trend Chart", icon: <TrendingUpOutlinedIcon />, path: "/liquidityTrendChart", roles: ["interested", "member", "admin"], adminOnly: false },
 
   /* ---------- Admin (hidden unless admin) ---------- */
   { section: "Admin", adminOnly: true },

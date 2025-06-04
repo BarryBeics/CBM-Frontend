@@ -42,6 +42,7 @@ import ManageMeeting from "./views/manageMeeting";
 import PairsChart from "./views/pairsChart";
 import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
+import LiquidityChart from "./views/liquidityTrendChart";
 
 function App() {
   const [theme, colourMode] = useMode();
@@ -104,6 +105,15 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/liquidityTrendChart"
+              element={
+                <ProtectedRoute>
+                  <LiquidityChart />
+                </ProtectedRoute>
+              }
+            />
+          
             <Route
               path="/createUser"
               element={

@@ -1,112 +1,112 @@
-import React, { useEffect, useState } from "react";
+// React & Hooks
+import { useState } from "react";
+
+// Third-party
 import { Box, Typography, Chip } from "@mui/material";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material/styles";
-import { gql, GraphQLClient } from "graphql-request";
 
+// Graph
+import { GraphQLClient, gql } from "graphql-request";
 import { graphqlEndpoint } from "../../config";
+
+// Theme
 import { tokens } from "../../theme";
 
+// Components
 import SymbolDropdown from "../../components/SymbolDropdown";
 import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const PriceChart = () => {
+const LiquidityTrendChart = () => {
   const [selectedSymbols, setSelectedSymbols] = useState([]);
   const [timeFrameQty, setTimeFrameQty] = useState(12);
-  const [priceData, setPriceData] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  useEffect(() => {
-    const fetchDataForSymbol = async (symbol) => {
-      const query = gql`
-        query getPriceData($symbol: String!, $limit: Int!) {
-          getHistoricPrice(symbol: $symbol, limit: $limit) {
-            Pair {
-              Symbol
-              Price
-            }
-            Timestamp
-          }
+  console.log("hello from LiquidityTrendChart");
+
+  const handleAddSymbol = async (_, newSymbol) => {
+    console.log("handleAddSymbol triggered with:", newSymbol);
+
+    const alreadyTracked = selectedSymbols.includes(newSymbol);
+    if (alreadyTracked) return;
+
+    setSelectedSymbols((prev) => [...prev, newSymbol]);
+
+    const query = gql`
+      query getTickerStats($symbol: String!, $limit: Int!) {
+        getTickerStatsBySymbol(symbol: $symbol, limit: $limit) {
+          Symbol
+          TradeCount
+          LiquidityEstimate
         }
-      `;
-
-      try {
-        const res = await client.request(query, {
-          symbol,
-          limit: timeFrameQty,
-        });
-
-        const rawData = res.getHistoricPrice || [];
-
-        const newSeries = {
-          id: symbol,
-          data: rawData
-            .slice()
-            .reverse()
-            .map((entry) => ({
-              x: new Date(entry.Timestamp * 1000).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-              y: entry.Pair.find((p) => p.Symbol === symbol)?.Price ?? 0,
-            })),
-        };
-
-        setPriceData((prev) => [
-          ...prev.filter((s) => s.id !== symbol),
-          newSeries,
-        ]);
-      } catch (error) {
-        console.error(`Error fetching price data for ${symbol}:`, error);
       }
-    };
+    `;
 
-    // Fetch each selected symbol's price data
-    selectedSymbols.forEach((symbol) => fetchDataForSymbol(symbol));
+    try {
+      const res = await client.request(query, {
+        symbol: newSymbol,
+        limit: timeFrameQty,
+      });
 
-    // Remove any old series that aren't in selectedSymbols anymore
-    setPriceData((prev) =>
-      prev.filter((entry) => selectedSymbols.includes(entry.id))
-    );
-  }, [selectedSymbols, timeFrameQty]);
+      console.log("GraphQL Response for", newSymbol, res);
+
+      const rawStats = res.getTickerStatsBySymbol || [];
+
+      const newChartEntry = {
+        id: newSymbol,
+        data: rawStats
+          .slice()
+          .reverse()
+          .map((s, i) => ({
+            x: `T-${rawStats.length - i}`,
+            y: parseFloat(s.LiquidityEstimate ?? 0),
+          }))
+          .filter((point) => !isNaN(point.y)),
+      };
+
+      setChartData((prev) => [...prev, newChartEntry]);
+    } catch (err) {
+      console.error("Error fetching stats for", newSymbol, err);
+    }
+  };
 
   const removeSymbol = (symbolToRemove) => {
-    setSelectedSymbols((prev) => prev.filter((s) => s !== symbolToRemove));
+    setSelectedSymbols((prev) =>
+      prev.filter((s) => s.value !== symbolToRemove.value)
+    );
+    setChartData((prev) =>
+      prev.filter((entry) => entry.id !== symbolToRemove.value)
+    );
   };
 
   return (
     <Box m="20px">
       <Header
-        title="PRICE CHART"
-        subtitle="Compare recent price trends across pairs"
+        title="LIQUIDITY TREND"
+        subtitle="Visualizing average liquidity over time for better trade execution confidence"
       />
 
       <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
         <Box display="flex" flexDirection="column" gap={2}>
-          <Typography variant="h6">Select Trading Pairs</Typography>
-
+          <Typography variant="h6">Liquidity Trends</Typography>
           <SymbolDropdown
             selectedSymbols={selectedSymbols}
             setSelectedSymbols={setSelectedSymbols}
-            onSelectSymbol={(field, symbol) => {
-              if (!selectedSymbols.includes(symbol)) {
-                setSelectedSymbols((prev) => [...prev, symbol]);
-              }
-            }}
+            onSelectSymbol={handleAddSymbol}
             onRemoveSymbol={removeSymbol}
-            colors={colors}
           />
-
+          
           <Box display="flex" flexWrap="wrap" gap={1}>
-            {selectedSymbols.map((symbol) => (
+            {selectedSymbols.map((symbolObj) => (
               <Chip
-                key={symbol}
-                label={symbol}
-                onDelete={() => removeSymbol(symbol)}
+                key={symbolObj.value}
+                label={symbolObj.label || "Unknown"}
+                onDelete={() => removeSymbol(symbolObj)}
               />
             ))}
           </Box>
@@ -129,9 +129,9 @@ const PriceChart = () => {
       </Box>
 
       <Box height="500px">
-        {priceData.length > 0 ? (
+        {chartData.length > 0 ? (
           <ResponsiveLine
-            data={priceData}
+            data={chartData}
             theme={{
               axis: {
                 domain: { line: { stroke: colors.grey[100] } },
@@ -144,25 +144,36 @@ const PriceChart = () => {
               legends: { text: { fill: colors.grey[100] } },
               tooltip: {
                 container: {
-                  background: colors.grey[800],
                   color: colors.houndGold[500],
+                  background: colors.houndGold[400],
                 },
               },
             }}
-            colors={{ scheme: "category10" }}
+            colors={{ scheme: "nivo" }}
             margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
             xScale={{ type: "point" }}
-            yScale={{ type: "linear", min: "auto", max: "auto", stacked: false }}
+            yScale={{
+              type: "linear",
+              min: "auto",
+              max: "auto",
+              stacked: false,
+            }}
             axisBottom={{
+              orient: "bottom",
               tickRotation: -45,
-              legend: "Time",
+              legend: "Time (Most Recent → Left)",
               legendOffset: 36,
               legendPosition: "middle",
+              tickSize: 5,
+              tickPadding: 5,
             }}
             axisLeft={{
-              legend: "Price",
+              orient: "left",
+              legend: "Liquidity Estimate",
               legendOffset: -40,
               legendPosition: "middle",
+              tickSize: 5,
+              tickPadding: 5,
             }}
             pointSize={8}
             pointColor={{ theme: "background" }}
@@ -185,7 +196,7 @@ const PriceChart = () => {
           />
         ) : (
           <Typography variant="body1">
-            No data yet. Select trading pairs and time range.
+            No data yet. Select a pair and time range.
           </Typography>
         )}
       </Box>
@@ -193,4 +204,4 @@ const PriceChart = () => {
   );
 };
 
-export default PriceChart;
+export default LiquidityTrendChart;
