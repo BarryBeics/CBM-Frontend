@@ -25,13 +25,11 @@ const SMAChart = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [selectedSymbol, setSelectedSymbol] = useState("BTCUSDT");
-  const [symbolOptions, setSymbolOptions] = useState([]);
+  const [selectedSymbols, setSelectedSymbols] = useState([]);
   const [strategyOptions, setStrategyOptions] = useState([]);
-  const [timeFrameQty, setTimeFrameQty] = useState(12); // default to 1 hour (12 intervals of 5 minutes)
-  const [selectedStrategy, setSelectedStrategy] = useState("Baz");
-  const [priceData, setPriceData] = useState([]);
-  const [smaData, setSmaData] = useState({ short: [], long: [] });
+  const [timeFrameQty, setTimeFrameQty] = useState(12);
+  const [selectedStrategy, setSelectedStrategy] = useState("Gopher");
+  const [chartData, setChartData] = useState([]);
 
   const themeSettings = {
     axis: {
@@ -76,20 +74,14 @@ const SMAChart = () => {
         }
       }`);
       setStrategyOptions(res.getAllStrategies.map((s) => s.BotInstanceName));
-
-      const local = await fetch("/your/testSymbols.json").then((res) =>
-        res.json()
-      );
-      setSymbolOptions(local.symbols || []);
     }
-
     fetchDropdowns();
   }, []);
 
   useEffect(() => {
-    if (!selectedSymbol || !selectedStrategy) return;
+    if (!selectedStrategy || !selectedSymbols.length) return;
 
-    async function fetchChartData() {
+    const fetchDataForSymbol = async (symbol) => {
       const smaMeta = await client.request(`{
         getAllStrategies {
           BotInstanceName
@@ -117,87 +109,83 @@ const SMAChart = () => {
           }
         }
       `,
-        { symbol: selectedSymbol, limit }
+        { symbol, limit }
       );
 
       const prices = res.getHistoricPrice;
       const short = calculateSMA(prices, strategy.ShortSMADuration);
       const long = calculateSMA(prices, strategy.LongSMADuration);
 
-      setPriceData(prices);
-      setSmaData({ short, long });
-    }
+      const format = (arr, label) =>
+        [...arr]
+          .sort((a, b) => a.Timestamp - b.Timestamp)
+          .map((d) => ({
+            x: new Date(d.Timestamp * 1000).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            y: d.SMA,
+          }));
 
-    fetchChartData();
-  }, [selectedSymbol, selectedStrategy, timeFrameQty]);
-
-  const formatChartData = () => {
-    const format = (arr) =>
-      [...arr]
-        .sort((a, b) => a.Timestamp - b.Timestamp)
-        .map((d) => ({
-          x: new Date(d.Timestamp * 1000).toLocaleTimeString(),
-          y: d.SMA,
-        }));
-
-    const base = [...priceData]
-      .sort((a, b) => a.Timestamp - b.Timestamp)
-      .map((d) => ({
-        x: new Date(d.Timestamp * 1000).toLocaleTimeString(),
+      const base = prices.map((d) => ({
+        x: new Date(d.Timestamp * 1000).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         y: Number.parseFloat(d.Pair[0].Price),
       }));
 
-    return [
-      { id: "Price", color: colors.houndGold[500], data: base },
-      {
-        id: "Short SMA",
-        color: colors.softRed[500],
-        data: format(smaData.short),
-      },
-      {
-        id: "Long SMA",
-        color: colors.scalpelTeal[500],
-        data: format(smaData.long),
-      },
-    ];
-  };
+      setChartData((prev) => {
+        const filtered = prev.filter((s) => !s.id.startsWith(symbol));
+        return [
+          ...filtered,
+          { id: `${symbol} Price`, data: base },
+          { id: `${symbol} Short SMA`, data: format(short) },
+          { id: `${symbol} Long SMA`, data: format(long) },
+        ];
+      });
+    };
+
+    selectedSymbols.forEach((symbol) => {
+      fetchDataForSymbol(symbol);
+    });
+
+    setChartData((prev) =>
+      prev.filter((entry) =>
+        selectedSymbols.some((s) => entry.id.startsWith(s))
+      )
+    );
+  }, [selectedSymbols, selectedStrategy, timeFrameQty]);
 
   return (
     <Box m="20px">
       <Header
         title="SMA PRICE CHART"
-        subtitle="Here you will see the price data we hold for a given pair"
+        subtitle="Here you will see the price data we hold for selected pairs"
       />
 
-      <Box display="flex" gap={2} mb={4}>
-        {/* Dropdown */}
+      <Box display="flex" gap={2} mb={4} flexWrap="wrap">
         <SymbolDropdown
-          selectedSymbol={selectedSymbol}
-          setSelectedSymbol={setSelectedSymbol}
-          colors={colors}
+          selectedSymbols={selectedSymbols}
+          setSelectedSymbols={setSelectedSymbols}
         />
 
-        {/* Styled Time selector Box */}
-                <Box
-                  backgroundColor={colors.grey[800]}
-                  borderRadius="5px"
-                  boxShadow={1}
-                  p={2}
-                  minHeight="100px"
-                  width={300}
-                >
-                  <TimeRangeSelector
-                    value={timeFrameQty}
-                    onChange={setTimeFrameQty}
-                    colorMode={colors}
-                  />
-                </Box>
-
-        {/* Dropdown */}
         <Box
           backgroundColor={colors.grey[800]}
           borderRadius="5px"
-          boxShadow={1}
+          p={2}
+          width={300}
+        >
+          <TimeRangeSelector
+            value={timeFrameQty}
+            onChange={setTimeFrameQty}
+            colorMode={colors}
+          />
+        </Box>
+
+        <Box
+          backgroundColor={colors.grey[800]}
+          borderRadius="5px"
           p={2}
           minHeight="100px"
         >
@@ -222,10 +210,11 @@ const SMAChart = () => {
         </Box>
       </Box>
 
-      {priceData.length > 0 ? (
+      {chartData.length > 0 ? (
         <Box height="500px">
           <ResponsiveLine
-            data={formatChartData()}
+            data={chartData}
+            theme={themeSettings}
             margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
             xScale={{ type: "point" }}
             yScale={{ type: "linear", min: "auto", max: "auto" }}
@@ -253,32 +242,18 @@ const SMAChart = () => {
               {
                 anchor: "bottom-right",
                 direction: "column",
-                justify: false,
                 translateX: 100,
-                translateY: 0,
-                itemsSpacing: 0,
                 itemWidth: 80,
                 itemHeight: 20,
                 symbolSize: 12,
                 symbolShape: "circle",
-                symbolBorderColor: "rgba(0, 0, 0, .5)",
-                effects: [
-                  {
-                    on: "hover",
-                    style: {
-                      itemBackground: "rgba(0, 0, 0, .03)",
-                      itemOpacity: 1,
-                    },
-                  },
-                ],
               },
             ]}
-            theme={themeSettings}
           />
         </Box>
       ) : (
         <Typography variant="body1">
-          Please select a symbol and strategy to view the chart.
+          Select symbols and a strategy to begin.
         </Typography>
       )}
     </Box>
