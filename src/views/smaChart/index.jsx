@@ -118,6 +118,7 @@ const SMAChart = () => {
 
       const format = (arr, label) =>
         [...arr]
+          .filter((d) => d?.SMA && !isNaN(d.SMA)) // <-- filter invalid SMA
           .sort((a, b) => a.Timestamp - b.Timestamp)
           .map((d) => ({
             x: new Date(d.Timestamp * 1000).toLocaleTimeString([], {

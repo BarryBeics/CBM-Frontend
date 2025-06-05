@@ -62,11 +62,14 @@ const LiquidityTrendChart = () => {
         data: rawStats
           .slice()
           .reverse()
-          .map((s, i) => ({
-            x: `T-${rawStats.length - i}`,
-            y: parseFloat(s.LiquidityEstimate ?? 0),
-          }))
-          .filter((point) => !isNaN(point.y)),
+          .filter(
+            (s) =>
+              s?.LiquidityEstimate && !isNaN(parseFloat(s.LiquidityEstimate))
+          )
+          .map((s, i, arr) => ({
+            x: `T-${arr.length - i}`,
+            y: parseFloat(s.LiquidityEstimate),
+          })),
       };
 
       setChartData((prev) => [...prev, newChartEntry]);
@@ -99,8 +102,6 @@ const LiquidityTrendChart = () => {
             setSelectedSymbols={setSelectedSymbols}
             onSelectSymbol={handleAddSymbol}
           />
-
-          
         </Box>
 
         <Box
