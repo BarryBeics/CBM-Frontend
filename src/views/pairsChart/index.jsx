@@ -92,24 +92,9 @@ const PriceChart = () => {
           <SymbolDropdown
             selectedSymbols={selectedSymbols}
             setSelectedSymbols={setSelectedSymbols}
-            onSelectSymbol={(field, symbol) => {
-              if (!selectedSymbols.includes(symbol)) {
-                setSelectedSymbols((prev) => [...prev, symbol]);
-              }
-            }}
-            onRemoveSymbol={removeSymbol}
-            colors={colors}
           />
 
-          <Box display="flex" flexWrap="wrap" gap={1}>
-            {selectedSymbols.map((symbol) => (
-              <Chip
-                key={symbol}
-                label={symbol}
-                onDelete={() => removeSymbol(symbol)}
-              />
-            ))}
-          </Box>
+          
         </Box>
 
         <Box
@@ -152,7 +137,12 @@ const PriceChart = () => {
             colors={{ scheme: "category10" }}
             margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
             xScale={{ type: "point" }}
-            yScale={{ type: "linear", min: "auto", max: "auto", stacked: false }}
+            yScale={{
+              type: "linear",
+              min: "auto",
+              max: "auto",
+              stacked: false,
+            }}
             axisBottom={{
               tickRotation: -45,
               legend: "Time",

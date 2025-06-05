@@ -98,18 +98,9 @@ const LiquidityTrendChart = () => {
             selectedSymbols={selectedSymbols}
             setSelectedSymbols={setSelectedSymbols}
             onSelectSymbol={handleAddSymbol}
-            onRemoveSymbol={removeSymbol}
           />
+
           
-          <Box display="flex" flexWrap="wrap" gap={1}>
-            {selectedSymbols.map((symbolObj) => (
-              <Chip
-                key={symbolObj.value}
-                label={symbolObj.label || "Unknown"}
-                onDelete={() => removeSymbol(symbolObj)}
-              />
-            ))}
-          </Box>
         </Box>
 
         <Box

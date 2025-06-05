@@ -168,20 +168,6 @@ const SMAChart = () => {
         <SymbolDropdown
           selectedSymbols={selectedSymbols}
           setSelectedSymbols={setSelectedSymbols}
-          onSelectSymbol={(field, symbol) => {
-            if (!selectedSymbols.includes(symbol)) {
-              setSelectedSymbols((prev) => [...prev, symbol]);
-            }
-          }}
-          onRemoveSymbol={(symbolToRemove) => {
-            setSelectedSymbols((prev) =>
-              prev.filter((s) => s !== symbolToRemove)
-            );
-            setChartData((prev) =>
-              prev.filter((entry) => !entry.id.startsWith(symbolToRemove))
-            );
-          }}
-          colors={colors}
         />
 
         <Box
