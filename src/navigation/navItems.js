@@ -35,6 +35,10 @@ export const navItems = [
   { text: "Avg Gain Chart", icon: <TrendingUpOutlinedIcon />, path: "/avgGainChart", roles: ["interested", "member", "admin"], adminOnly: false },
   { text: "Liquidity Trend Chart", icon: <TrendingUpOutlinedIcon />, path: "/liquidityTrendChart", roles: ["interested", "member", "admin"], adminOnly: false },
 
+    /* ---------- Charts (needs login) ---------- */
+  { section: "Reports" },
+  { text: "Trade Outcomes", icon: <TimelineOutlinedIcon />, path: "/tradeOutcomes", roles: ["interested", "member", "admin"], adminOnly: false },
+
   /* ---------- Admin (hidden unless admin) ---------- */
   { section: "Admin", adminOnly: true },
   { text: "Manage Users",    icon: <PeopleAltOutlinedIcon />,   path: "/manageUsers",    roles: ["admin"], adminOnly: true  },
