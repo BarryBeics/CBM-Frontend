@@ -44,6 +44,9 @@ import SMAChart from "./views/smaChart";
 import AvgGainChart from "./views/avgGainChart";
 import LiquidityChart from "./views/liquidityTrendChart";
 
+// View - Reports
+import TradeOutcomes from "./views/tradeOutcomes";
+
 function App() {
   const [theme, colourMode] = useMode();
 
@@ -65,6 +68,7 @@ function App() {
           {/* Protected pages wrapped in layout */}
           <Route element={<Layout />}>
             <Route path="/login" element={<Login />} />
+            {/* Strategy */}
             <Route
               path="/dashboard"
               element={
@@ -81,6 +85,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Charts */}
             <Route
               path="/pairsChart"
               element={
@@ -113,7 +118,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
-          
+          {/* Reports */}
+            <Route
+              path="/tradeOutcomes"
+              element={
+                <ProtectedRoute>
+                  <TradeOutcomes />
+                </ProtectedRoute>
+              }
+            />
+          {/* Admin */}
             <Route
               path="/createUser"
               element={
