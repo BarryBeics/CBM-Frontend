@@ -28,6 +28,7 @@ const PriceChart = () => {
             Pair {
               Symbol
               Price
+              PercentageChange
             }
             Timestamp
           }
@@ -52,7 +53,11 @@ const PriceChart = () => {
                 hour: "2-digit",
                 minute: "2-digit",
               }),
-              y: entry.Pair.find((p) => p.Symbol === symbol)?.Price ?? 0,
+              y:
+                parseFloat(
+                  entry.Pair.find((p) => p.Symbol === symbol)
+                    ?.PercentageChange ?? "0"
+                ) || 0,
             })),
         };
 
@@ -93,8 +98,6 @@ const PriceChart = () => {
             selectedSymbols={selectedSymbols}
             setSelectedSymbols={setSelectedSymbols}
           />
-
-          
         </Box>
 
         <Box
@@ -135,7 +138,7 @@ const PriceChart = () => {
               },
             }}
             colors={{ scheme: "category10" }}
-            margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+            margin={{ top: 50, right: 50, bottom: 100, left: 60 }}
             xScale={{ type: "point" }}
             yScale={{
               type: "linear",
@@ -150,7 +153,7 @@ const PriceChart = () => {
               legendPosition: "middle",
             }}
             axisLeft={{
-              legend: "Price",
+              legend: "% Change",
               legendOffset: -40,
               legendPosition: "middle",
             }}
@@ -163,13 +166,24 @@ const PriceChart = () => {
             enableGridY={false}
             legends={[
               {
-                anchor: "bottom-right",
-                direction: "column",
-                translateX: 100,
+                anchor: "bottom",
+                direction: "row",
+                justify: false,
+                translateY: 60, // pushes legend below chart
                 itemWidth: 80,
                 itemHeight: 20,
+                itemsSpacing: 10,
                 symbolSize: 12,
                 symbolShape: "circle",
+                effects: [
+                  {
+                    on: "hover",
+                    style: {
+                      itemTextColor: "#fff",
+                      itemBackground: "rgba(0, 0, 0, 0.1)",
+                    },
+                  },
+                ],
               },
             ]}
           />
