@@ -12,9 +12,9 @@ import TableActions from "../../components/TableActions";
 const client = new GraphQLClient(graphqlEndpoint);
 
 // GraphQL queries and mutations
-const GET_ALL_TASKS_QUERY = `
+const READ_ALL_TASKS_QUERY = `
   query {
-    allTasks {
+    readAllTasks {
     id
     title
     description
@@ -47,8 +47,8 @@ const ManageTasks = () => {
 
   const fetchTasks = useCallback(async () => {
     try {
-      const data = await client.request(GET_ALL_TASKS_QUERY);
-      const filteredTasks = data.allTasks
+      const data = await client.request(READ_ALL_TASKS_QUERY);
+      const filteredTasks = data.readAllTasks
         .filter((task) => !task.projectId) // 👈 Only tasks with no projectId
         .map((task) => ({
           ...task,

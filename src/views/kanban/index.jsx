@@ -26,9 +26,9 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_ALL_TASKS = `
+const READ_ALL_TASKS = `
   query {
-    allTasks {
+    readAllTasks {
       id
     title
     status
@@ -160,10 +160,10 @@ const KanbanBoard = () => {
         const sopProjectIds = sopData.filterProjects.map((proj) => proj.id);
 
         // 2. Fetch all tasks
-        const { allTasks } = await client.request(GET_ALL_TASKS);
+        const { readAllTasks } = await client.request(READ_ALL_TASKS);
 
         // 3. Filter out tasks related to SOPs
-        const filteredTasks = allTasks.filter(
+        const filteredTasks = readAllTasks.filter(
           (task) => !sopProjectIds.includes(task.projectId)
         );
 
