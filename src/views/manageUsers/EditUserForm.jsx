@@ -12,9 +12,9 @@ import { graphqlEndpoint } from "../../config";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_USER_BY_EMAIL = gql`
-  query GetUserByEmail($email: String!) {
-    getUserByEmail(email: $email) {
+const READ_USER_BY_EMAIL = gql`
+  query ReadUserByEmail($email: String!) {
+    readUserByEmail(email: $email) {
       id
       firstName
       lastName
@@ -63,24 +63,24 @@ const EditUserForm = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const { getUserByEmail } = await client.request(GET_USER_BY_EMAIL, { email });
+        const { readUserByEmail } = await client.request(READ_USER_BY_EMAIL, { email });
         setInitialValues({
-          id: getUserByEmail.id,
-          firstName: getUserByEmail.firstName || "",
-          lastName: getUserByEmail.lastName || "",
-          email: getUserByEmail.email || "",
-          mobileNumber: getUserByEmail.mobileNumber || "",
-          verifiedEmail: getUserByEmail.verifiedEmail || false,
-          verifiedMobile: getUserByEmail.verifiedMobile || false,
-          role: getUserByEmail.role || "guest",
-          openToTrade: getUserByEmail.openToTrade || false,
-          binanceAPI: getUserByEmail.binanceAPI || "",
-          preferredContactMethod: getUserByEmail.preferredContactMethod || "email",
-          notes: getUserByEmail.notes || "",
-          invitedBy: getUserByEmail.invitedBy || "",
-          joinedBallot: getUserByEmail.joinedBallot || false,
-          isPaidMember: getUserByEmail.isPaidMember || false,
-          isDeleted: getUserByEmail.isDeleted || false,
+          id: readUserByEmail.id,
+          firstName: readUserByEmail.firstName || "",
+          lastName: readUserByEmail.lastName || "",
+          email: readUserByEmail.email || "",
+          mobileNumber: readUserByEmail.mobileNumber || "",
+          verifiedEmail: readUserByEmail.verifiedEmail || false,
+          verifiedMobile: readUserByEmail.verifiedMobile || false,
+          role: readUserByEmail.role || "guest",
+          openToTrade: readUserByEmail.openToTrade || false,
+          binanceAPI: readUserByEmail.binanceAPI || "",
+          preferredContactMethod: readUserByEmail.preferredContactMethod || "email",
+          notes: readUserByEmail.notes || "",
+          invitedBy: readUserByEmail.invitedBy || "",
+          joinedBallot: readUserByEmail.joinedBallot || false,
+          isPaidMember: readUserByEmail.isPaidMember || false,
+          isDeleted: readUserByEmail.isDeleted || false,
         });
       } catch (err) {
         console.error("Error fetching user:", err);
