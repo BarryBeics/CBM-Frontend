@@ -6,7 +6,7 @@ const client = new GraphQLClient(graphqlEndpoint);
 
 const GET_BOT_NAMES = gql`
   query {
-    getAllStrategies {
+    readAllStrategies {
       BotInstanceName
     }
   }
@@ -15,7 +15,7 @@ const GET_BOT_NAMES = gql`
 export const getBotNames = async () => {
   try {
     const res = await client.request(GET_BOT_NAMES);
-    return res.getAllStrategies.map((s) => s.BotInstanceName);
+    return res.readAllStrategies.map((s) => s.BotInstanceName);
   } catch (error) {
     console.error("Failed to fetch bot names", error);
     throw error;

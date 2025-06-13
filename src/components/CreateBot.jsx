@@ -58,13 +58,13 @@ const CreateBot = ({ onCreated }) => {
     const fetchBotNames = async () => {
       try {
         const query = `{
-          getAllStrategies {
+          readAllStrategies {
             BotInstanceName
           }
         }`;
 
         const res = await client.request(query);
-        const usedNames = res.getAllStrategies.map((s) => s.BotInstanceName);
+        const usedNames = res.readAllStrategies.map((s) => s.BotInstanceName);
 
         // All names from JSON
         const jsonNames = namesJson.bot_names || [];

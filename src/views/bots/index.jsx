@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 
 // Graph
-import { getAllStrategies } from "../../graph/strategies/getAllStrategies";
+import { readAllStrategies } from "../../graph/strategies/readAllStrategies";
 
 // Components
 import Header from "../../components/Header";
@@ -17,7 +17,7 @@ const Bots = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await getAllStrategies();
+      const data = await readAllStrategies();
       setBotData(data);
     };
     getData();
@@ -44,7 +44,7 @@ const Bots = () => {
   return (
     <Box m="20px">
       <CreateBot onCreated={() => {
-        getAllStrategies().then(setBotData);
+        readAllStrategies().then(setBotData);
       }} />
   
   <Header title="BOT STRATEGIES" subtitle="Live strategy bot metrics" />
