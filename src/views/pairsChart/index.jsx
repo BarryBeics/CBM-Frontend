@@ -23,8 +23,8 @@ const PriceChart = () => {
   useEffect(() => {
     const fetchDataForSymbol = async (symbol) => {
       const query = gql`
-        query getPriceData($symbol: String!, $limit: Int!) {
-          getHistoricPrice(symbol: $symbol, limit: $limit) {
+        query readPriceData($symbol: String!, $limit: Int!) {
+          readHistoricPrice(symbol: $symbol, limit: $limit) {
             Pair {
               Symbol
               Price
@@ -41,29 +41,31 @@ const PriceChart = () => {
           limit: timeFrameQty,
         });
 
-        const rawData = res.getHistoricPrice || [];
+        const rawData = res.readHistoricPrice || [];
 
-        const newSeries = {
-          id: symbol,
-          data: rawData
-            .slice()
-            .reverse()
-            .map((entry) => ({
-              x: new Date(entry.Timestamp * 1000).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-              y:
-                parseFloat(
-                  entry.Pair.find((p) => p.Symbol === symbol)
-                    ?.PercentageChange ?? "0"
-                ) || 0,
-            })),
-        };
+        const cleanedData = rawData
+          .slice()
+          .reverse()
+          .filter((entry) => {
+            const pricePoint = entry?.Pair?.find((p) => p?.Symbol === symbol);
+            return entry?.Timestamp && pricePoint?.PercentageChange;
+          })
+          .map((entry) => ({
+            x: new Date(entry.Timestamp * 1000).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            y: parseFloat(
+              entry.Pair.find((p) => p.Symbol === symbol)?.PercentageChange ??
+                "0"
+            ),
+          }));
+
+        if (!cleanedData.length) return;
 
         setPriceData((prev) => [
           ...prev.filter((s) => s.id !== symbol),
-          newSeries,
+          { id: symbol, data: cleanedData },
         ]);
       } catch (error) {
         console.error(`Error fetching price data for ${symbol}:`, error);

@@ -13,9 +13,9 @@ import { graphqlEndpoint } from "../config";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_ADMINS = `
+const READ_ADMINS = `
   query {
-    getUsersByRole(role: "admin") {
+    readUsersByRole(role: "admin") {
       id
       firstName
       lastName
@@ -31,8 +31,8 @@ const AdminUserSelect = ({ selectedAdmin, setFieldValue, disabled = false }) => 
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
-        const data = await client.request(GET_ADMINS);
-        setAdmins(data.getUsersByRole);
+        const data = await client.request(READ_ADMINS);
+        setAdmins(data.readUsersByRole);
       } catch (err) {
         console.error("Failed to fetch admins", err);
         setError("Could not load admin users");

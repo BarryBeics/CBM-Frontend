@@ -27,9 +27,9 @@ import AdminUserSelect from "../../components/AdminUserSelect";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_PROJECT_QUERY = `
-  query GetProjectById($id: ID!) {
-    projectById(id: $id) {
+const READ_PROJECT_QUERY = `
+  query ReadSingleProjectById($id: ID!) {
+    readSingleProjectById(id: $id) {
       id
     title
     sop
@@ -71,6 +71,7 @@ const UPDATE_PROJECT_MUTATION = `
       assignedTo
       dueDate
       status
+      sop
     }
   }
 `;
@@ -102,8 +103,8 @@ const validationSchema = yup.object().shape({
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await client.request(GET_PROJECT_QUERY, { id });
-        const project = response?.projectById;
+        const response = await client.request(READ_PROJECT_QUERY, { id });
+        const project = response?.readSingleProjectById;
 
         if (project) {
           setInitialValues({
@@ -116,6 +117,7 @@ const validationSchema = yup.object().shape({
                       ? project.dueDate
                       : "",
             status: project.status || "",
+            sop: project.sop ?? false,
           });
 
           setTasks(project.tasks || []);
@@ -141,6 +143,7 @@ const validationSchema = yup.object().shape({
             assignedTo: values.assignedTo,
             dueDate: values.dueDate,
             status: values.status,
+            sop: values.sop,
           },
         });
         alert("Project updated successfully");

@@ -38,8 +38,8 @@ const LiquidityTrendChart = () => {
     setSelectedSymbols((prev) => [...prev, newSymbol]);
 
     const query = gql`
-      query getTickerStats($symbol: String!, $limit: Int!) {
-        getTickerStatsBySymbol(symbol: $symbol, limit: $limit) {
+      query readTickerStatsBySymbol($symbol: String!, $limit: Int!) {
+        readTickerStatsBySymbol(symbol: $symbol, limit: $limit) {
           Symbol
           TradeCount
           LiquidityEstimate
@@ -55,33 +55,39 @@ const LiquidityTrendChart = () => {
 
       console.log("GraphQL Response for", newSymbol, res);
 
-      const rawStats = res.getTickerStatsBySymbol || [];
+      const rawStats = Array.isArray(res.readTickerStatsBySymbol)
+        ? res.readTickerStatsBySymbol
+        : [];
+
+      const cleanedStats = rawStats
+        .slice()
+        .reverse()
+        .map((s, i) => {
+          const value = parseFloat(s.LiquidityEstimate ?? "0");
+          return {
+            x: `T-${rawStats.length - i}`,
+            y: isNaN(value) ? null : value,
+          };
+        })
+        .filter((point) => point.y !== null);
+
+      if (!cleanedStats.length) {
+        console.warn(
+          "Skipping symbol with no valid liquidity data:",
+          newSymbol
+        );
+        return;
+      }
 
       const newChartEntry = {
         id: newSymbol,
-        data: rawStats
-          .slice()
-          .reverse()
-          .map((s, i) => ({
-            x: `T-${rawStats.length - i}`,
-            y: parseFloat(s.LiquidityEstimate ?? 0),
-          }))
-          .filter((point) => !isNaN(point.y)),
+        data: cleanedStats,
       };
 
       setChartData((prev) => [...prev, newChartEntry]);
-    } catch (err) {
-      console.error("Error fetching stats for", newSymbol, err);
+    } catch (error) {
+      console.error("Error fetching liquidity data:", error);
     }
-  };
-
-  const removeSymbol = (symbolToRemove) => {
-    setSelectedSymbols((prev) =>
-      prev.filter((s) => s.value !== symbolToRemove.value)
-    );
-    setChartData((prev) =>
-      prev.filter((entry) => entry.id !== symbolToRemove.value)
-    );
   };
 
   return (
@@ -99,8 +105,6 @@ const LiquidityTrendChart = () => {
             setSelectedSymbols={setSelectedSymbols}
             onSelectSymbol={handleAddSymbol}
           />
-
-          
         </Box>
 
         <Box

@@ -15,9 +15,9 @@ import {
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_TRADE_OUTCOME_REPORTS = `
+const READ_TRADE_OUTCOME_REPORTS = `
   query {
-    TradeOutcomeReports {
+    readAllTradeOutcomes {
       Timestamp
       BotName
       Balance
@@ -39,9 +39,9 @@ const TradeReports = () => {
 
  const fetchReports = useCallback(async () => {
   try {
-    const data = await client.request(GET_TRADE_OUTCOME_REPORTS);
+    const data = await client.request(READ_TRADE_OUTCOME_REPORTS);
 
-    const formatted = data.TradeOutcomeReports.map((report) => ({
+    const formatted = data.readAllTradeOutcomes.map((report) => ({
       id: report.Timestamp, 
       ...report,
       TimestampFormatted: new Date(report.Timestamp).toLocaleString(),

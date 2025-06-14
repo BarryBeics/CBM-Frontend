@@ -22,7 +22,7 @@ const client = new GraphQLClient(graphqlEndpoint);
 // GraphQL queries and mutations
 const GET_ALL_USERS_QUERY = `
   query {
-    getAllUsers {
+    readAllUsers {
       id
       firstName
       lastName
@@ -52,7 +52,7 @@ const ManageUsers = () => {
   const fetchUsers = useCallback(async () => {
     try {
       const data = await client.request(GET_ALL_USERS_QUERY);
-      const formattedUsers = data.getAllUsers.map((user) => ({
+      const formattedUsers = data.readAllUsers.map((user) => ({
         ...user,
         id: user.id,
         name: `${user.firstName} ${user.lastName}`,

@@ -10,9 +10,9 @@ import { graphqlEndpoint } from "../../config";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_ALL_SOP_PROJECTS_QUERY = `
-  query getAllSopProjects {
-    filterProjects(filter: { sop: true }) {
+const READ_PROJECTS_FILTER_QUERY = `
+  query ReadProjectsFilter($sop: Boolean!) {
+    readProjectsFilter(filter: { sop: $sop }) {
       id
       title
       description
@@ -26,6 +26,7 @@ const GET_ALL_SOP_PROJECTS_QUERY = `
     }
   }
 `;
+
 
 const DELETE_PROJECT_MUTATION = `
   mutation DeleteProject($id: ID!) {
@@ -45,8 +46,8 @@ const ManageSOPs = () => {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const data = await client.request(GET_ALL_SOP_PROJECTS_QUERY);
-      const formattedProjects = data.filterProjects.map((project) => ({
+      const data = await client.request(READ_PROJECTS_FILTER_QUERY, { sop });
+    const formattedProjects = data.readProjectsFilter.map((project) => ({
         ...project,
         labels: project.labels?.join(", ") || "",
         taskCount: project.tasks?.length || 0,

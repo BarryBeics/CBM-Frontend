@@ -69,11 +69,11 @@ const SMAChart = () => {
   useEffect(() => {
     async function fetchDropdowns() {
       const res = await client.request(`{
-        getAllStrategies {
+        readAllStrategies {
           BotInstanceName
         }
       }`);
-      setStrategyOptions(res.getAllStrategies.map((s) => s.BotInstanceName));
+      setStrategyOptions(res.readAllStrategies.map((s) => s.BotInstanceName));
     }
     fetchDropdowns();
   }, []);
@@ -83,14 +83,14 @@ const SMAChart = () => {
 
     const fetchDataForSymbol = async (symbol) => {
       const smaMeta = await client.request(`{
-        getAllStrategies {
+        readAllStrategies {
           BotInstanceName
           LongSMADuration
           ShortSMADuration
         }
       }`);
 
-      const strategy = smaMeta.getAllStrategies.find(
+      const strategy = smaMeta.readAllStrategies.find(
         (s) => s.BotInstanceName === selectedStrategy
       );
       if (!strategy) return;
@@ -99,8 +99,8 @@ const SMAChart = () => {
 
       const res = await client.request(
         `
-        query getPriceData($symbol: String!, $limit: Int!) {
-          getHistoricPrice(symbol: $symbol, limit: $limit) {
+        query readPriceData($symbol: String!, $limit: Int!) {
+          readHistoricPrice(symbol: $symbol, limit: $limit) {
             Pair {
               Symbol
               Price
@@ -112,7 +112,7 @@ const SMAChart = () => {
         { symbol, limit }
       );
 
-      const prices = res.getHistoricPrice;
+      const prices = res.readHistoricPrice;
       const short = calculateSMA(prices, strategy.ShortSMADuration);
       const long = calculateSMA(prices, strategy.LongSMADuration);
 

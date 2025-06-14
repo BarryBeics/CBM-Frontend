@@ -29,9 +29,9 @@ import DateInput from "../../components/DateInput";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_TASK_QUERY = `
-  query GetTaskById($id: ID!) {
-    taskById(id: $id) {
+const READ_TASK_QUERY = `
+  query ReadTaskById($id: ID!) {
+    readTaskById(id: $id) {
       id
     title
     description
@@ -98,23 +98,23 @@ await client.request(DELETE_TASK_MUTATION, { id: String(id) });
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const { taskById } = await client.request(GET_TASK_QUERY, { id });
+        const { readTaskById } = await client.request(READ_TASK_QUERY, { id });
 
         setInitialValues({
-          title: taskById.title || "",
-          description: taskById.description || "",
-          status: taskById.status || "",
-          labels: taskById.labels || [],
-          assignedTo: taskById.assignedTo || "",
-          dueDate: taskById.dueDate && isValid(parse(taskById.dueDate, "dd-MM-yyyy", new Date()))
-          ? taskById.dueDate
+          title: readTaskById.title || "",
+          description: readTaskById.description || "",
+          status: readTaskById.status || "",
+          labels: readTaskById.labels || [],
+          assignedTo: readTaskById.assignedTo || "",
+          dueDate: readTaskById.dueDate && isValid(parse(readTaskById.dueDate, "dd-MM-yyyy", new Date()))
+          ? readTaskById.dueDate
           : "",
-          deferDate: taskById.deferDate && isValid(parse(taskById.deferDate, "dd-MM-yyyy", new Date()))
-          ? taskById.deferDate
+          deferDate: readTaskById.deferDate && isValid(parse(readTaskById.deferDate, "dd-MM-yyyy", new Date()))
+          ? readTaskById.deferDate
           : "",
-          department: taskById.department || "",
-          projectId: taskById.projectId || "",
-          duration: taskById.duration || "",
+          department: readTaskById.department || "",
+          projectId: readTaskById.projectId || "",
+          duration: readTaskById.duration || "",
         });
       } catch (err) {
         console.error("Error fetching task:", err);
