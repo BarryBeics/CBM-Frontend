@@ -52,7 +52,7 @@ const UPDATE_TASK_STATUS = `
 
 const GET_SOP_PROJECT_IDS = `
   query {
-    filterProjects(filter: { sop: true }) {
+    readProjectsFilter(filter: { sop: true }) {
       id
     }
   }
@@ -157,7 +157,7 @@ const KanbanBoard = () => {
       try {
         // 1. Fetch SOP project IDs
         const sopData = await client.request(GET_SOP_PROJECT_IDS);
-        const sopProjectIds = sopData.filterProjects.map((proj) => proj.id);
+        const sopProjectIds = sopData.readProjectsFilter.map((proj) => proj.id);
 
         // 2. Fetch all tasks
         const { readAllTasks } = await client.request(READ_ALL_TASKS);

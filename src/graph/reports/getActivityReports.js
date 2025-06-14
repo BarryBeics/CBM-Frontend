@@ -4,9 +4,9 @@ import { graphqlEndpoint } from "../../config";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
-const GET_ACTIVITY_REPORTS_QUERY = gql`
+const READ_ACTIVITY_REPORTS_QUERY = gql`
   query {
-    ActivityReports {
+    readAllActivityReports {
       Timestamp
       Qty
       TopAGain
@@ -18,8 +18,8 @@ const GET_ACTIVITY_REPORTS_QUERY = gql`
 
 export const getActivityReports = async () => {
   try {
-    const data = await client.request(GET_ACTIVITY_REPORTS_QUERY);
-    return data.ActivityReports;
+    const data = await client.request(READ_ACTIVITY_REPORTS_QUERY);
+    return data.readAllActivityReports;
   } catch (error) {
     console.error("Error fetching activity reports:", error);
     throw error;

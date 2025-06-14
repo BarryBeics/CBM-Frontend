@@ -99,8 +99,8 @@ const SMAChart = () => {
 
       const res = await client.request(
         `
-        query getPriceData($symbol: String!, $limit: Int!) {
-          getHistoricPrice(symbol: $symbol, limit: $limit) {
+        query readPriceData($symbol: String!, $limit: Int!) {
+          readHistoricPrice(symbol: $symbol, limit: $limit) {
             Pair {
               Symbol
               Price
@@ -112,7 +112,7 @@ const SMAChart = () => {
         { symbol, limit }
       );
 
-      const prices = res.getHistoricPrice;
+      const prices = res.readHistoricPrice;
       const short = calculateSMA(prices, strategy.ShortSMADuration);
       const long = calculateSMA(prices, strategy.LongSMADuration);
 
