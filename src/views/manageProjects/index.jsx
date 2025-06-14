@@ -11,9 +11,9 @@ import { graphqlEndpoint } from "../../config";
 const client = new GraphQLClient(graphqlEndpoint);
 
 // GraphQL queries and mutations
-const GET_ALL_PROJECTS_QUERY = `
-  query getAllSopProjects {
-    filterProjects(filter: { sop: false }) {
+const READ_ALL_PROJECTS_QUERY = `
+  query ReadProjectsFilter {
+    readProjectsFilter(filter: { sop: false }) {
       id
       title
       description
@@ -46,8 +46,8 @@ const ManageProjects = () => {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const data = await client.request(GET_ALL_PROJECTS_QUERY);
-      const formattedProjects = data.filterProjects.map((project) => ({
+      const data = await client.request(READ_ALL_PROJECTS_QUERY);
+      const formattedProjects = data.readProjectsFilter.map((project) => ({
         ...project,
         labels: project.labels?.join(", ") || "",
         taskCount: project.tasks?.length || 0,
