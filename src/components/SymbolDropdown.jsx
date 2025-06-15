@@ -10,6 +10,12 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
 
+// Graph
+import { GraphQLClient, gql } from "graphql-request";
+import { graphqlEndpoint } from "../config";
+
+const client = new GraphQLClient(graphqlEndpoint);
+
 const SymbolDropdown = ({
   selectedSymbols = [],
   setSelectedSymbols = () => {},
@@ -22,22 +28,29 @@ const SymbolDropdown = ({
 
   // Load options
   useEffect(() => {
-    const fetchSymbols = async () => {
-      try {
-        const res = await fetch(`${process.env.PUBLIC_URL}/testSymbols.json`);
-        const data = await res.json();
-        const symbols = (data.symbols || []).map((s) =>
-          typeof s === "string" ? s : s.Symbol
-        );
-        setOptions(symbols);
-      } catch (error) {
-        console.error("Failed to load symbols:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSymbols();
-  }, []);
+  const fetchSymbols = async () => {
+    setLoading(true);
+    try {
+      const query = gql`
+        query readAvailableSymbols {
+          readAvailableSymbols
+        }
+      `;
+
+      const res = await client.request(query);
+      const symbols = res.readAvailableSymbols ?? [];
+      console.log("Fetched symbols:", symbols);
+
+      setOptions(symbols);
+    } catch (error) {
+      console.error("Failed to load symbols from backend:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchSymbols();
+}, []);
 
   return (
     <Box backgroundColor={colors.grey[800]} borderRadius="5px" boxShadow={1} p={2} minHeight="100px">
