@@ -1,8 +1,8 @@
 // React & Hooks
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 // Third-party
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material/styles";
 
@@ -17,25 +17,20 @@ import { tokens } from "../../theme";
 import SymbolDropdown from "../../components/SymbolDropdown";
 import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
+import ViewModeToggle from "../../components/ViewModeToggle";
 
 const client = new GraphQLClient(graphqlEndpoint);
 
 const LiquidityTrendChart = () => {
   const [selectedSymbols, setSelectedSymbols] = useState([]);
   const [timeFrameQty, setTimeFrameQty] = useState(12);
-  const [chartData, setChartData] = useState([]);
+  const [rawSymbolStats, setRawSymbolStats] = useState({});
+  const [viewMode, setViewMode] = useState("liquidity");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  console.log("hello from LiquidityTrendChart");
-
   const handleAddSymbol = async (_, newSymbol) => {
-    console.log("handleAddSymbol triggered with:", newSymbol);
-
-    const alreadyTracked = selectedSymbols.includes(newSymbol);
-    if (alreadyTracked) return;
-
-    setSelectedSymbols((prev) => [...prev, newSymbol]);
+    if (selectedSymbols.includes(newSymbol)) return;
 
     const query = gql`
       query readTickerStatsBySymbol($symbol: String!, $limit: Int!) {
@@ -53,42 +48,50 @@ const LiquidityTrendChart = () => {
         limit: timeFrameQty,
       });
 
-      console.log("GraphQL Response for", newSymbol, res);
-
       const rawStats = Array.isArray(res.readTickerStatsBySymbol)
         ? res.readTickerStatsBySymbol
         : [];
 
-      const cleanedStats = rawStats
-        .slice()
-        .reverse()
+      if (!rawStats.length) {
+        console.warn("Skipping symbol with no valid data:", newSymbol);
+        return;
+      }
+
+      // Reverse once and store raw data
+      const reversed = rawStats.slice().reverse();
+
+      setSelectedSymbols((prev) => [...prev, newSymbol]);
+      setRawSymbolStats((prev) => ({
+        ...prev,
+        [newSymbol]: reversed,
+      }));
+    } catch (error) {
+      console.error("Error fetching liquidity data:", error);
+    }
+  };
+
+  // 🔁 Recompute chartData from rawSymbolStats on viewMode or selectedSymbols change
+  const chartData = useMemo(() => {
+    return selectedSymbols.map((symbol) => {
+      const stats = rawSymbolStats[symbol];
+      if (!stats) return null;
+
+      const data = stats
         .map((s, i) => {
-          const value = parseFloat(s.LiquidityEstimate ?? "0");
+          const value =
+            viewMode === "liquidity"
+              ? parseFloat(s.LiquidityEstimate ?? "0")
+              : parseFloat(s.TradeCount ?? "0");
           return {
-            x: `T-${rawStats.length - i}`,
+            x: `T-${stats.length - i}`,
             y: isNaN(value) ? null : value,
           };
         })
         .filter((point) => point.y !== null);
 
-      if (!cleanedStats.length) {
-        console.warn(
-          "Skipping symbol with no valid liquidity data:",
-          newSymbol
-        );
-        return;
-      }
-
-      const newChartEntry = {
-        id: newSymbol,
-        data: cleanedStats,
-      };
-
-      setChartData((prev) => [...prev, newChartEntry]);
-    } catch (error) {
-      console.error("Error fetching liquidity data:", error);
-    }
-  };
+      return { id: symbol, data };
+    }).filter(Boolean);
+  }, [selectedSymbols, rawSymbolStats, viewMode]);
 
   return (
     <Box m="20px">
@@ -97,6 +100,7 @@ const LiquidityTrendChart = () => {
         subtitle="Visualizing average liquidity over time for better trade execution confidence"
       />
 
+      {/* Controls */}
       <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
         <Box display="flex" flexDirection="column" gap={2}>
           <Typography variant="h6">Liquidity Trends</Typography>
@@ -114,15 +118,31 @@ const LiquidityTrendChart = () => {
           p={2}
           minHeight="100px"
           width={300}
+          display="flex"
+          flexDirection="column"
+          gap={2}
         >
           <TimeRangeSelector
             value={timeFrameQty}
             onChange={setTimeFrameQty}
             colorMode={colors}
           />
+
+        </Box>
+        <Box display="flex" alignItems="center">
+          <ViewModeToggle
+            value={viewMode}
+            onChange={setViewMode}
+            modes={[
+              { id: "liquidity", label: "Liquidity View" },
+              { id: "trades", label: "Trade Count View" },
+            ]}
+          />
         </Box>
       </Box>
 
+
+      {/* Chart */}
       <Box height="500px">
         {chartData.length > 0 ? (
           <ResponsiveLine
@@ -164,7 +184,7 @@ const LiquidityTrendChart = () => {
             }}
             axisLeft={{
               orient: "left",
-              legend: "Liquidity Estimate",
+              legend: viewMode === "liquidity" ? "Liquidity Estimate" : "Trade Count",
               legendOffset: -40,
               legendPosition: "middle",
               tickSize: 5,
@@ -198,5 +218,6 @@ const LiquidityTrendChart = () => {
     </Box>
   );
 };
+
 
 export default LiquidityTrendChart;

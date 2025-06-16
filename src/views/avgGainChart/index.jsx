@@ -20,6 +20,7 @@ import { timeNow } from "../../utils/timeNow";
 import Header from "../../components/Header";
 import TimeRangeSelector from "../../components/TimeRangeSelector";
 import ThemedDataGrid from "../../components/ThemedDataGrid";
+import ViewModeToggle from "../../components/ViewModeToggle";
 
 export default function TopGainersScatterWithTrend() {
   const theme = useTheme();
@@ -28,8 +29,6 @@ export default function TopGainersScatterWithTrend() {
   const [activityData, setActivityData] = useState([]);
   const [timeFrameQty, setTimeFrameQty] = useState(12);
   const [viewMode, setViewMode] = useState("chart");
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,67 +42,76 @@ export default function TopGainersScatterWithTrend() {
     fetchData();
   }, []);
 
-  const {
-    scatterData,
-    trendLines,
-    numPoints,
-    formattedTableRows,
-  } = useMemo(() => {
-    if (!activityData?.length) return { scatterData: [], trendLines: [], formattedTableRows: [] };
+  const { scatterData, trendLines, numPoints, formattedTableRows } =
+    useMemo(() => {
+      if (!activityData?.length)
+        return { scatterData: [], trendLines: [], formattedTableRows: [] };
 
-    const now = timeNow() * 1000;
-    const cutoff = now - timeFrameQty * 5 * 60 * 1000;
+      const now = timeNow() * 1000;
+      const cutoff = now - timeFrameQty * 5 * 60 * 1000;
 
-    const filtered = activityData
-      .filter((entry) => new Date(entry.Timestamp * 1000).getTime() >= cutoff)
-      .sort((a, b) => a.Timestamp - b.Timestamp);
+      const filtered = activityData
+        .filter((entry) => new Date(entry.Timestamp * 1000).getTime() >= cutoff)
+        .sort((a, b) => a.Timestamp - b.Timestamp);
 
-    const jitter = (x) => x + (Math.random() - 0.5) * 2;
+      const jitter = (x) => x + (Math.random() - 0.5) * 2;
 
-    const seriesKeys = [
-      { key: "TopAGain", label: "Top 3", color: "#E4C2A8" },
-      { key: "TopBGain", label: "Top 5", color: "#E87C6F" },
-      { key: "TopCGain", label: "Top 10", color: "#E1A648" },
-    ];
+      const seriesKeys = [
+        { key: "TopAGain", label: "Top 3", color: "#E4C2A8" },
+        { key: "TopBGain", label: "Top 5", color: "#E87C6F" },
+        { key: "TopCGain", label: "Top 10", color: "#E1A648" },
+      ];
 
-    const scatter = seriesKeys.map(({ key, label, color }) => ({
-      id: label,
-      color,
-      data: filtered
-        .filter((entry) => typeof entry[key] === "number" && typeof entry.Qty === "number")
-        .map((entry) => ({
-          x: jitter(entry.Qty),
-          y: entry[key],
-        })),
-    }));
-
-    const trends = seriesKeys.map(({ key, label, color }) => {
-      const validValues = filtered.map((e) => e[key]).filter((v) => typeof v === "number");
-      const qtys = filtered.map((e) => e.Qty).filter((q) => typeof q === "number");
-
-      const yAvg = mean(validValues);
-      return {
-        id: `${label} Avg`,
+      const scatter = seriesKeys.map(({ key, label, color }) => ({
+        id: label,
         color,
-        data: [
-          { x: Math.min(...qtys), y: yAvg },
-          { x: Math.max(...qtys), y: yAvg },
-        ],
-        trend: true,
+        data: filtered
+          .filter(
+            (entry) =>
+              typeof entry[key] === "number" && typeof entry.Qty === "number"
+          )
+          .map((entry) => ({
+            x: jitter(entry.Qty),
+            y: entry[key],
+          })),
+      }));
+
+      const trends = seriesKeys.map(({ key, label, color }) => {
+        const validValues = filtered
+          .map((e) => e[key])
+          .filter((v) => typeof v === "number");
+        const qtys = filtered
+          .map((e) => e.Qty)
+          .filter((q) => typeof q === "number");
+
+        const yAvg = mean(validValues);
+        return {
+          id: `${label} Avg`,
+          color,
+          data: [
+            { x: Math.min(...qtys), y: yAvg },
+            { x: Math.max(...qtys), y: yAvg },
+          ],
+          trend: true,
+        };
+      });
+
+      const formattedTableRows = filtered.map((entry, index) => ({
+        id: entry.Timestamp ?? index,
+        Timestamp: new Date(entry.Timestamp * 1000).toLocaleString(),
+        Qty: entry.Qty,
+        TopAGain: entry.TopAGain,
+        TopBGain: entry.TopBGain,
+        TopCGain: entry.TopCGain,
+      }));
+
+      return {
+        scatterData: scatter,
+        trendLines: trends,
+        numPoints: filtered.length,
+        formattedTableRows,
       };
-    });
-
-    const formattedTableRows = filtered.map((entry, index) => ({
-      id: entry.Timestamp ?? index,
-      Timestamp: new Date(entry.Timestamp * 1000).toLocaleString(),
-      Qty: entry.Qty,
-      TopAGain: entry.TopAGain,
-      TopBGain: entry.TopBGain,
-      TopCGain: entry.TopCGain,
-    }));
-
-    return { scatterData: scatter, trendLines: trends, numPoints: filtered.length, formattedTableRows };
-  }, [activityData, timeFrameQty]);
+    }, [activityData, timeFrameQty]);
 
   const columns = [
     { field: "Timestamp", headerName: "Time", flex: 2 },
@@ -130,7 +138,6 @@ export default function TopGainersScatterWithTrend() {
       headerName: "Top 10 Gain",
       flex: 1,
       type: "number",
-      
     },
   ];
 
@@ -160,7 +167,14 @@ export default function TopGainersScatterWithTrend() {
       />
 
       <Box mb={2} display="flex" justifyContent="space-between">
-        <Box backgroundColor={colors.grey[800]} borderRadius="5px" boxShadow={1} p={2} minHeight="100px" width={300}>
+        <Box
+          backgroundColor={colors.grey[800]}
+          borderRadius="5px"
+          boxShadow={1}
+          p={2}
+          minHeight="100px"
+          width={300}
+        >
           <TimeRangeSelector
             value={timeFrameQty}
             onChange={setTimeFrameQty}
@@ -168,19 +182,14 @@ export default function TopGainersScatterWithTrend() {
           />
         </Box>
         <Box display="flex" alignItems="center">
-          <Button
-            variant={viewMode === "chart" ? "contained" : "outlined"}
-            onClick={() => setViewMode("chart")}
-            sx={{ mr: 1 }}
-          >
-            Chart View
-          </Button>
-          <Button
-            variant={viewMode === "table" ? "contained" : "outlined"}
-            onClick={() => setViewMode("table")}
-          >
-            Table View
-          </Button>
+          <ViewModeToggle
+            value={viewMode}
+            onChange={setViewMode}
+            modes={[
+              { id: "chart", label: "Chart View" },
+              { id: "table", label: "Table View" },
+            ]}
+          />
         </Box>
       </Box>
 
@@ -253,4 +262,4 @@ export default function TopGainersScatterWithTrend() {
       )}
     </Box>
   );
-};
+}
