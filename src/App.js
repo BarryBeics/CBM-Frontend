@@ -22,7 +22,7 @@ import FAQ from "./views/faq";
 import Register from "./views/register";
 
 // Views - Strategy
-import Dashboard from "./scenes/dashboard"; // TODO: needs updating to a view
+import Dashboard from "./views/dashboard";
 import Bots from "./views/bots";
 
 // Views - Admin

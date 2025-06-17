@@ -1,3 +1,6 @@
+// React
+import React, { useEffect, useState } from "react";
+
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
@@ -12,18 +15,53 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+import FearAndGreedCard from "../../components/FearAndGreedCard";
+import TopGainersSnapshot from "../../components/TopGainersSnapshot";
+import { getActivityReports } from "../../graph/reports/getActivityReports";
+
+
+import { GraphQLClient, gql } from "graphql-request";
+import { graphqlEndpoint } from "../../config";
+
+const client = new GraphQLClient(graphqlEndpoint);
+
+const fetchFearAndGreedIndex = async () => {
+  const query = gql`
+    query readFearAndGreedIndex {
+      readFearAndGreedIndex(limit: 1) {
+        Value
+        ValueClassification
+      }
+    }
+  `;
+  const res = await client.request(query);
+  return res.readFearAndGreedIndex[0];
+};
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const [activityData, setActivityData] = useState([]);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const data = await getActivityReports();
+        setActivityData(data);
+      } catch (err) {
+        console.error("Failed to fetch activity reports", err);
+      }
+    };
+
+    fetchReports();
+  }, []);
 
   return (
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-
-
       </Box>
 
       {/* GRID & CHARTS */}
@@ -41,17 +79,7 @@ const Dashboard = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
-            progress="0.75"
-            increase="+14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.scalpelTeal[500], fontSize: "26px" }}
-              />
-            }
-          />
+          <TopGainersSnapshot activityData={activityData} />
         </Box>
         <Box
           gridColumn="span 3"
@@ -98,17 +126,7 @@ const Dashboard = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <StatBox
-            title="1,325,134"
-            subtitle="Traffic Received"
-            progress="0.80"
-            increase="+43%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.scalpelTeal[600], fontSize: "26px" }}
-              />
-            }
-          />
+          <FearAndGreedCard />
         </Box>
 
         {/* ROW 2 */}
